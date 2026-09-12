@@ -1,0 +1,20 @@
+first we will create reuasble annoucement section which is at the top of the page
+
+- than Header.jsx
+- than Footer.jsx
+- than combine all of them in main layout.jsx
+
+and than move to routes/AppRoutes.jsx
+
+
+and than start creating home page (/pages/Home/Home.jsx)
+
+
+and than we will  start  :
+1 . updating App.jsx
+2. creating global css (index.css)
+
+
+and than we will move to actual website clone
+
+
