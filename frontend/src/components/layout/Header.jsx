@@ -14,7 +14,7 @@ const Header = () => {
           <div className="nav-item">
             <button className="nav-link">
               SHOP
-              <span className="dropdown-arrow">⌄</span>
+              <span className="dropdown-arrow"></span>
             </button>
 
             <div className="dropdown-menu">
@@ -28,7 +28,7 @@ const Header = () => {
           <div className="nav-item">
             <button className="nav-link">
               BUNDLES
-              <span className="dropdown-arrow">⌄</span>
+              <span className="dropdown-arrow"></span>
             </button>
 
             <div className="dropdown-menu">
@@ -42,7 +42,7 @@ const Header = () => {
           <div className="nav-item">
             <button className="nav-link">
               OUR STORY
-              <span className="dropdown-arrow">⌄</span>
+              <span className="dropdown-arrow"></span>
             </button>
 
             <div className="dropdown-menu">
@@ -54,7 +54,7 @@ const Header = () => {
           <div className="nav-item">
             <button className="nav-link">
               SUPPORT
-              <span className="dropdown-arrow">⌄</span>
+              <span className="dropdown-arrow"></span>
             </button>
 
             <div className="dropdown-menu">
