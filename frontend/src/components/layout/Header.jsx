@@ -18,9 +18,9 @@ const Header = () => {
             </button>
 
             <div className="dropdown-menu">
-              <a href="#">Shop All Products</a>
-              <a href="#">Shop Power Lanterns</a>
-              <a href="#">Shop Accessories</a>
+              <a href="#">SHOP ALL PRODUCTS</a>
+              <a href="#">SHOP POWER LANTERNS</a>
+              <a href="#">SHOP ACCESSORIES</a>
               <a href="#">Shop the Gift Guide</a>
             </div>
           </div>
@@ -59,7 +59,7 @@ const Header = () => {
 
             <div className="dropdown-menu">
               <a href="#">Shipping</a>
-              <a href="#">Getting Started Guides</a>
+              <a href="#">"Getting Started" Guides</a>
               <a href="#">Returns & Warranty</a>
               <a href="#">Accessibility</a>
               <a href="#">Contact Us</a>
@@ -70,15 +70,15 @@ const Header = () => {
 
         <div className="header-actions">
 
-          <button className="header-action" aria-label="Account">
-            Account
-          </button>
-
-          <button className="header-action" aria-label="Search">
+          <button className="header-action">
             Search
           </button>
 
-          <button className="header-action" aria-label="Cart">
+          <button className="header-action">
+            Account
+          </button>
+
+          <button className="header-action">
             Cart
           </button>
 
