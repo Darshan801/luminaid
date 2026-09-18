@@ -1,4 +1,3 @@
-import { Children } from "react";
 import { cn } from "../../utils/cn";
 
 /**
@@ -48,15 +47,45 @@ const badgeVariants = {
 
 
 const Badge = ({
-    Children,
+    children,
     variant = 'default',
     size = 'md',
     dot = false,
     className,
-    ariaLabel
+    ariaLabel,
+    ...props
 }) => {
     return (
-        hello
+        <span
+            aria-label={ariaLabel}
+            className={cn(
+                // Base styles
+                'inline-flex items-center gap-1.5',
+                'font-medium rounded-full',
+                'whitespace-nowrap',
+                'transition-colors duration-200',
+                
+                // Variant styles
+                badgeVariants.variant[variant],
+                
+                // Size styles
+                badgeVariants.size[size],
+                
+                // Custom classes
+                className
+            )}
+            {...props}
+        
+        >
+            {/* optional status dot */}
+            {dot && (
+                <span
+                className="w-1.5 h-1.5 rounded-full bg-current"
+                aria-hidden="true"
+                />
+            )}
+            {children}
+        </span>
     );
 };
 
