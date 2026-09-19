@@ -6,10 +6,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'], // Body text
+        heading: ['Barlow', 'sans-serif'], // Headings
+      },
       colors: {
         // Brand colors from design system
         'primary-red': '#e53935',
         'dark-red': '#c62828',
+        'primary-orange': '#e87722',
         'black': '#1a1a1a',
         'white': '#ffffff',
         'gray-light': '#f5f5f5',

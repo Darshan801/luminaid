@@ -1,4 +1,3 @@
-import { Children } from "react";
 import { cn } from "../../utils/cn";
 
 /**
@@ -37,7 +36,7 @@ const buttonVariants = {
  * @param {string} props.ariaLabel - Accessibility label
  */
 const Button = ({
-    Children , variant = 'primary' , size = 'md' ,   fullWidth = false, disabled = false,
+    children , variant = 'primary' , size = 'md' ,   fullWidth = false, disabled = false,
     loading = false, onClick, type = 'button', className, ariaLabel,...props
 })=>{
     return(
@@ -92,7 +91,7 @@ const Button = ({
                     />
                 </svg>
             )}
-            {Children}
+            {children}
         </button>
     );
 };
