@@ -46,189 +46,6 @@ const allProducts = [
     features: [],
     lightColor: [],
   },
-  {
-    id: 6,
-    name: 'Adventure Toiletry Kit',
-    price: 34.99,
-    oldPrice: 54.99,
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 7,
-    name: 'Travel Toothbrush',
-    price: 19.99,
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 8,
-    name: 'Universal Multi-Cable',
-    price: 16.99,
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Travel'],
-    features: ['Charges Phones'],
-    lightColor: [],
-  },
-  {
-    id: 9,
-    name: 'Emergency Fire Blanket',
-    price: 34.99,
-    oldPrice: 49.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 10,
-    name: 'Backyard Adventure First Aid Kit',
-    price: 9.99,
-    oldPrice: 15.00,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Home/Garden'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 11,
-    name: 'Easy Care® Comprehensive First Aid Kit',
-    price: 55.00,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 12,
-    name: 'USB String Lights Combo Pack',
-    price: 19.99,
-    oldPrice: 29.99,
-    badge: 'SAVE $10.00',
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Home/Garden'],
-    features: ['Charges Phones'],
-    lightColor: ['Warm White', 'Multi-Color'],
-  },
-  {
-    id: 13,
-    name: 'Pocket Chain Saw',
-    price: 29.00,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 14,
-    name: 'Fire Lite Fuel-Free Lighter',
-    price: 36.00,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 15,
-    name: 'Map Compass',
-    price: 5.99,
-    oldPrice: 9.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 16,
-    name: 'QuikClot Gauze (3" x 2\')',
-    price: 19.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 17,
-    name: 'Camp Kitchen Clean-Up Kit',
-    price: 39.99,
-    oldPrice: 43.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 18,
-    name: 'Camping Trowel Toilet Kit',
-    price: 39.99,
-    oldPrice: 43.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Travel'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 19,
-    name: 'Heavy Duty Emergency Blanket',
-    price: 18.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
-  {
-    id: 20,
-    name: 'NEW! Solar String Light',
-    price: 75.00,
-    badge: 'NEW!',
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Home/Garden'],
-    features: [],
-    lightColor: ['Warm White'],
-  },
-  {
-    id: 21,
-    name: 'LuminAID Decal',
-    price: 1.00,
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Kids'],
-    features: [],
-    lightColor: [],
-    soldOut: true,
-  },
-  {
-    id: 22,
-    name: 'NEW! Trio Magnetic Light System',
-    price: 77.00,
-    badge: 'NEW!',
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Camping', 'Emergency Preparedness', 'Travel'],
-    features: ['Magnets'],
-    lightColor: ['White', 'Warm White'],
-  },
-  {
-    id: 23,
-    name: 'Halloween Sticker Set',
-    price: 9.99,
-    category: 'Accessories',
-    bestFor: ['Gifting', 'Kids'],
-    features: [],
-    lightColor: [],
-    soldOut: true,
-  },
-  {
-    id: 24,
-    name: 'Accident Pack First Aid Kit',
-    price: 64.99,
-    category: 'Accessories',
-    bestFor: ['Camping', 'Emergency Preparedness'],
-    features: [],
-    lightColor: [],
-  },
 ]
 
 const products = allProducts.filter(
@@ -381,6 +198,7 @@ const Accessories = () => {
                 <div className="flex items-center gap-2 text-sm">
                   <div className="flex items-center border border-gray-300 px-3 py-2">
                     <span className="mr-1">$</span>
+
                     <input
                       type="number"
                       placeholder="0"
@@ -392,9 +210,10 @@ const Accessories = () => {
 
                   <div className="flex items-center border border-gray-300 px-3 py-2">
                     <span className="mr-1">$</span>
+
                     <input
                       type="number"
-                      placeholder="77"
+                      placeholder="100"
                       className="w-16 outline-none"
                     />
                   </div>
@@ -430,27 +249,35 @@ const Accessories = () => {
                   <option value="featured">
                     Featured
                   </option>
+
                   <option value="relevant">
                     Most relevant
                   </option>
+
                   <option value="best-selling">
                     Best selling
                   </option>
+
                   <option value="az">
                     Alphabetically, A-Z
                   </option>
+
                   <option value="za">
                     Alphabetically, Z-A
                   </option>
+
                   <option value="price-low">
                     Price, low to high
                   </option>
+
                   <option value="price-high">
                     Price, high to low
                   </option>
+
                   <option value="date-old">
                     Date, old to new
                   </option>
+
                   <option value="date-new">
                     Date, new to old
                   </option>
@@ -460,7 +287,7 @@ const Accessories = () => {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-5 gap-y-10">
 
               {products.map((product) => (
                 <div
@@ -490,15 +317,18 @@ const Accessories = () => {
                         Sold out
                       </span>
                     )}
+
                   </div>
 
                   {/* Product Info */}
                   <div className="pt-4">
+
                     <h3 className="text-sm md:text-base font-medium leading-snug">
                       {product.name}
                     </h3>
 
                     <div className="mt-2 flex items-center gap-2">
+
                       <span className="text-sm font-medium">
                         {formatPrice(product.price)}
                       </span>
@@ -508,7 +338,9 @@ const Accessories = () => {
                           {formatPrice(product.oldPrice)}
                         </span>
                       )}
+
                     </div>
+
                   </div>
 
                 </div>
@@ -522,10 +354,13 @@ const Accessories = () => {
 
       {/* Benefits */}
       <section className="border-t border-gray-200">
+
         <div className="max-w-[1200px] mx-auto px-6 py-12">
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <div className="text-center">
+
               {/*
               <img
                 src={truckIcon}
@@ -537,9 +372,11 @@ const Accessories = () => {
               <h3 className="mt-3 font-medium">
                 Free US Shipping $99+
               </h3>
+
             </div>
 
             <div className="text-center">
+
               {/*
               <img
                 src={thumbsUpIcon}
@@ -551,9 +388,11 @@ const Accessories = () => {
               <h3 className="mt-3 font-medium">
                 10,000+ Reviews
               </h3>
+
             </div>
 
             <div className="text-center">
+
               {/*
               <img
                 src={shieldIcon}
@@ -565,10 +404,13 @@ const Accessories = () => {
               <h3 className="mt-3 font-medium">
                 Off-Grid Guarantee
               </h3>
+
             </div>
 
           </div>
+
         </div>
+
       </section>
 
     </div>
