@@ -1,20 +1,158 @@
-first we will create reuasble annoucement section which is at the top of the page
+===========================================
+LUMINAID MERN ECOMMERCE - DEVELOPMENT PLAN
+===========================================
 
-- than Header.jsx
-- than Footer.jsx
-- than combine all of them in main layout.jsx
+Tech Stack: MERN (MongoDB, Express, React, Node.js)
+Frontend: React + Vite + Tailwind CSS + Zustand
 
-and than move to routes/AppRoutes.jsx
+===========================================
+ WEEK 1 - FOUNDATION
+===========================================
 
+ DAY 1 - PLANNING (COMPLETED)
+-----------------------------------
+ Git repository initialized
+ Frontend folder structure created
+ Project architecture defined
+ package.json configured
+ Vite + React setup complete
 
-and than start creating home page (/pages/Home/Home.jsx)
+ DAY 2 - DESIGN SYSTEM (50% COMPLETED)
+-----------------------------------
+COMPLETED:
+ Tailwind CSS v3.4.17 installed & configured
+ PostCSS & Autoprefixer setup
+ tailwind.config.js with brand colors
+   - primary-red: #e53935
+   - dark-red: #c62828
+   - black: #1a1a1a
+   - gray variants
+ Custom animations (slide-in, fade-in)
+ CN utility function (clsx + tailwind-merge)
+ Button component (production-level)
+   - 5 variants: primary, secondary, outline, ghost, danger
+   - 3 sizes: sm, md, lg
+   - Loading state with spinner
+   - Disabled state
+   - Full width option
+   - Keyboard accessible
+ Input component (production-level)
+   - With label, error, helper text
+   - Left/right icon support
+   - Accessibility (ARIA attributes)
+   - Focus states
+   - Validation ready
+ Global CSS (index.css with Tailwind directives)
+ Test page created to verify components
 
+REMAINING FOR DAY 2:
+ Card component
+ Badge component
+ Modal component
+ Skeleton loader component
+ Toast/Alert component
 
-and than we will  start  :
-1 . updating App.jsx
-2. creating global css (index.css)
+ DAY 3 - BACKEND FOUNDATION
+-----------------------------------
+ Express server setup
+ MongoDB connection
+ Environment configuration
+ Error middleware
+ Logging setup
+ Basic route structure
 
+ DAY 4 - AUTHENTICATION BACKEND
+-----------------------------------
+ User model
+ Register/Login endpoints
+ JWT access + refresh tokens
+ Password hashing (bcrypt)
+ Auth middleware
+ Role middleware
 
-and than we will move to actual website clone
+ DAY 5 - PRODUCTS & CATEGORIES BACKEND
+-----------------------------------
+ Product model
+ Category model
+ Product CRUD APIs
+ Category CRUD APIs
+ Search/Filter/Sort
+ Pagination
+ Image upload (Cloudinary)
+
+ DAY 6 - FRONTEND FOUNDATION
+-----------------------------------
+ Axios setup
+ API configuration
+ Zustand store setup
+ TanStack Query integration
+ Authentication state management
+ Connect frontend to backend
+
+ DAY 7 - FRONTEND AUTHENTICATION
+-----------------------------------
+ Login page
+ Register page
+ Protected routes
+ Auth state persistence
+ Error handling
+ Loading states
+
+===========================================
+ WEEK 2 - CUSTOMER STOREFRONT
+===========================================
+
+ DAY 8 - HOMEPAGE
+ DAY 9 - PRODUCT LISTING PAGE
+ DAY 10 - PRODUCT DETAIL PAGE
+ DAY 11 - SEARCH FUNCTIONALITY
+ DAY 12 - SHOPPING CART
+ DAY 13 - CHECKOUT (SHIPPING + REVIEW)
+ DAY 14 - INTEGRATION & TESTING
+
+===========================================
+ WEEK 3 - ORDERS + MANUAL PAYMENT + ADMIN
+===========================================
+
+ DAY 15 - ORDER CREATION API
+ DAY 16 - QR PAYMENT + SCREENSHOT BACKEND
+ DAY 17 - PAYMENT FRONTEND (MANUAL QR)
+ DAY 18 - ADMIN DASHBOARD
+ DAY 19 - ADMIN PRODUCTS/CATEGORIES
+ DAY 20 - PAYMENT APPROVAL QUEUE
+ DAY 21 - ORDER LIFECYCLE MANAGEMENT
+
+===========================================
+ WEEK 4 - HARDENING + LAUNCH
+===========================================
+
+ DAY 22 - RE-UPLOAD + EXPIRY
+ DAY 23 - SECURITY PASS 1
+ DAY 24 - SECURITY PASS 2
+ DAY 25 - AUTOMATED TESTING
+ DAY 26 - RESPONSIVE + ACCESSIBILITY
+ DAY 27 - PERFORMANCE + SEO
+ DAY 28 - FULL QA
+ DAY 29 - STAGING / UAT
+ DAY 30 - PRODUCTION LAUNCH
+
+===========================================
+ NOTES
+===========================================
+
+- Using JavaScript (NOT TypeScript)
+- Manual QR payment system (NO Stripe/Razorpay)
+- Admin payment screenshot verification
+- Following production-level code standards
+- All components have proper accessibility
+- Using compound component patterns
+- Proper error handling & loading states
+
+===========================================
+ CURRENT STATUS: DAY 2 (50% Complete)
+===========================================
+
+Next Task: Complete remaining design system components
+Then: Move to backend foundation (Days 3-5)
 
 

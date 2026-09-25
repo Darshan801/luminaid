@@ -7,10 +7,8 @@ import Footer from '../components/layout/Footer'
 const MainLayout = () => {
     return (
         <div className="main-layout">
-        <AnnouncementBar />
-
+        {/* <AnnouncementBar /> */}
         <Header />
-
         <main>
             <Outlet />
         </main>
