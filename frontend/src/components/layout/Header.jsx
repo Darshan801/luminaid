@@ -45,7 +45,7 @@ const Header = () => {
   
   return (
     <header className="relative z-50 w-full bg-white shadow-sm">
-      <div className="relative max-w-[1440px] mx-auto px-24 h-[72px] flex items-center justify-between">
+      <div className="relative max-w-[1280px] mx-auto px-8 h-[72px] flex items-center justify-between">
 
         {/* logo  */}
         <a href="/" className="flex items-center">

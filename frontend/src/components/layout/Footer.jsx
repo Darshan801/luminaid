@@ -89,7 +89,7 @@ const Footer = () => {
     <footer className="w-full bg-[#2b2b2b] text-white">
       
       {/* Main Footer - 3 Columns */}
-      <div className="max-w-[1440px] mx-auto px-24 pt-14 pb-7">
+      <div className="max-w-[1280px] mx-auto px-8 pt-14 pb-7">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px]">
           
           {/* Column 1: Shop by Collection + Stay Up-to-Date */}
