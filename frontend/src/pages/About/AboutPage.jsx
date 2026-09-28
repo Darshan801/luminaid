@@ -1,20 +1,26 @@
-// import ComingSoon from '../../components/common/ComingSoon';
 
-// const AboutPage = () => {
-//   return (
-//     <ComingSoon 
-//       title="About LuminAID"
-//       description="Learn about our mission to provide sustainable lighting solutions worldwide."
-//     />
-//   );
-// };
-
-// export default AboutPage;
+import foundersImage from '../../assets/images/about/Founders_As_Seen_on_Shark_Tank_613x.jpg?url'
+import foundersGivingImage from '../../assets/images/about/Homepage_Our_Founders_1400x.png?url'
+import giveLightImage from '../../assets/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg?url'
+import outdoorImage from '../../assets/images/about/Consumer_Use_Cases_600x_600x_74f78713-261e-4a82-81cc-b35f6283092b_600x.jpg?url'
+import sharkTankImage from '../../assets/images/about/Picture1_600x_8b4d638f-6acf-4054-897f-c36d22e09cde_600x.png?url'
+import crowdfundingImage from '../../assets/images/about/Crowdfunding_Image_600x_600x_db9b920c-daf8-4c06-bb3d-aa6e64769622_600x.jpg?url'
 
 
 const AboutPage = () => {
   return (
     <div className="w-full bg-white">
+
+      {/* Breadcrumb */}
+      <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
+        <div className="max-w-[1280px] mx-auto">
+          <nav className="breadcrumb__nav text-sm text-gray-600">
+            <a href="/" className="hover:text-black">Home</a>
+            <span className="mx-2">/</span>
+            <a href="/about" className="hover:text-black">About luminaid</a>
+          </nav>
+        </div>
+      </section>
 
       {/* Page Title */}
       <section className="w-full py-16 text-center">
@@ -25,24 +31,33 @@ const AboutPage = () => {
 
 
       {/* Our Mission */}
-      <section className="w-full">
-        <div className="max-w-[1200px] mx-auto px-6">
+      <section className="w-full py-12">
+        <div className="max-w-[1280px] mx-auto px-8">
 
-          {/* 
-          <img
-            src={foundersImage}
-            alt="As Seen on Shark Tank: LuminAID's Founders Anna Stork and Andrea Sreshta with a Power Lantern Prototype"
-            className="w-full h-auto object-cover"
-          />
-          */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-12">
+            
+            {/* Left - Image */}
+            <div>
+              <img
+                src={foundersImage}
+                alt="As Seen on Shark Tank: LuminAID's Founders Anna Stork and Andrea Sreshta with a Power Lantern Prototype"
+                className="w-full h-auto object-cover"
+              />
+            </div>
 
-          <div className="max-w-[900px] mx-auto py-14 text-center">
+            {/* Right - Mission Statement */}
+            <div className="flex items-center">
+              <h2 className="text-[32px] md:text-[38px] font-bold text-black leading-snug">
+                Our Mission: LuminAID seeks to make safe light and energy accessible for all.
+              </h2>
+            </div>
 
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Our Mission: LuminAID seeks to make safe light and energy accessible for all.
-            </h2>
+          </div>
 
-            <p className="text-base md:text-lg leading-8 text-gray-700 mb-5">
+          {/* Story Paragraphs */}
+          <div className="max-w-[1100px] mx-auto">
+
+            <p className="text-[16px] leading-relaxed text-gray-700 mb-6">
               We conceived of the LuminAID light when we were students at
               architecture school in New York City. A devastating earthquake
               had just struck Haiti, and we asked ourselves what we could
@@ -53,7 +68,7 @@ const AboutPage = () => {
               attention to another critical need: light.
             </p>
 
-            <p className="text-base md:text-lg leading-8 text-gray-700">
+            <p className="text-[16px] leading-relaxed text-gray-700">
               We designed an inflatable solar lantern that could pack flat to
               be cost-effectively distributed after disasters. The simple,
               rechargeable lantern is lightweight, easy to use, and serves as
@@ -64,6 +79,7 @@ const AboutPage = () => {
             </p>
 
           </div>
+
         </div>
       </section>
 
@@ -72,13 +88,13 @@ const AboutPage = () => {
       <section className="w-full bg-gray-100">
         <div className="max-w-[1200px] mx-auto px-6 py-14 text-center">
 
-          {/* 
+          
           <img
             src={foundersGivingImage}
             alt="Anna Stork and Andrea Sreshta"
             className="w-full max-w-[900px] mx-auto h-auto object-cover mb-8"
           />
-          */}
+         
 
           <h3 className="text-2xl md:text-3xl font-bold">
             Anna Stork and Andrea Sreshta
@@ -100,13 +116,13 @@ const AboutPage = () => {
 
             <div>
 
-              {/* 
+              
               <img
                 src={giveLightImage}
                 alt="Children who received LuminAID lights through the Give Light, Get Light program"
                 className="w-full h-auto object-cover"
               />
-              */}
+             
 
             </div>
 
@@ -181,13 +197,13 @@ const AboutPage = () => {
 
             <div>
 
-              {/* 
+              
               <img
                 src={outdoorImage}
                 alt="LuminAID lights are perfect for outdoor adventures"
                 className="w-full h-auto object-cover"
               />
-              */}
+             
 
             </div>
 
@@ -205,13 +221,13 @@ const AboutPage = () => {
 
             <div>
 
-              {/* 
+              
               <img
                 src={sharkTankImage}
                 alt="LuminAID's co-founders Andrea and Anna with their Shark Tank investor Mark Cuban"
                 className="w-full h-auto object-cover"
               />
-              */}
+             
 
             </div>
 
@@ -279,13 +295,13 @@ const AboutPage = () => {
 
             <div>
 
-              {/* 
+              
               <img
                 src={crowdfundingImage}
                 alt="Andrea and Anna explaining the initial prototype"
                 className="w-full h-auto object-cover"
               />
-              */}
+             
 
             </div>
 

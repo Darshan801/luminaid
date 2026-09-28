@@ -33,7 +33,7 @@ const Header = () => {
     {
       label: 'SUPPORT',
       links: [
-        { text: 'Shipping', href: '/support/shipping' },
+        // { text: 'Shipping', href: '/support/shipping' },
         { text: 'Getting Started Guides', href: '/support/guides' },
         { text: 'Returns & Warranty', href: '/support/returns' },
         { text: 'Accessibility', href: '/support/accessibility' },
