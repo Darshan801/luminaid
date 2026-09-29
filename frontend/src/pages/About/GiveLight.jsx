@@ -14,7 +14,7 @@ const PROGRAMS = [
       'Through our website, consumers can sponsor light for a family in need, to be distributed by our charitable partners.',
       'More than 50,000 solar lights have been sent to families through the Give Light, Get Light Program.'
     ],
-    image: '/src/assets/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg',
+    image: '/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg',
     link: '/give-light/get-light',
     cta: 'Give Light'
   },
@@ -25,7 +25,7 @@ const PROGRAMS = [
       'Charitable organizations are able to gather more supplies for their cause through our subsidy program. LuminAID works with these humanitarian groups to get higher quantities of solar aid.',
       'Our subsidy partners work within disaster relief, education, rural development, women\'s empowerment and beyond.'
     ],
-    image: '/src/assets/images/about/Homepage_Our_Founders_1400x.png',
+    image: '/images/about/Homepage_Our_Founders_1400x.png',
     link: '/give-light/nonprofit',
     cta: 'Apply To Program'
   },
@@ -36,7 +36,7 @@ const PROGRAMS = [
       'Give the gift of light in honor of your clients or employees. You can even customize our solar lanterns with your company\'s logo.',
       'Request a quote for more information on how your company can get involved in our Give Light, Get Light program.'
     ],
-    image: '/src/assets/images/products/StringLightatSunset.jpg',
+    image: '/images/products/StringLightatSunset.jpg',
     link: '/give-light/corporate',
     cta: 'Request a Quote'
   }
@@ -54,20 +54,20 @@ const ACCORDIONS = [
 const IMPACT_STORIES = [
   {
     title: 'Notes from the Field: An Update from buildOn\'s Adult Literacy Program',
-    image: '/src/assets/images/givelightbackground.jpg'
+    image: '/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg'
   },
   {
     title: 'Hope Connection: Serving the Homeless During COVID-19',
-    image: '/src/assets/images/about/Homepage_Our_Founders_1400x.png'
+    image: '/images/about/Homepage_Our_Founders_1400x.png'
   },
   {
     title: 'Breaking Down Barriers to Education During COVID-19',
-    image: '/src/assets/images/products/StringLightatSunset.jpg'
+    image: '/images/products/StringLightatSunset.jpg'
   }
 ]
 
 // Replace with your dotted world-map asset
-const WORLD_MAP = '/src/assets/images/about/world-map.png'
+const WORLD_MAP = '/images/about/world-map.png'
 
 // ============================================================================
 // TRUST BADGES COMPONENT
@@ -125,7 +125,7 @@ const GiveLight = () => {
       <section className="hero-banner relative w-full overflow-hidden" style={{ minHeight: '500px' }}>
         <div className="hero-banner__background absolute inset-0">
           <img
-            src={giveLightBg}
+            src="/images/givelightbackground.jpg"
             alt="Give Light Program"
             className="w-full h-full object-cover"
           />

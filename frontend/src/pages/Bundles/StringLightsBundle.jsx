@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { Star, Truck, ThumbsUp, Shield, ChevronDown, Plus, Minus } from 'lucide-react'
-import glowTimeImage from '../../assets/images/glow time.jpg?url'
+
+// Image from public folder
+const glowTimeImage = '/images/glow-time.jpg';
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
 const PRODUCT_IMAGES = [
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/StringLightatSunset.jpg',
 ]
 
 const BUNDLE_INCLUDES = [
@@ -142,7 +144,7 @@ const BESTSELLING_BUNDLES = [
     price: 250.00,
     originalPrice: 300.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/StringLightatSunset.jpg'
+    image: '/images/products/StringLightatSunset.jpg'
   },
   {
     id: 2,
@@ -150,7 +152,7 @@ const BESTSELLING_BUNDLES = [
     price: 290.99,
     originalPrice: 388.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg'
+    image: '/images/products/0196-150_Max_QI_product_image.jpg'
   },
   {
     id: 3,
@@ -158,7 +160,7 @@ const BESTSELLING_BUNDLES = [
     price: 99.99,
     originalPrice: 150.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg'
+    image: '/images/products/0196-150_Max_QI_product_image.jpg'
   }
 ]
 

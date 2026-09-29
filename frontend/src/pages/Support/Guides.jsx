@@ -9,14 +9,14 @@ const GUIDES = [
     id: 1,
     title: 'Getting Started: The PackLite Titan',
     description: 'Getting started, learn how to inflate the Titan, buttons and indicator lights, how to recharge the Titan, how to change a phone. The Titan is compatible with all USB phones with an output cord. Using this Titan USB output port, you can see your next cable plug. It will also charge tablets, cameras, and other small electronics that charge by USB.',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+    image: '/images/products/0196-150_Max_QI_product_image.jpg',
     link: '/guides/packlite-titan'
   },
   {
     id: 2,
     title: 'Print the Getting Started Guide',
     description: 'Using LuminAID as a gift? Not everyone may have a copy of our Getting Started guide on-hands in their package.',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+    image: '/images/products/0196-150_Max_QI_product_image.jpg',
     link: '/guides/print-guide',
     featured: true
   },
@@ -24,21 +24,21 @@ const GUIDES = [
     id: 3,
     title: 'Tips - Phone Charging',
     description: 'How to Charge Your Phone Using a LuminAID 2-in-1 Phone Charger. Plug the USB end of your phone\'s charging cable into the USB charging port on the LuminAID Phone Charger.',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+    image: '/images/products/0196-150_Max_QI_product_image.jpg',
     link: '/guides/phone-charging'
   },
   {
     id: 4,
     title: 'Getting Started With Your Bloomio Lights',
     description: 'Set Up, Playing Bloom: getting started, turn on Bluetooth on your Lights by pressing and holding the power button for 5 seconds.',
-    image: '/src/assets/images/products/StringLightatSunset.jpg',
+    image: '/images/products/StringLightatSunset.jpg',
     link: '/guides/bloomio-lights'
   },
   {
     id: 5,
     title: 'Bloomio Tips - Connecting with the App',
     description: 'Connecting to Bloomio with Its App To download our app, just search "LuminAID" in the App Store or Google Play. Need help?',
-    image: '/src/assets/images/products/StringLightatSunset.jpg',
+    image: '/images/products/StringLightatSunset.jpg',
     link: '/guides/bloomio-app'
   }
 ]

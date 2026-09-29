@@ -23,25 +23,25 @@ export const productTypes = [
   {
     title: 'Power Lanterns',
     description: 'Powerful solar lanterns that can charge your phone.',
-    icon: '/src/assets/images/products/Power_Lanterns_Circle.png',
+    icon: '/images/products/Power_Lanterns_Circle.png',
     link: '/products/power-lanterns'
   },
   {
     title: 'String Lights',
     description: 'Make any space magical, no batteries or outlets needed.',
-    icon: '/src/assets/images/products/String_Lights_Circle.png',
+    icon: '/images/products/String_Lights_Circle.png',
     link: '/products/accessories'
   },
   {
     title: 'Outdoor Lighting',
     description: 'Warm white lighting for outdoor dining, glamping, and more!',
-    icon: '/src/assets/images/products/Trio_Circle.png',
+    icon: '/images/products/Trio_Circle.png',
     link: '/bundles'
   },
   {
     title: 'Accessories',
     description: 'Stock your emergency kit, or find the perfect outdoorsy gift!',
-    icon: '/src/assets/images/products/Accessories.jpg',
+    icon: '/images/products/Accessories.jpg',
     link: '/products/accessories'
   }
 ];

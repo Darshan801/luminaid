@@ -4,18 +4,18 @@
 export const pressLogos = [
   {
     name: 'Shark Tank',
-    logo: '/src/assets/images/sharktank.png'
+    logo: '/images/press/sharktank.png'
   },
   {
     name: 'USA Today',
-    logo: '/src/assets/images/USA-Today-Logo_.png'
+    logo: '/images/press/usa-today.png'
   },
   {
     name: 'Real Simple',
-    logo: '/src/assets/images/realsimp.png'
+    logo: '/images/press/realsimp.png'
   },
   {
     name: 'Backpacker',
-    logo: '/src/assets/images/Site_Revamp_Press_Testimonial_Logos_Backpacker.png'
+    logo: '/images/press/backpacker.png'
   }
 ];

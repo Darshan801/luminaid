@@ -6,12 +6,12 @@ import { Star, Truck, ThumbsUp, Shield } from 'lucide-react'
 // ============================================================================
 
 const PRODUCT_IMAGES = [
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
-  '/src/assets/images/products/StringLightatSunset.jpg',
-  '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/0196-150_Max_QI_product_image.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/0196-150_Max_QI_product_image.jpg',
+  '/images/products/StringLightatSunset.jpg',
+  '/images/products/0196-150_Max_QI_product_image.jpg',
 ]
 
 const BUNDLE_INCLUDES = [
@@ -33,7 +33,7 @@ const BESTSELLING_BUNDLES = [
     price: 299.99,
     originalPrice: 350.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg'
+    image: '/images/products/0196-150_Max_QI_product_image.jpg'
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ const BESTSELLING_BUNDLES = [
     price: 283.00,
     originalPrice: 340.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/StringLightatSunset.jpg'
+    image: '/images/products/StringLightatSunset.jpg'
   },
   {
     id: 3,
@@ -49,7 +49,7 @@ const BESTSELLING_BUNDLES = [
     price: 204.99,
     originalPrice: 240.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/SurvivorThumbnai.jpg'
+    image: '/images/products/SurvivorThumbnai.jpg'
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ const BESTSELLING_BUNDLES = [
     price: 185.50,
     originalPrice: 210.00,
     badge: 'BEST SELLER',
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg'
+    image: '/images/products/0196-150_Max_QI_product_image.jpg'
   }
 ]
 

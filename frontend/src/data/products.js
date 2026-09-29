@@ -1,5 +1,5 @@
 // Sample product data
-// Real product images from assets/images/products
+// Images are served from public/images/products/
 
 export const featuredProducts = [
   {
@@ -8,7 +8,7 @@ export const featuredProducts = [
     price: 39.95,
     rating: 5,
     reviews: 1250,
-    image: '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+    image: '/images/products/0196-150_Max_QI_product_image.jpg',
     badge: 'Bestseller'
   },
   {
@@ -17,7 +17,7 @@ export const featuredProducts = [
     price: 49.95,
     rating: 5,
     reviews: 890,
-    image: '/src/assets/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
+    image: '/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
     badge: 'New'
   },
   {
@@ -26,7 +26,7 @@ export const featuredProducts = [
     price: 34.95,
     rating: 5,
     reviews: 650,
-    image: '/src/assets/images/products/StringLightatSunset.jpg',
+    image: '/images/products/StringLightatSunset.jpg',
     badge: null
   },
   {
@@ -35,7 +35,7 @@ export const featuredProducts = [
     price: 44.95,
     rating: 5,
     reviews: 520,
-    image: '/src/assets/images/products/SurvivorThumbnai.jpg',
+    image: '/images/products/SurvivorThumbnai.jpg',
     badge: null
   }
 ];

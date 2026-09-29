@@ -1,13 +1,12 @@
 
-import foundersImage from '../../assets/images/about/Founders_As_Seen_on_Shark_Tank_613x.jpg?url'
-import foundersGivingImage from '../../assets/images/about/Homepage_Our_Founders_1400x.png?url'
-import giveLightImage from '../../assets/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg?url'
-import outdoorImage from '../../assets/images/about/Consumer_Use_Cases_600x_600x_74f78713-261e-4a82-81cc-b35f6283092b_600x.jpg?url'
-import sharkTankImage from '../../assets/images/about/Picture1_600x_8b4d638f-6acf-4054-897f-c36d22e09cde_600x.png?url'
-import crowdfundingImage from '../../assets/images/about/Crowdfunding_Image_600x_600x_db9b920c-daf8-4c06-bb3d-aa6e64769622_600x.jpg?url'
-
-
 const AboutPage = () => {
+  // Image paths from public folder
+  const foundersImage = '/images/about/Founders_As_Seen_on_Shark_Tank_613x.jpg';
+  const foundersGivingImage = '/images/about/Homepage_Our_Founders_1400x.png';
+  const giveLightImage = '/images/about/Give_Light_IMage_600x_600x_ecd10507-0713-4923-8679-9b4659179ffe_600x.jpg';
+  const outdoorImage = '/images/about/Consumer_Use_Cases_600x_600x_74f78713-261e-4a82-81cc-b35f6283092b_600x.jpg';
+  const sharkTankImage = '/images/about/Picture1_600x_8b4d638f-6acf-4054-897f-c36d22e09cde_600x.png';
+  const crowdfundingImage = '/images/about/Crowdfunding_Image_600x_600x_db9b920c-daf8-4c06-bb3d-aa6e64769622_600x.jpg';
   return (
     <div className="w-full bg-white">
 

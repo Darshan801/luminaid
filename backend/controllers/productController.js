@@ -1,0 +1,503 @@
+const Product = require('../models/Product');
+
+// @desc    Get all products with filtering, sorting, and pagination
+// @route   GET /api/products
+// @access  Public
+exports.getAllProducts = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 12,
+      sort = '-createdAt',
+      category,
+      minPrice,
+      maxPrice,
+      minRating,
+      tags,
+      featured,
+      bestseller,
+      search,
+      status = 'active'
+    } = req.query;
+
+    // Build query
+    const query = { status };
+
+    // Category filter
+    if (category) {
+      query.category = category;
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // Rating filter
+    if (minRating) {
+      query.rating = { $gte: Number(minRating) };
+    }
+
+    // Tags filter
+    if (tags) {
+      const tagArray = tags.split(',').map(tag => tag.trim());
+      query.tags = { $in: tagArray };
+    }
+
+    // Featured filter
+    if (featured === 'true') {
+      query.featured = true;
+    }
+
+    // Bestseller filter
+    if (bestseller === 'true') {
+      query.bestseller = true;
+    }
+
+    // Text search
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    // Execute query with pagination
+    const skip = (Number(page) - 1) * Number(limit);
+    
+    const products = await Product.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit))
+      .select('-__v');
+
+    // Get total count for pagination
+    const total = await Product.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / Number(limit)),
+      data: products
+    });
+  } catch (error) {
+    console.error('Get Products Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get single product by ID or slug
+// @route   GET /api/products/:identifier
+// @access  Public
+exports.getProductByIdOrSlug = async (req, res) => {
+  try {
+    const { identifier } = req.params;
+    
+    // Check if identifier is MongoDB ObjectId or slug
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
+    
+    let product;
+    if (isObjectId) {
+      product = await Product.findById(identifier)
+        .populate('relatedProducts', 'name slug price images rating reviewCount');
+    } else {
+      product = await Product.findOne({ slug: identifier })
+        .populate('relatedProducts', 'name slug price images rating reviewCount');
+    }
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    // Increment view count (async, don't wait)
+    product.incrementViewCount().catch(err => 
+      console.error('Failed to increment view count:', err)
+    );
+
+    res.status(200).json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    console.error('Get Product Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch product',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get featured products
+// @route   GET /api/products/featured
+// @access  Public
+exports.getFeaturedProducts = async (req, res) => {
+  try {
+    const { limit = 4 } = req.query;
+    
+    const products = await Product.getFeatured(Number(limit));
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products
+    });
+  } catch (error) {
+    console.error('Get Featured Products Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch featured products',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get bestseller products
+// @route   GET /api/products/bestsellers
+// @access  Public
+exports.getBestsellerProducts = async (req, res) => {
+  try {
+    const { limit = 4 } = req.query;
+    
+    const products = await Product.getBestsellers(Number(limit));
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products
+    });
+  } catch (error) {
+    console.error('Get Bestseller Products Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bestseller products',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Search products
+// @route   GET /api/products/search
+// @access  Public
+exports.searchProducts = async (req, res) => {
+  try {
+    const { 
+      q,
+      category,
+      minPrice,
+      maxPrice,
+      minRating,
+      tags,
+      page = 1,
+      limit = 12,
+      sort = '-createdAt'
+    } = req.query;
+
+    if (!q) {
+      return res.status(400).json({
+        success: false,
+        message: 'Search query is required'
+      });
+    }
+
+    const filters = {};
+    if (category) filters.category = category;
+    if (minPrice) filters.minPrice = Number(minPrice);
+    if (maxPrice) filters.maxPrice = Number(maxPrice);
+    if (minRating) filters.minRating = Number(minRating);
+    if (tags) filters.tags = tags.split(',').map(tag => tag.trim());
+
+    const query = Product.searchProducts(q, filters);
+    
+    const skip = (Number(page) - 1) * Number(limit);
+    const products = await query
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Product.searchProducts(q, filters).countDocuments();
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / Number(limit)),
+      query: q,
+      data: products
+    });
+  } catch (error) {
+    console.error('Search Products Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to search products',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get products by category
+// @route   GET /api/products/category/:category
+// @access  Public
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+    const { page = 1, limit = 12, sort = '-createdAt' } = req.query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    
+    const products = await Product.find({ 
+      category, 
+      status: 'active' 
+    })
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments({ 
+      category, 
+      status: 'active' 
+    });
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / Number(limit)),
+      category,
+      data: products
+    });
+  } catch (error) {
+    console.error('Get Products By Category Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products by category',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get product categories
+// @route   GET /api/products/categories/list
+// @access  Public
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct('category', { status: 'active' });
+    
+    // Get product count per category
+    const categoriesWithCount = await Promise.all(
+      categories.map(async (category) => {
+        const count = await Product.countDocuments({ 
+          category, 
+          status: 'active' 
+        });
+        return { name: category, count };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      count: categories.length,
+      data: categoriesWithCount
+    });
+  } catch (error) {
+    console.error('Get Categories Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch categories',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Check product stock availability
+// @route   GET /api/products/:id/stock
+// @access  Public
+exports.checkStock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity = 1 } = req.query;
+
+    const product = await Product.findById(id).select('stock trackInventory name sku');
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    const available = !product.trackInventory || product.stock >= Number(quantity);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        available,
+        stock: product.trackInventory ? product.stock : 'unlimited',
+        requestedQuantity: Number(quantity)
+      }
+    });
+  } catch (error) {
+    console.error('Check Stock Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to check stock',
+      error: error.message
+    });
+  }
+};
+
+// ==================== ADMIN ROUTES ====================
+
+// @desc    Create new product
+// @route   POST /api/products
+// @access  Private/Admin
+exports.createProduct = async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: 'Product created successfully',
+      data: product
+    });
+  } catch (error) {
+    console.error('Create Product Error:', error);
+    
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Product with this SKU or slug already exists'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create product',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update product
+// @route   PUT /api/products/:id
+// @access  Private/Admin
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      data: product
+    });
+  } catch (error) {
+    console.error('Update Product Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update product',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Delete product
+// @route   DELETE /api/products/:id
+// @access  Private/Admin
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findByIdAndDelete(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete Product Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete product',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update product stock
+// @route   PATCH /api/products/:id/stock
+// @access  Private/Admin
+exports.updateStock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { stock } = req.body;
+
+    if (typeof stock !== 'number' || stock < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid stock value'
+      });
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { 
+        stock,
+        status: stock === 0 ? 'out-of-stock' : 'active'
+      },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Stock updated successfully',
+      data: product
+    });
+  } catch (error) {
+    console.error('Update Stock Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update stock',
+      error: error.message
+    });
+  }
+};

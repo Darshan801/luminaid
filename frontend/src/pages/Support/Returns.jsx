@@ -60,7 +60,7 @@ const Returns = () => {
           {/* Off-Grid Guarantee Image */}
           <div className="flex justify-center mb-10">
             <img 
-              src="/src/assets/images/products/0196-150_Max_QI_product_image.jpg" 
+              src="/images/products/0196-150_Max_QI_product_image.jpg" 
               alt="Backed by our Off-Grid Guarantee"
               className="w-full max-w-md h-auto rounded-sm"
             />

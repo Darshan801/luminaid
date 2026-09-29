@@ -72,12 +72,12 @@ const Home = () => {
 
   // Give Light Images
   const giveLightImages = [
-    '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
-    '/src/assets/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
-    '/src/assets/images/products/StringLightatSunset.jpg',
-    '/src/assets/images/products/Accessories.jpg',
-    '/src/assets/images/products/SurvivorThumbnai.jpg',
-    '/src/assets/images/products/0196-150_Max_QI_product_image.jpg',
+    '/images/products/0196-150_Max_QI_product_image.jpg',
+    '/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
+    '/images/products/StringLightatSunset.jpg',
+    '/images/products/Accessories.jpg',
+    '/images/products/SurvivorThumbnai.jpg',
+    '/images/products/0196-150_Max_QI_product_image.jpg',
   ]
   const [selectedGiveLightImage, setSelectedGiveLightImage] = useState(giveLightImages[0])
 
