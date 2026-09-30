@@ -1,8 +1,13 @@
 import React from 'react'
+import { CartProvider } from './context/CartContext'
 import AppRoutes from './routes/AppRoutes'
 
 const App = () => {
-  return <AppRoutes />
+  return (
+    <CartProvider>
+      <AppRoutes />
+    </CartProvider>
+  )
 }
 
 export default App

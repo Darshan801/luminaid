@@ -4,9 +4,10 @@ import Home from '../pages/Home/Home'
 
 // Products
 import ProductsPage from '../pages/Products/ProductsPage'
-import PowerLanterns from '../pages/Products/PowerLanterns'
-import Accessories from '../pages/Products/Accessories'
-import Gifts from '../pages/Products/Gifts'
+import ProductDetail from '../pages/Products/ProductDetail'
+
+// Cart
+import Cart from '../pages/Cart/Cart'
 
 // Bundles
 import TitanBundle from '../pages/Bundles/TitanBundle'
@@ -34,9 +35,16 @@ const AppRoutes = () => {
                 
                 {/* Products Routes */}
                 <Route path="/products" element={<ProductsPage />} />
-                <Route path="/products/power-lanterns" element={<PowerLanterns />} />
-                <Route path="/products/accessories" element={<Accessories />} />
-                <Route path="/products/gifts" element={<Gifts />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
+                
+                {/* Cart */}
+                <Route path="/cart" element={<Cart />} />
+                
+                {/* Bundles Routes */}
+                <Route path="/bundles/titan" element={<TitanBundle />} />
+                <Route path="/bundles/string-lights" element={<StringLightsBundle />} />
+                <Route path="/bundles/backyard" element={<BackyardBundle />} />
+                <Route path="/bundles/LuminAidd-quiz" element={<Quiz />} />
                 
                 {/* Bundles Routes */}
                 <Route path="/bundles/titan" element={<TitanBundle />} />

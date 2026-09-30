@@ -1,53 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getAllProducts } from '../../services/productService'
+import ProductCard from '../../components/products/ProductCard'
 
 const ProductsPage = () => {
   const [sortBy, setSortBy] = useState('featured')
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [filters, setFilters] = useState({
+    bestFor: [],
+    features: [],
+    lightColor: [],
+    minPrice: '',
+    maxPrice: ''
+  })
 
-  const products = [
-    {
-      id: 1,
-      name: 'PackLite Titan 2-in-1 Power Lantern',
-      price: '$88.00 USD',
-      badge: 'MOST POPULAR!',
-      bestFor: ['Gifting', 'Camping', 'Emergency Preparedness'],
-      features: ['Charges Phones', 'Magnets'],
-      lightColor: ['White', 'Warm White'],
-    },
-    {
-      id: 2,
-      name: 'PackLite Survivor 3-in-1 Power Lantern',
-      price: '$115.00 USD',
-      badge: 'NEW!',
-      bestFor: ['Camping', 'Emergency Preparedness', 'Travel'],
-      features: ['Charges Phones', 'Twist-to-Inflate'],
-      lightColor: ['White', 'Red (Night Vision)'],
-    },
-    {
-      id: 3,
-      name: 'Solar String Light',
-      price: '$75.00 USD',
-      badge: 'NEW!',
-      bestFor: ['Gifting', 'Home/Garden', 'Travel'],
-      features: ['Twist-to-Inflate'],
-      lightColor: ['Warm White', 'Multi-Color'],
-    },
-    {
-      id: 4,
-      name: 'PackLite Max 2-in-1 Power Lantern',
-      price: '$60.00 USD',
-      bestFor: ['Camping', 'Emergency Preparedness', 'Home/Garden'],
-      features: ['Charges Phones', 'Magnets'],
-      lightColor: ['White'],
-    },
-    {
-      id: 5,
-      name: 'PackLite Nova Solar Lantern',
-      price: 'From $33.00 USD',
-      bestFor: ['Gifting', 'Kids', 'Travel'],
-      features: ['Twist-to-Inflate'],
-      lightColor: ['Multi-Color'],
-    },
-  ]
+  // Fetch products on mount and when filters change
+  useEffect(() => {
+    fetchProducts()
+  }, [sortBy, filters])
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Build query params
+      const params = {
+        status: 'active'
+      }
+
+      // Add sort
+      if (sortBy === 'low-high') params.sort = 'price'
+      else if (sortBy === 'high-low') params.sort = '-price'
+      else if (sortBy === 'a-z') params.sort = 'name'
+      else if (sortBy === 'z-a') params.sort = '-name'
+      else if (sortBy === 'best-selling') params.sort = '-reviewCount'
+      else params.sort = '-featured,-bestseller,-createdAt'
+
+      // Add price filters
+      if (filters.minPrice) params.minPrice = filters.minPrice
+      if (filters.maxPrice) params.maxPrice = filters.maxPrice
+
+      const response = await getAllProducts(params)
+      setProducts(response.data || [])
+    } catch (err) {
+      console.error('Failed to fetch products:', err)
+      setError('Failed to load products. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const bestFor = [
     'Gifting',
@@ -319,55 +322,32 @@ const ProductsPage = () => {
 
 
               {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-x-5 gap-y-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-12">
 
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="group"
-                  >
-
-                    {/* Product Image */}
-                    <div className="relative aspect-square bg-gray-100 overflow-hidden">
-
-                      {/*
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      */}
-
-                      <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">
-                        Product Image
-                      </div>
-
-
-                      {/* Product Badge */}
-                      {product.badge && (
-                        <span className="absolute top-3 left-3 bg-primary-orange text-white px-3 py-1 text-xs font-bold">
-                          {product.badge}
-                        </span>
-                      )}
-
-                    </div>
-
-
-                    {/* Product Information */}
-                    <div className="pt-4">
-
-                      <h2 className="text-sm md:text-base font-semibold leading-6 group-hover:text-primary-red transition-colors">
-                        {product.name}
-                      </h2>
-
-                      <p className="mt-2 text-sm text-gray-700">
-                        {product.price}
-                      </p>
-
-                    </div>
-
+                {loading ? (
+                  <div className="col-span-full text-center py-20">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red"></div>
+                    <p className="mt-4 text-gray-600">Loading products...</p>
                   </div>
-                ))}
+                ) : error ? (
+                  <div className="col-span-full text-center py-20">
+                    <p className="text-red-600 mb-4">{error}</p>
+                    <button 
+                      onClick={fetchProducts}
+                      className="bg-primary-red text-white px-6 py-2 hover:bg-red-700 transition-colors"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : products.length === 0 ? (
+                  <div className="col-span-full text-center py-20">
+                    <p className="text-gray-600 text-lg">No products found</p>
+                  </div>
+                ) : (
+                  products.map((product) => (
+                    <ProductCard key={product._id} product={product} />
+                  ))
+                )}
 
               </div>
 

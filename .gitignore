@@ -4,7 +4,9 @@
 
 # Personal notes
 plan.txt
-*.txt
+
+# Bin folder (archived files)
+bin/
 
 # OS
 .DS_Store
@@ -32,3 +34,7 @@ ehthumbs.db
 # Logs
 **/*.log
 logs/
+
+# Documentation (optional - uncomment if you don't want to track docs)
+# *.md
+# !README.md

@@ -118,7 +118,7 @@ cartSchema.virtual('uniqueItemCount').get(function() {
 });
 
 // Pre-save middleware to calculate totals
-cartSchema.pre('save', async function(next) {
+cartSchema.pre('save', async function() {
   if (this.isModified('items') || this.isModified('discountCode')) {
     // Calculate subtotal
     this.subtotal = this.items.reduce((total, item) => {
@@ -149,16 +149,13 @@ cartSchema.pre('save', async function(next) {
     // Ensure non-negative
     if (this.total < 0) this.total = 0;
   }
-  
-  next();
 });
 
 // Set expiry for guest carts (7 days)
-cartSchema.pre('save', function(next) {
+cartSchema.pre('save', function() {
   if (this.isNew && this.sessionId && !this.user) {
     this.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
-  next();
 });
 
 // Instance method to add item
@@ -228,13 +225,13 @@ cartSchema.methods.updateItemQuantity = async function(itemId, quantity) {
 
 // Instance method to remove item
 cartSchema.methods.removeItem = function(itemId) {
-  const item = this.items.id(itemId);
+  const itemIndex = this.items.findIndex(item => item._id.toString() === itemId.toString());
   
-  if (!item) {
+  if (itemIndex === -1) {
     throw new Error('Item not found in cart');
   }
   
-  item.remove();
+  this.items.splice(itemIndex, 1);
   return this.save();
 };
 

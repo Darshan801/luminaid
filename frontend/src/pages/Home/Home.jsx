@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Star, Accessibility, Truck, ThumbsUp, Shield, Play, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import backgroundImage from '../../assets/images/background.webp?url'
 import disasterResponseBg from '../../assets/images/Lumen_Rewards_Page.jpg?url'
@@ -8,7 +9,8 @@ import disasterResponseBg from '../../assets/images/Lumen_Rewards_Page.jpg?url'
 const storyVideoThumb = 'https://via.placeholder.com/800x450/2b2b2b/ffffff?text=Add+story-video-thumb.jpg'
 const worldMap = 'https://via.placeholder.com/800x400/f5f5f5/cccccc?text=Add+world-map.png'
 import Card from '../../components/common/Card'
-import { featuredProducts } from '../../data/products'
+import ProductCard from '../../components/products/ProductCard'
+import { getFeaturedProducts } from '../../services/productService'
 import { productTypes } from '../../data/categories'
 import { testimonials } from '../../data/testimonials'
 import { pressLogos } from '../../data/press'
@@ -69,6 +71,24 @@ const Home = () => {
   const [cause, setCause] = useState(CAUSES[0])
   const [amount, setAmount] = useState(AMOUNTS[0])
   const [openHelp, setOpenHelp] = useState(null)
+  const [featuredProducts, setFeaturedProducts] = useState([])
+  const [loadingProducts, setLoadingProducts] = useState(true)
+
+  // Fetch featured products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoadingProducts(true)
+        const products = await getFeaturedProducts(4)
+        setFeaturedProducts(products)
+      } catch (error) {
+        console.error('Failed to fetch featured products:', error)
+      } finally {
+        setLoadingProducts(false)
+      }
+    }
+    fetchProducts()
+  }, [])
 
   // Give Light Images
   const giveLightImages = [
@@ -217,35 +237,18 @@ const Home = () => {
           </h2>
 
           {/* Product Grid */}
-          <div className="top-picks__grid grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.slice(0, 4).map((product) => (
-              <Card key={product.id} hoverable clickable padding="none" className="product-card group">
-                {/* Product Image */}
-                <div className="product-card__image-wrapper relative overflow-hidden bg-gray-100 rounded-t">
-                  <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="product-card__image w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" 
-                  />
-                  {product.badge && (
-                    <span className="product-card__badge absolute top-3 left-3 bg-primary-red text-white text-[10px] font-bold px-2.5 py-1.5 rounded uppercase tracking-wide">
-                      {product.badge}
-                    </span>
-                  )}
-                </div>
-
-                {/* Product Info */}
-                <div className="product-card__content p-5">
-                  <h3 className="product-card__title text-[15px] font-bold text-black mb-2 group-hover:text-primary-red transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="product-card__price text-[15px] text-gray-dark">
-                    ${product.price} USD
-                  </p>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {loadingProducts ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red mb-4"></div>
+              <p className="text-gray-600">Loading products...</p>
+            </div>
+          ) : (
+            <div className="top-picks__grid grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {featuredProducts.slice(0, 4).map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
 
           {/* Load More Button */}
           <div className="top-picks__button-wrapper text-center mt-14">

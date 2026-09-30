@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react'
 import logoImage from '../../assets/images/logo.png?url'
+import { useCart } from '../../hooks/useCart'
 
 const Header = () => {
   const [activeDropdown , setActiveDropdown] = useState(null)
+  const { itemCount } = useCart();
   const navItems = [
     {
       label : 'SHOP',
@@ -116,13 +118,15 @@ const Header = () => {
           <button className="text-black hover:text-primary-red transition-colors">
             <User size={18} />
           </button>
-          <button className="relative text-black hover:text-primary-red transition-colors">
+          <a href="/cart" className="relative text-black hover:text-primary-red transition-colors">
             <ShoppingCart size={18} />
-            {/* Cart badge - you can make this dynamic later */}
-            <span className="absolute -top-2 -right-2 bg-primary-red text-white text-[10px] rounded-full h-[18px] w-[18px] flex items-center justify-center font-semibold">
-              0
-            </span>
-          </button>
+            {/* Cart badge */}
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-primary-red text-white text-[10px] rounded-full h-[18px] w-[18px] flex items-center justify-center font-semibold">
+                {itemCount}
+              </span>
+            )}
+          </a>
         </div>
       </div>
     </header>

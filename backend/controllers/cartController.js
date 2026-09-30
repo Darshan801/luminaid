@@ -11,25 +11,38 @@ exports.getCart = async (req, res) => {
     if (req.user) {
       // Authenticated user
       cart = await Cart.findUserCart(req.user.id);
-    } else if (req.session?.cartId || req.cookies?.cartSessionId) {
-      // Guest user with session
-      const sessionId = req.session?.cartId || req.cookies?.cartSessionId;
-      cart = await Cart.findGuestCart(sessionId);
     } else {
-      // New guest user - create session
-      const sessionId = require('crypto').randomBytes(16).toString('hex');
-      cart = await Cart.create({ sessionId });
+      // Guest user - check for existing cart session
+      const sessionId = req.cookies?.cartSessionId;
       
-      // Store session ID
-      if (req.session) {
-        req.session.cartId = sessionId;
+      if (sessionId) {
+        // Try to find existing cart
+        cart = await Cart.findOne({ sessionId, status: 'active' }).populate('items.product');
+        
+        if (!cart) {
+          // Session expired or cart not found, create new one
+          const newSessionId = require('crypto').randomBytes(16).toString('hex');
+          cart = await Cart.create({ sessionId: newSessionId });
+          
+          res.cookie('cartSessionId', newSessionId, {
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+          });
+        }
+      } else {
+        // New guest user - create session and cart
+        const newSessionId = require('crypto').randomBytes(16).toString('hex');
+        cart = await Cart.create({ sessionId: newSessionId });
+        
+        res.cookie('cartSessionId', newSessionId, {
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
+        });
       }
-      res.cookie('cartSessionId', sessionId, {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax'
-      });
     }
 
     res.status(200).json({
@@ -38,6 +51,7 @@ exports.getCart = async (req, res) => {
     });
   } catch (error) {
     console.error('Get Cart Error:', error);
+    console.error('Error Stack:', error.stack);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch cart',
@@ -98,14 +112,18 @@ exports.addToCart = async (req, res) => {
     if (req.user) {
       cart = await Cart.findUserCart(req.user.id);
     } else {
-      const sessionId = req.session?.cartId || req.cookies?.cartSessionId;
+      const sessionId = req.cookies?.cartSessionId;
       if (!sessionId) {
         return res.status(400).json({
           success: false,
-          message: 'Session not found. Please enable cookies.'
+          message: 'No cart session found. Please enable cookies.'
         });
       }
-      cart = await Cart.findGuestCart(sessionId);
+      cart = await Cart.findOne({ sessionId, status: 'active' }).populate('items.product');
+      
+      if (!cart) {
+        cart = await Cart.create({ sessionId });
+      }
     }
 
     // Add item to cart
@@ -383,7 +401,7 @@ exports.mergeCart = async (req, res) => {
       });
     }
 
-    const sessionId = req.session?.cartId || req.cookies?.cartSessionId;
+    const sessionId = req.cookies?.cartSessionId;
 
     if (!sessionId) {
       // No guest cart to merge
@@ -397,10 +415,7 @@ exports.mergeCart = async (req, res) => {
 
     const cart = await Cart.mergeGuestCart(sessionId, req.user.id);
 
-    // Clear session
-    if (req.session?.cartId) {
-      delete req.session.cartId;
-    }
+    // Clear cookie
     res.clearCookie('cartSessionId');
 
     res.status(200).json({
@@ -428,7 +443,7 @@ exports.getCartCount = async (req, res) => {
     if (req.user) {
       cart = await Cart.findOne({ user: req.user.id, status: 'active' });
     } else {
-      const sessionId = req.session?.cartId || req.cookies?.cartSessionId;
+      const sessionId = req.cookies?.cartSessionId;
       if (sessionId) {
         cart = await Cart.findOne({ sessionId, status: 'active' });
       }
