@@ -19,6 +19,11 @@ const products = [
         url: '/images/products/0196-150_Max_QI_product_image.jpg',
         altText: 'PackLite Titan Power Lantern',
         isPrimary: true
+      },
+      {
+        url: '/images/products/Power_Lanterns_Circle.png',
+        altText: 'PackLite Titan Power Lantern - Circle View',
+        isPrimary: false
       }
     ],
     specifications: [
@@ -62,6 +67,11 @@ const products = [
         url: '/images/products/SurvivorThumbnai.jpg',
         altText: 'PackLite Survivor Power Lantern',
         isPrimary: true
+      },
+      {
+        url: '/images/products/Power_Lanterns_Circle.png',
+        altText: 'PackLite Survivor Power Lantern - Circle View',
+        isPrimary: false
       }
     ],
     specifications: [
@@ -105,6 +115,11 @@ const products = [
         url: '/images/products/StringLightatSunset.jpg',
         altText: 'Solar String Light',
         isPrimary: true
+      },
+      {
+        url: '/images/products/String_Lights_Circle.png',
+        altText: 'Solar String Light - Circle View',
+        isPrimary: false
       }
     ],
     specifications: [
@@ -145,9 +160,14 @@ const products = [
     tags: ['camping', 'emergency', 'phone-charger', 'solar', 'budget'],
     images: [
       {
-        url: '/images/products/0196-150_Max_QI_product_image.jpg',
+        url: '/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
         altText: 'PackLite Max Power Lantern',
         isPrimary: true
+      },
+      {
+        url: '/images/products/Power_Lanterns_Circle.png',
+        altText: 'PackLite Max Power Lantern - Circle View',
+        isPrimary: false
       }
     ],
     specifications: [
@@ -191,6 +211,11 @@ const products = [
         url: '/images/products/Trio_Circle.png',
         altText: 'PackLite Nova Solar Lantern',
         isPrimary: true
+      },
+      {
+        url: '/images/products/Power_Lanterns_Circle.png',
+        altText: 'PackLite Nova Solar Lantern - Alternative View',
+        isPrimary: false
       }
     ],
     specifications: [

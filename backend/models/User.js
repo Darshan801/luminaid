@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: true,
       lowercase: true,
       trim: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
@@ -88,8 +87,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ['customer', 'admin', 'superadmin'],
-      default: 'customer',
-      index: true
+      default: 'customer'
     },
 
     // Addresses
@@ -102,8 +100,7 @@ const userSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
-      index: true
+      default: true
     },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
@@ -172,8 +169,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // Indexes
-userSchema.index({ email: 1 });
+userSchema.index({ email: 1 }, { unique: true });
 userSchema.index({ role: 1 });
+userSchema.index({ isActive: 1 });
 userSchema.index({ createdAt: -1 });
 
 // Virtual for full name
@@ -190,21 +188,20 @@ userSchema.virtual('customerTier').get(function() {
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   // Only hash if password is modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
   try {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
   } catch (error) {
-    next(error);
+    throw error;
   }
 });
 
 // Ensure only one default address
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function() {
   if (this.isModified('addresses')) {
     const defaultAddresses = this.addresses.filter(addr => addr.isDefault);
     if (defaultAddresses.length > 1) {
@@ -214,7 +211,6 @@ userSchema.pre('save', function(next) {
       });
     }
   }
-  next();
 });
 
 // Method to compare password

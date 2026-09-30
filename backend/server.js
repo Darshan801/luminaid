@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const cloudinaryRoutes = require('./routes/cloudinaryRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -32,6 +33,9 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`);
+    if (req.body && Object.keys(req.body).length > 0) {
+      console.log('Body received:', JSON.stringify(req.body, null, 2));
+    }
     next();
   });
 }
@@ -52,6 +56,17 @@ app.get('/api', (req, res) => {
     message: 'LuminAID API',
     version: '1.0.0',
     endpoints: {
+      auth: {
+        'POST /api/auth/register': 'Register new user',
+        'POST /api/auth/login': 'Login user',
+        'POST /api/auth/logout': 'Logout user (protected)',
+        'GET /api/auth/me': 'Get current user (protected)',
+        'PUT /api/auth/updatedetails': 'Update user details (protected)',
+        'PUT /api/auth/updatepassword': 'Update password (protected)',
+        'POST /api/auth/forgotpassword': 'Send password reset email',
+        'PUT /api/auth/resetpassword/:token': 'Reset password with token',
+        'GET /api/auth/verify-email/:token': 'Verify email address',
+      },
       products: {
         'GET /api/products': 'Get all products',
         'GET /api/products/:id': 'Get product by ID or slug',
@@ -84,6 +99,7 @@ app.get('/api', (req, res) => {
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/cloudinary', cloudinaryRoutes);
+app.use('/api/auth', authRoutes);
 
 // 404 handler
 app.use((req, res) => {

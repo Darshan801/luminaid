@@ -399,7 +399,7 @@ exports.updateProduct = async (req, res) => {
       id,
       req.body,
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true
       }
     );
@@ -477,7 +477,7 @@ exports.updateStock = async (req, res) => {
         stock,
         status: stock === 0 ? 'out-of-stock' : 'active'
       },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!product) {
