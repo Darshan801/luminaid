@@ -14,12 +14,12 @@ export const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
   const config = {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
     credentials: 'include', // Important for cookies (guest cart)
-    ...options,
   };
 
   try {

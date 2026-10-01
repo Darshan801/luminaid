@@ -259,25 +259,23 @@ productSchema.virtual('isLowStock').get(function() {
 });
 
 // Pre-save middleware to generate slug from name
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function() {
   if (this.isModified('name') && !this.slug) {
     this.slug = this.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   }
-  next();
 });
 
 // Pre-save middleware to set primary image
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function() {
   if (this.images && this.images.length > 0) {
     const hasPrimary = this.images.some(img => img.isPrimary);
     if (!hasPrimary) {
       this.images[0].isPrimary = true;
     }
   }
-  next();
 });
 
 // Static method to get featured products

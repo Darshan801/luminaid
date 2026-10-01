@@ -1,11 +1,27 @@
 import { useState } from 'react'
-import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Search, User, ShoppingCart, ChevronDown, LogOut } from 'lucide-react'
 import logoImage from '../../assets/images/logo.png?url'
 import { useCart } from '../../hooks/useCart'
+import { useAuth } from '../../hooks/useAuth'
 
 const Header = () => {
   const [activeDropdown , setActiveDropdown] = useState(null)
+  const [showUserMenu, setShowUserMenu] = useState(false)
   const { itemCount } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setShowUserMenu(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   const navItems = [
     {
       label : 'SHOP',
@@ -115,10 +131,76 @@ const Header = () => {
           <button className="text-black hover:text-primary-red transition-colors">
             <Search size={18} />
           </button>
-          <button className="text-black hover:text-primary-red transition-colors">
-            <User size={18} />
-          </button>
-          <a href="/cart" className="relative text-black hover:text-primary-red transition-colors">
+          
+          {/* User Menu */}
+          <div className="relative">
+            {isAuthenticated ? (
+              <>
+                <button 
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  onMouseEnter={() => setShowUserMenu(true)}
+                  className="flex items-center gap-2 text-black hover:text-primary-red transition-colors"
+                >
+                  <User size={18} />
+                  <span className="hidden lg:inline text-sm font-medium">
+                    {user?.firstName}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`hidden lg:block transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                
+                {/* User Dropdown */}
+                {showUserMenu && (
+                  <>
+                    {/* Invisible bridge to prevent menu from closing */}
+                    <div className="absolute right-0 top-full w-48 h-2" 
+                      onMouseEnter={() => setShowUserMenu(true)}
+                    />
+                    <div 
+                      className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-100 shadow-lg py-2 rounded-md z-50"
+                      onMouseEnter={() => setShowUserMenu(true)}
+                      onMouseLeave={() => setShowUserMenu(false)}
+                    >
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-primary-red transition-colors"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="block px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-primary-red transition-colors"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        My Orders
+                      </Link>
+                      <hr className="my-2" />
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-primary-red transition-colors flex items-center gap-2"
+                      >
+                        <LogOut size={16} />
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <Link 
+                to="/login" 
+                className="flex items-center gap-2 text-black hover:text-primary-red transition-colors"
+              >
+                <User size={18} />
+                <span className="hidden lg:inline text-sm font-medium">Login</span>
+              </Link>
+            )}
+          </div>
+          
+          <Link to="/cart" className="relative text-black hover:text-primary-red transition-colors">
             <ShoppingCart size={18} />
             {/* Cart badge */}
             {itemCount > 0 && (
@@ -126,7 +208,7 @@ const Header = () => {
                 {itemCount}
               </span>
             )}
-          </a>
+          </Link>
         </div>
       </div>
     </header>

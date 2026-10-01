@@ -160,17 +160,36 @@ cartSchema.pre('save', function() {
 
 // Instance method to add item
 cartSchema.methods.addItem = async function(productId, quantity = 1, variant = null, price) {
+  // Normalize variant (null, undefined, or empty string should all be treated the same)
+  const normalizedVariant = variant || null;
+  
+  console.log(`[Cart.addItem] ProductId: ${productId}, Quantity: ${quantity}, Variant: ${normalizedVariant}`);
+  
   // Check if item already exists
-  const existingItemIndex = this.items.findIndex(item => 
-    item.product.toString() === productId.toString() && 
-    item.variant === variant
-  );
+  const existingItemIndex = this.items.findIndex(item => {
+    const itemVariant = item.variant || null;
+    
+    // Handle both populated and unpopulated product references
+    // If product is populated (object), use _id; otherwise use the ObjectId directly
+    const itemProductId = item.product._id ? item.product._id.toString() : item.product.toString();
+    
+    const match = itemProductId === productId.toString() && 
+                  itemVariant === normalizedVariant;
+    
+    console.log(`[Cart.addItem] Comparing item - productId: ${itemProductId}, variant: ${itemVariant}, incoming: ${productId.toString()}, match: ${match}`);
+    
+    return match;
+  });
+  
+  console.log(`[Cart.addItem] Existing item index: ${existingItemIndex}`);
   
   if (existingItemIndex > -1) {
     // Update quantity
+    console.log(`[Cart.addItem] Updating existing item quantity from ${this.items[existingItemIndex].quantity} to ${this.items[existingItemIndex].quantity + quantity}`);
     this.items[existingItemIndex].quantity += quantity;
   } else {
     // Get product info for snapshot
+    console.log(`[Cart.addItem] Adding new item`);
     const Product = mongoose.model('Product');
     const product = await Product.findById(productId);
     
@@ -186,7 +205,7 @@ cartSchema.methods.addItem = async function(productId, quantity = 1, variant = n
     this.items.push({
       product: productId,
       quantity,
-      variant,
+      variant: normalizedVariant,
       price: price || product.price,
       productSnapshot: {
         name: product.name,

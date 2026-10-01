@@ -26,6 +26,12 @@ import Returns from '../pages/Support/Returns'
 import AccessibilityPage from '../pages/Support/Accessibility'
 import Contact from '../pages/Support/Contact'
 
+// Auth
+import Login from '../pages/Auth/Login'
+import Register from '../pages/Auth/Register'
+import Profile from '../pages/Auth/Profile'
+import ProtectedRoute from '../components/common/ProtectedRoute'
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -33,18 +39,24 @@ const AppRoutes = () => {
                 {/* Home */}
                 <Route path="/" element={<Home />} />
                 
+                {/* Auth Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route 
+                    path="/profile" 
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    } 
+                />
+                
                 {/* Products Routes */}
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/products/:slug" element={<ProductDetail />} />
                 
                 {/* Cart */}
                 <Route path="/cart" element={<Cart />} />
-                
-                {/* Bundles Routes */}
-                <Route path="/bundles/titan" element={<TitanBundle />} />
-                <Route path="/bundles/string-lights" element={<StringLightsBundle />} />
-                <Route path="/bundles/backyard" element={<BackyardBundle />} />
-                <Route path="/bundles/LuminAidd-quiz" element={<Quiz />} />
                 
                 {/* Bundles Routes */}
                 <Route path="/bundles/titan" element={<TitanBundle />} />

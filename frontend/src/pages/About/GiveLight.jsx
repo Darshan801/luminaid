@@ -66,8 +66,18 @@ const IMPACT_STORIES = [
   }
 ]
 
-// Replace with your dotted world-map asset
-const WORLD_MAP = '/images/about/world-map.png'
+// Using local SVG placeholder to avoid external requests
+const createPlaceholderSVG = (text, width, height) => {
+  return `data:image/svg+xml,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <rect width="${width}" height="${height}" fill="#f5f5f5"/>
+      <circle cx="400" cy="200" r="150" fill="#e0e0e0"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#999">World Map Placeholder</text>
+    </svg>
+  `)}`
+}
+
+const WORLD_MAP = createPlaceholderSVG('World Map', 800, 400)
 
 // ============================================================================
 // TRUST BADGES COMPONENT

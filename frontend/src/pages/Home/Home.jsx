@@ -3,11 +3,20 @@ import { Link } from 'react-router-dom'
 import { Star, Accessibility, Truck, ThumbsUp, Shield, Play, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import backgroundImage from '../../assets/images/background.webp?url'
 import disasterResponseBg from '../../assets/images/Lumen_Rewards_Page.jpg?url'
-// TODO: Add these images to src/assets/images/
-// import storyVideoThumb from '../../assets/images/story-video-thumb.jpg?url'
-// import worldMap from '../../assets/images/world-map.png?url'
-const storyVideoThumb = 'https://via.placeholder.com/800x450/2b2b2b/ffffff?text=Add+story-video-thumb.jpg'
-const worldMap = 'https://via.placeholder.com/800x400/f5f5f5/cccccc?text=Add+world-map.png'
+
+// Using local SVG placeholders to avoid external requests
+const createPlaceholderSVG = (text, width, height, bgColor = '#f5f5f5') => {
+  return `data:image/svg+xml,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <rect width="${width}" height="${height}" fill="${bgColor}"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#999">${text}</text>
+    </svg>
+  `)}`
+}
+
+const storyVideoThumb = createPlaceholderSVG('Story Video', 800, 450, '#2b2b2b')
+const worldMap = createPlaceholderSVG('World Map', 800, 400)
+
 import Card from '../../components/common/Card'
 import ProductCard from '../../components/products/ProductCard'
 import { getFeaturedProducts } from '../../services/productService'
