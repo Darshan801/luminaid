@@ -137,17 +137,24 @@ const orderSchema = new mongoose.Schema(
     // Payment
     paymentMethod: {
       type: String,
-      enum: ['credit_card', 'debit_card', 'paypal', 'apple_pay', 'google_pay'],
+      enum: ['credit_card', 'debit_card', 'paypal', 'apple_pay', 'google_pay', 'qr_payment'],
       required: true
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'failed', 'refunded', 'partially_refunded'],
+      enum: ['pending', 'paid', 'failed', 'refunded', 'partially_refunded', 'pending_verification', 'verified', 'rejected'],
       default: 'pending',
       index: true
     },
     paymentIntentId: String, // Stripe payment intent ID
     transactionId: String,
+    paymentScreenshot: String, // Cloudinary URL for payment proof
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    verifiedAt: Date,
+    rejectionReason: String,
     
     // Order Status
     status: {
@@ -225,11 +232,10 @@ const orderSchema = new mongoose.Schema(
 );
 
 // Indexes
-orderSchema.index({ orderNumber: 1 });
+// Note: orderNumber, user, status, and paymentStatus already have index: true in schema
+// Only add compound indexes here
 orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ customerEmail: 1, createdAt: -1 });
-orderSchema.index({ status: 1 });
-orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ createdAt: -1 });
 
 // Virtual for total items
@@ -243,7 +249,7 @@ orderSchema.virtual('orderAge').get(function() {
 });
 
 // Pre-save middleware to generate order number
-orderSchema.pre('save', async function(next) {
+orderSchema.pre('save', async function() {
   if (this.isNew && !this.orderNumber) {
     // Generate order number: LUM-YYYYMMDD-XXXX
     const date = new Date();
@@ -262,15 +268,13 @@ orderSchema.pre('save', async function(next) {
     
     this.orderNumber = `LUM-${dateStr}-${sequence.toString().padStart(4, '0')}`;
   }
-  next();
 });
 
 // Pre-save middleware to calculate item subtotals
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function() {
   this.items.forEach(item => {
     item.subtotal = item.price * item.quantity;
   });
-  next();
 });
 
 // Instance method to mark as paid
@@ -278,6 +282,25 @@ orderSchema.methods.markAsPaid = function(transactionId) {
   this.paymentStatus = 'paid';
   this.transactionId = transactionId;
   this.status = 'confirmed';
+  return this.save();
+};
+
+// Instance method to mark payment as verified (for QR payments)
+orderSchema.methods.markAsVerified = function(adminId) {
+  this.paymentStatus = 'verified';
+  this.status = 'confirmed';
+  this.verifiedBy = adminId;
+  this.verifiedAt = new Date();
+  return this.save();
+};
+
+// Instance method to reject payment (for QR payments)
+orderSchema.methods.markAsRejected = function(adminId, reason) {
+  this.paymentStatus = 'rejected';
+  this.status = 'cancelled';
+  this.verifiedBy = adminId;
+  this.verifiedAt = new Date();
+  this.rejectionReason = reason;
   return this.save();
 };
 
@@ -379,6 +402,16 @@ orderSchema.statics.getOrderByNumberAndEmail = function(orderNumber, email) {
     orderNumber: orderNumber.toUpperCase(), 
     customerEmail: email.toLowerCase() 
   });
+};
+
+// Static method to get pending payment orders (for admin verification)
+orderSchema.statics.getPendingPaymentOrders = function(page = 1, limit = 10) {
+  return this.find({ paymentStatus: 'pending_verification' })
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .populate('user', 'firstName lastName email')
+    .populate('items.product', 'name images');
 };
 
 // Static method to get dashboard stats
