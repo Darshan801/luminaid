@@ -10,6 +10,8 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const cloudinaryRoutes = require('./routes/cloudinaryRoutes');
 const authRoutes = require('./routes/authRoutes');
+const checkoutRoutes = require('./routes/checkoutRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -100,6 +102,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/cloudinary', cloudinaryRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/checkout', checkoutRoutes);
+app.use('/api/orders', orderRoutes);
 
 // 404 handler
 app.use((req, res) => {

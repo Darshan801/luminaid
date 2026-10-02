@@ -163,7 +163,9 @@ cartSchema.methods.addItem = async function(productId, quantity = 1, variant = n
   // Normalize variant (null, undefined, or empty string should all be treated the same)
   const normalizedVariant = variant || null;
   
-  console.log(`[Cart.addItem] ProductId: ${productId}, Quantity: ${quantity}, Variant: ${normalizedVariant}`);
+  console.log(`[Cart.addItem] Starting - Cart ID: ${this._id}, ProductId: ${productId}, Quantity: ${quantity}, Variant: ${normalizedVariant}`);
+  console.log(`[Cart.addItem] Cart status: ${this.status}, Cart user: ${this.user}`);
+  console.log(`[Cart.addItem] Current items count: ${this.items.length}`);
   
   // Check if item already exists
   const existingItemIndex = this.items.findIndex(item => {
@@ -213,9 +215,15 @@ cartSchema.methods.addItem = async function(productId, quantity = 1, variant = n
         sku: product.sku
       }
     });
+    
+    console.log(`[Cart.addItem] Item pushed. Items count now: ${this.items.length}`);
   }
   
-  return this.save();
+  console.log(`[Cart.addItem] Saving cart...`);
+  const savedCart = await this.save();
+  console.log(`[Cart.addItem] Cart saved successfully. ID: ${savedCart._id}, Items: ${savedCart.items.length}, Status: ${savedCart.status}`);
+  
+  return savedCart;
 };
 
 // Instance method to update item quantity
@@ -279,12 +287,62 @@ cartSchema.methods.removeDiscountCode = function() {
 
 // Static method to find user's active cart
 cartSchema.statics.findUserCart = async function(userId) {
-  let cart = await this.findOne({ user: userId, status: 'active' })
-    .populate('items.product');
+  console.log(`[findUserCart] ===== START FIND USER CART =====`);
+  console.log(`[findUserCart] Looking for active cart for user ${userId}`);
+  console.log(`[findUserCart] User ID type: ${typeof userId}`);
   
-  if (!cart) {
-    cart = await this.create({ user: userId });
+  // Ensure userId is an ObjectId
+  const mongoose = require('mongoose');
+  const userObjectId = mongoose.Types.ObjectId.isValid(userId) 
+    ? (typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId)
+    : userId;
+  
+  console.log(`[findUserCart] Converted user ID: ${userObjectId}`);
+  
+  // First, check if there are multiple active carts (shouldn't happen but let's be safe)
+  const activeCarts = await this.find({ user: userObjectId, status: 'active' })
+    .sort({ updatedAt: -1 });
+  
+  console.log(`[findUserCart] Found ${activeCarts.length} active carts for user ${userObjectId}`);
+  
+  if (activeCarts.length > 0) {
+    activeCarts.forEach((cart, index) => {
+      console.log(`[findUserCart] Cart ${index}: ID=${cart._id}, Items=${cart.items.length}, UpdatedAt=${cart.updatedAt}, Status=${cart.status}`);
+    });
   }
+  
+  if (activeCarts.length > 1) {
+    console.log(`[findUserCart] Multiple active carts detected, deactivating old ones`);
+    
+    // Keep the most recently updated cart, deactivate the rest
+    for (let i = 1; i < activeCarts.length; i++) {
+      console.log(`[findUserCart] Deactivating cart ${activeCarts[i]._id}`);
+      activeCarts[i].status = 'abandoned';
+      await activeCarts[i].save();
+    }
+    
+    // Return the most recent one (already have it from query)
+    const mostRecentCart = activeCarts[0];
+    console.log(`[findUserCart] Returning most recent cart ${mostRecentCart._id} with ${mostRecentCart.items.length} items`);
+    console.log(`[findUserCart] ===== END FIND USER CART (MULTIPLE FOUND) =====`);
+    await mostRecentCart.populate('items.product');
+    return mostRecentCart;
+  }
+  
+  if (activeCarts.length === 1) {
+    // Found exactly one cart
+    const cart = activeCarts[0];
+    console.log(`[findUserCart] Found exactly one cart ${cart._id} with ${cart.items.length} items`);
+    console.log(`[findUserCart] ===== END FIND USER CART (ONE FOUND) =====`);
+    await cart.populate('items.product');
+    return cart;
+  }
+  
+  // No cart found, create new one
+  console.log(`[findUserCart] No active cart found for user ${userObjectId}, creating new one`);
+  const cart = await this.create({ user: userObjectId });
+  console.log(`[findUserCart] Created new cart ${cart._id}`);
+  console.log(`[findUserCart] ===== END FIND USER CART (NEW CREATED) =====`);
   
   return cart;
 };

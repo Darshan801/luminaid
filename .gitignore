@@ -2,6 +2,9 @@
 .vscode/
 .idea/
 
+# Kiro AI Assistant
+.kiro/
+
 # Personal notes
 plan.txt
 

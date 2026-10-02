@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cartController');
-// const { protect } = require('../middleware/auth'); // Will create later
+const { protect, optionalAuth } = require('../middleware/auth');
 
-// Public/Session-based routes
+// Public/Session-based routes with optional auth
+// This allows both authenticated and guest users to use cart
+router.use(optionalAuth);
+
 router.get('/', cartController.getCart);
 router.get('/count', cartController.getCartCount);
 router.post('/items', cartController.addToCart);
@@ -13,10 +16,7 @@ router.delete('/', cartController.clearCart);
 router.post('/discount', cartController.applyDiscount);
 router.delete('/discount', cartController.removeDiscount);
 
-// Authenticated routes (TODO: Add auth middleware)
-// router.post('/merge', protect, cartController.mergeCart);
-
-// Temporary merge route without auth (for testing)
-router.post('/merge', cartController.mergeCart);
+// Authenticated routes (merge requires authentication)
+router.post('/merge', protect, cartController.mergeCart);
 
 module.exports = router;

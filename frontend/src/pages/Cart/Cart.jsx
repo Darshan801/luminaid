@@ -1,9 +1,10 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { CartContext } from '../../context/CartContext';
 
 const Cart = () => {
+  const navigate = useNavigate();
   const {
     cart,
     loading,
@@ -34,6 +35,10 @@ const Cart = () => {
     if (window.confirm('Clear entire cart?')) {
       await clearCart();
     }
+  };
+
+  const handleCheckout = () => {
+    navigate('/checkout');
   };
 
   if (loading && !cart) {
@@ -238,7 +243,7 @@ const Cart = () => {
 
                 <button
                   className="w-full bg-primary-red text-white py-4 px-6 font-bold rounded hover:bg-red-700 transition-colors mb-3"
-                  onClick={() => alert('Checkout coming soon!')}
+                  onClick={handleCheckout}
                 >
                   Proceed to Checkout
                 </button>

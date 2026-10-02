@@ -27,9 +27,24 @@ backend/
 
 ## Scripts
 
-- `npm start` - Production
-- `npm run dev` - Development (nodemon)
-- `npm run seed` - Seed database
+- `npm start` - Production server
+- `npm run dev` - Development with nodemon
+- `npm run seed` - Seed database with products
+
+### Maintenance Scripts
+
+Run these scripts manually when needed:
+
+```bash
+# Clean up duplicate and abandoned carts
+node scripts/cleanupCarts.js
+```
+
+**Recommended Schedule:**
+- Run `cleanupCarts.js` weekly or via cron job
+- Helps maintain database performance
+- Removes duplicate active carts per user
+- Archives empty carts older than 24 hours
 
 ## Environment Setup
 
@@ -43,6 +58,8 @@ Copy and configure `.env`:
 - `/api/auth` - Authentication
 - `/api/products` - Product management
 - `/api/cart` - Shopping cart
+- `/api/checkout` - Checkout and order creation
+- `/api/orders` - Order management
 - `/api/cloudinary` - Image upload
 
-See `/bin/backend/docs/` for detailed documentation.
+See `/bin/documentation/` for detailed API documentation.
