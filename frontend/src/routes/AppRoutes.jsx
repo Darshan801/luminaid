@@ -32,6 +32,14 @@ import Register from '../pages/Auth/Register'
 import Profile from '../pages/Auth/Profile'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
+// Checkout
+import CheckoutPage from '../pages/Checkout/CheckoutPage'
+import OrderPendingPage from '../pages/Checkout/OrderPendingPage'
+
+// Orders
+import MyOrdersPage from '../pages/Orders/MyOrdersPage'
+import OrderDetailPage from '../pages/Orders/OrderDetailPage'
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -57,6 +65,50 @@ const AppRoutes = () => {
                 
                 {/* Cart */}
                 <Route path="/cart" element={<Cart />} />
+                
+                {/* Checkout Routes */}
+                <Route 
+                    path="/checkout" 
+                    element={
+                        <ProtectedRoute>
+                            <CheckoutPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/orders/pending/:orderId" 
+                    element={
+                        <ProtectedRoute>
+                            <OrderPendingPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                
+                {/* Order Routes */}
+                <Route 
+                    path="/orders" 
+                    element={
+                        <ProtectedRoute>
+                            <MyOrdersPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/orders/my-orders" 
+                    element={
+                        <ProtectedRoute>
+                            <MyOrdersPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/orders/:orderId" 
+                    element={
+                        <ProtectedRoute>
+                            <OrderDetailPage />
+                        </ProtectedRoute>
+                    } 
+                />
                 
                 {/* Bundles Routes */}
                 <Route path="/bundles/titan" element={<TitanBundle />} />
