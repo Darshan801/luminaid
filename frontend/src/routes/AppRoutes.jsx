@@ -40,6 +40,11 @@ import OrderPendingPage from '../pages/Checkout/OrderPendingPage'
 import MyOrdersPage from '../pages/Orders/MyOrdersPage'
 import OrderDetailPage from '../pages/Orders/OrderDetailPage'
 
+// Admin
+import AdminRoute from '../components/common/AdminRoute'
+import AdminLayout from '../layouts/AdminLayout'
+import AdminDashboard from '../pages/Admin/AdminDashboard'
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -126,6 +131,13 @@ const AppRoutes = () => {
                 <Route path="/support/returns" element={<Returns />} />
                 <Route path="/support/accessibility" element={<AccessibilityPage />} />
                 <Route path="/support/contact" element={<Contact />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                </Route>
             </Route>
         </Routes>
     )

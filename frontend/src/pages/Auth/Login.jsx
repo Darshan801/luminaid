@@ -34,9 +34,15 @@ const Login = () => {
     setError('');
 
     try {
-      await login(formData);
-      // Redirect to previous page or home
-      navigate(from, { replace: true });
+      const result = await login(formData);
+      
+      // Redirect admin users to admin panel
+      if (result.user.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        // Redirect regular users to previous page or home
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     }
