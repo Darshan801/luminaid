@@ -32,7 +32,6 @@ export const CheckoutProvider = ({ children }) => {
   const initializeCheckout = useCallback(async () => {
     // Prevent double execution
     if (initializingRef.current) {
-      console.log('[initializeCheckout] Already initializing, skipping...');
       // Return the last known state instead of false
       return initializingRef.current === 'success';
     }
@@ -40,37 +39,26 @@ export const CheckoutProvider = ({ children }) => {
     initializingRef.current = 'inProgress';
     
     try {
-      console.log('[initializeCheckout] Starting checkout initialization...');
       setLoading(true);
       setError(null);
 
       // Validate cart
-      console.log('[initializeCheckout] Calling validateCart...');
       const validationResult = await checkoutService.validateCart();
-      console.log('[initializeCheckout] Validation result:', validationResult);
-      
       if (!validationResult.valid) {
         // If cart is empty or has issues, return false to trigger redirect
-        console.log('[initializeCheckout] Cart validation failed, redirecting...');
         initializingRef.current = 'failed';
         return false;
       }
 
-      console.log('[initializeCheckout] Cart validation succeeded!');
-
       // Calculate initial totals
       try {
-        console.log('[initializeCheckout] Calculating initial totals...');
         const result = await checkoutService.calculateTotals('standard', null);
         setTotals(result.totals);
-        console.log('[initializeCheckout] Totals calculated:', result.totals);
-      } catch (err) {
-        console.log('[initializeCheckout] Failed to calculate totals:', err.message);
+        } catch (err) {
         // Silently fail for totals calculation
       }
       
       initializingRef.current = 'success';
-      console.log('[initializeCheckout] Initialization complete - SUCCESS');
       return true;
     } catch (err) {
       // Any error (including empty cart) should trigger redirect
@@ -89,7 +77,6 @@ export const CheckoutProvider = ({ children }) => {
       const result = await checkoutService.calculateTotals(shippingMethod, shippingAddress?.state);
       setTotals(result.totals);
     } catch (err) {
-      console.log('Calculate totals error:', err);
       // Silently fail for calculate totals
     } finally {
       setLoading(false);
@@ -257,3 +244,4 @@ export const CheckoutProvider = ({ children }) => {
     </CheckoutContext.Provider>
   );
 };
+

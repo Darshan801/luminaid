@@ -1,5 +1,6 @@
 const express = require('express');
 const cloudinary = require('../config/cloudinary');
+const logger = require('../utils/logger');
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get('/test', async (req, res) => {
       result,
     });
   } catch (error) {
-    console.error('Cloudinary connection failed:', error);
+    logger.error('Cloudinary connection failed:', error);
 
     res.status(500).json({
       success: false,

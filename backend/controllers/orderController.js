@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const logger = require('../utils/logger');
 
 /**
  * @desc    Get user's orders
@@ -25,7 +26,7 @@ exports.getMyOrders = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get my orders error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch orders'
@@ -58,7 +59,7 @@ exports.getOrderById = async (req, res) => {
     const isEmailMatch = order.customerEmail.toLowerCase() === req.user.email.toLowerCase();
     
     if (!isAdmin && !isOwner && !isEmailMatch) {
-      console.log('[getOrderById] Authorization failed:', {
+      logger.warn('Order access denied:', {
         userRole: req.user.role,
         userId: req.user.id,
         userEmail: req.user.email,
@@ -79,7 +80,7 @@ exports.getOrderById = async (req, res) => {
       order
     });
   } catch (error) {
-    console.error('Get order by ID error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch order'
@@ -125,7 +126,7 @@ exports.getOrderTracking = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get order tracking error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch tracking info'
@@ -176,7 +177,7 @@ exports.cancelOrder = async (req, res) => {
       order
     });
   } catch (error) {
-    console.error('Cancel order error:', error);
+    logger.error('', error);
     res.status(400).json({
       success: false,
       message: error.message || 'Failed to cancel order'
@@ -215,7 +216,7 @@ exports.getGuestOrder = async (req, res) => {
       order
     });
   } catch (error) {
-    console.error('Get guest order error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch order'
@@ -269,7 +270,7 @@ exports.getAllOrders = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get all orders error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch orders'
@@ -301,7 +302,7 @@ exports.getPendingPayments = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get pending payments error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch pending payments'
@@ -379,7 +380,7 @@ exports.verifyPayment = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Verify payment error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to verify payment'
@@ -430,10 +431,11 @@ exports.updateOrderStatus = async (req, res) => {
       order
     });
   } catch (error) {
-    console.error('Update order status error:', error);
+    logger.error('', error);
     res.status(500).json({
       success: false,
       message: 'Failed to update order status'
     });
   }
 };
+

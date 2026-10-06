@@ -55,11 +55,9 @@ const PaymentQRStep = () => {
       setIsCreatingOrder(true);
       // Create order now if not already created (with shipping address from step 1)
       if (!orderId && !orderCreated) {
-        console.log('[PaymentQRStep] Creating order...');
         await createOrder();
         setOrderCreated(true);
-        console.log('[PaymentQRStep] Order created successfully');
-      }
+        }
       nextStep();
     } catch (error) {
       console.error('[PaymentQRStep] Failed to create order:', error);
@@ -71,10 +69,6 @@ const PaymentQRStep = () => {
       setIsCreatingOrder(false);
     }
   };
-
-  console.log('[PaymentQRStep] Render - checkoutTotals:', checkoutTotals);
-  console.log('[PaymentQRStep] Render - cart:', cart);
-  console.log('[PaymentQRStep] safeTotals:', safeTotals);
 
   return (
     <div>
@@ -166,3 +160,4 @@ const PaymentQRStep = () => {
 };
 
 export default PaymentQRStep;
+

@@ -7,7 +7,7 @@ const Footer = () => {
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    console.log('Newsletter signup:', email);
+    // TODO: Implement newsletter subscription
     setEmail('');
   };
 

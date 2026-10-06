@@ -5,9 +5,6 @@ const OrderSummary = () => {
   const { cart } = useCart();
   const { totals: checkoutTotals } = useCheckout();
 
-  console.log('[OrderSummary] cart:', cart);
-  console.log('[OrderSummary] checkoutTotals:', checkoutTotals);
-
   if (!cart || !cart.items || cart.items.length === 0) return null;
 
   // Use cart totals (which are calculated by backend) as primary source
@@ -19,8 +16,6 @@ const OrderSummary = () => {
     tax: cart.tax ?? checkoutTotals?.tax ?? 0,
     total: cart.total ?? checkoutTotals?.total ?? 0
   };
-
-  console.log('[OrderSummary] Using totals:', safeTotals);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
@@ -102,3 +97,4 @@ const OrderSummary = () => {
 };
 
 export default OrderSummary;
+

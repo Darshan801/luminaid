@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const cloudinary = require('../config/cloudinary');
+const logger = require('../utils/logger');
 
 /**
  * @desc    Validate cart before checkout
@@ -11,28 +12,9 @@ const cloudinary = require('../config/cloudinary');
 exports.validateCart = async (req, res) => {
   try {
     const userId = req.user?.id;
-    
-    console.log('[validateCart] ===== START VALIDATE CART =====');
-    console.log('[validateCart] User ID:', userId);
-    console.log('[validateCart] Request timestamp:', new Date().toISOString());
-
-    // Use findUserCart to ensure we get the same cart as addToCart
-    // This will also clean up any duplicate active carts
     const cart = await Cart.findUserCart(userId);
 
-    console.log('[validateCart] Cart found:', cart ? 'Yes' : 'No');
-    if (cart) {
-      console.log('[validateCart] Cart ID:', cart._id);
-      console.log('[validateCart] Cart status:', cart.status);
-      console.log('[validateCart] Cart user:', cart.user);
-      console.log('[validateCart] Cart items count:', cart.items.length);
-      console.log('[validateCart] Cart updatedAt:', cart.updatedAt);
-      console.log('[validateCart] Cart createdAt:', cart.createdAt);
-    }
-
     if (!cart || cart.items.length === 0) {
-      console.log('[validateCart] Cart is empty, returning 400');
-      console.log('[validateCart] ===== END VALIDATE CART (EMPTY) =====');
       return res.status(400).json({
         success: false,
         message: 'Cart is empty',
@@ -76,9 +58,6 @@ exports.validateCart = async (req, res) => {
       }
     }
 
-    console.log('[validateCart] Validation complete. Issues:', issues.length);
-    console.log('[validateCart] ===== END VALIDATE CART (SUCCESS) =====');
-
     res.status(200).json({
       success: true,
       valid: issues.length === 0,
@@ -86,7 +65,7 @@ exports.validateCart = async (req, res) => {
       issues
     });
   } catch (error) {
-    console.error('Validate cart error:', error);
+    logger.error('Validate cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to validate cart'
@@ -146,7 +125,7 @@ exports.calculateTotals = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Calculate totals error:', error);
+    logger.error('Calculate totals failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to calculate totals'
@@ -289,7 +268,7 @@ exports.createOrder = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Create order error:', error);
+    logger.error('Create order failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to create order',
@@ -373,7 +352,7 @@ exports.uploadPaymentProof = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Upload payment proof error:', error);
+    logger.error('Upload payment proof failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to upload payment proof',
@@ -408,7 +387,7 @@ exports.getPaymentQR = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get payment QR error:', error);
+    logger.error('Get payment QR failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to get payment details'

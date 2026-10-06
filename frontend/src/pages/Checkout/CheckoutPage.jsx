@@ -24,30 +24,23 @@ const CheckoutPage = () => {
   useEffect(() => {
     // Skip if already started initialization (prevents all duplicates)
     if (initStartedRef.current) {
-      console.log('[CheckoutPage] Initialization already started, skipping');
       return;
     }
     
     // Skip if cart is still loading
     if (cartLoading) {
-      console.log('[CheckoutPage] Cart still loading, waiting...');
       return;
     }
     
     // Skip if already redirecting
     if (redirecting) {
-      console.log('[CheckoutPage] Already redirecting, skipping');
       return;
     }
 
     // Skip if already initialized
     if (initialized) {
-      console.log('[CheckoutPage] Already initialized, skipping');
       return;
     }
-    
-    console.log('[CheckoutPage] Starting initialization...');
-    console.log('[CheckoutPage] Cart:', cart);
     
     // Mark as started immediately to prevent duplicates
     initStartedRef.current = true;
@@ -56,25 +49,18 @@ const CheckoutPage = () => {
     const init = async () => {
       // Check if cart is empty on frontend
       if (!cart || !cart.items || cart.items.length === 0) {
-        console.log('[CheckoutPage] Cart is empty on frontend, redirecting...');
         setRedirecting(true);
         navigate('/cart');
         return;
       }
 
-      console.log('[CheckoutPage] Cart has', cart.items.length, 'items, initializing checkout...');
-      
       // Initialize checkout (validate with backend)
       const success = await initializeCheckout();
-      console.log('[CheckoutPage] Initialization result:', success);
-      
       // If initialization failed (e.g., cart is empty on backend), redirect to cart
       if (!success) {
-        console.log('[CheckoutPage] Initialization failed, redirecting to cart...');
         setRedirecting(true);
         navigate('/cart');
       } else {
-        console.log('[CheckoutPage] Initialization succeeded!');
         setInitialized(true);
       }
     };
@@ -196,3 +182,4 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+

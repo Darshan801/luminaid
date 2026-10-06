@@ -1,5 +1,6 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const logger = require('../utils/logger');
 
 // @desc    Get user's cart
 // @route   GET /api/cart
@@ -50,8 +51,7 @@ exports.getCart = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Get Cart Error:', error);
-    console.error('Error Stack:', error.stack);
+    logger.error('Get cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch cart',
@@ -66,13 +66,6 @@ exports.getCart = async (req, res) => {
 exports.addToCart = async (req, res) => {
   try {
     const { productId, quantity = 1, variant = null } = req.body;
-    
-    console.log('[addToCart] ===== START ADD TO CART =====');
-    console.log('[addToCart] Request timestamp:', new Date().toISOString());
-    console.log('[addToCart] User:', req.user ? `ID=${req.user.id}, Email=${req.user.email}` : 'Guest');
-    console.log('[addToCart] Product ID:', productId);
-    console.log('[addToCart] Quantity:', quantity);
-    console.log('[addToCart] Variant:', variant);
 
     if (!productId) {
       return res.status(400).json({
@@ -117,12 +110,7 @@ exports.addToCart = async (req, res) => {
     // Get or create cart
     let cart;
     if (req.user) {
-      console.log('[addToCart] Adding to authenticated user cart:', req.user.id);
       cart = await Cart.findUserCart(req.user.id);
-      console.log('[addToCart] Cart ID:', cart._id);
-      console.log('[addToCart] Cart status:', cart.status);
-      console.log('[addToCart] Cart user:', cart.user);
-      console.log('[addToCart] Cart found, items before add:', cart.items.length);
     } else {
       const sessionId = req.cookies?.cartSessionId;
       if (!sessionId) {
@@ -140,26 +128,17 @@ exports.addToCart = async (req, res) => {
 
     // Add item to cart
     const savedCart = await cart.addItem(productId, quantity, variant, product.price);
-    console.log('[addToCart] Item added, cart ID after save:', savedCart._id);
-    console.log('[addToCart] Cart status after save:', savedCart.status);
-    console.log('[addToCart] Cart user after save:', savedCart.user);
-    console.log('[addToCart] Items after add:', savedCart.items.length);
 
-    // Repopulate cart - use the returned cart from addItem
+    // Repopulate cart
     await savedCart.populate('items.product');
-    
-    // Assign back to cart variable for response
-    cart = savedCart;
-
-    console.log('[addToCart] ===== END ADD TO CART (SUCCESS) =====');
 
     res.status(200).json({
       success: true,
       message: 'Item added to cart',
-      data: cart
+      data: savedCart
     });
   } catch (error) {
-    console.error('Add to Cart Error:', error);
+    logger.error('Add to cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: error.message || 'Failed to add item to cart',
@@ -211,7 +190,7 @@ exports.updateCartItem = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Update Cart Item Error:', error);
+    logger.error('Update cart item failed:', error.message);
     res.status(500).json({
       success: false,
       message: error.message || 'Failed to update cart item',
@@ -255,7 +234,7 @@ exports.removeFromCart = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Remove from Cart Error:', error);
+    logger.error('Remove from cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: error.message || 'Failed to remove item from cart',
@@ -293,7 +272,7 @@ exports.clearCart = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Clear Cart Error:', error);
+    logger.error('Clear cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to clear cart',
@@ -360,7 +339,7 @@ exports.applyDiscount = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Apply Discount Error:', error);
+    logger.error('Apply discount failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to apply discount code',
@@ -401,7 +380,7 @@ exports.removeDiscount = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Remove Discount Error:', error);
+    logger.error('Remove discount failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to remove discount code',
@@ -445,7 +424,7 @@ exports.mergeCart = async (req, res) => {
       data: cart
     });
   } catch (error) {
-    console.error('Merge Cart Error:', error);
+    logger.error('Merge cart failed:', error.message);
     res.status(500).json({
       success: false,
       message: 'Failed to merge carts',

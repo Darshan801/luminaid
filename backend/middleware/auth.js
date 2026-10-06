@@ -128,7 +128,7 @@ exports.optionalAuth = async (req, res, next) => {
       req.user = await User.findById(decoded.id);
     } catch (error) {
       // Invalid token - continue without user
-      console.log('Optional auth: Invalid token');
+      // Silently fail for optional auth
     }
 
     next();

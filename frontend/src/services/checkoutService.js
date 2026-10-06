@@ -3,15 +3,10 @@ import api from './api';
 const checkoutService = {
   // Validate cart before checkout
   validateCart: async () => {
-    console.log('[checkoutService] Calling validateCart API...');
     try {
       const response = await api.post('/checkout/validate-cart');
-      console.log('[checkoutService] validateCart response:', response);
-      // api.post already returns the parsed data object
-      // Backend returns: { success: true, valid: true, cart: {...}, issues: [] }
       return response;
     } catch (error) {
-      console.error('[checkoutService] validateCart error:', error);
       throw error;
     }
   },
