@@ -1,9 +1,15 @@
+import { useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
+
+import AddProductModal from '../../components/admin/AddProductModal'
+
 import maxQI from '../../assets/images/products/0196-150_Max_QI_product_image.jpg'
 import accessories from '../../assets/images/products/Accessories.jpg'
 import stringLights from '../../assets/images/products/StringLightatSunset.jpg'
 
 const AdminProducts = () => {
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false)
+
   // Temporary product data
   // This will be replaced with data from the backend later
   const products = [
@@ -49,6 +55,7 @@ const AdminProducts = () => {
 
         <button
           type="button"
+          onClick={() => setIsAddProductModalOpen(true)}
           className="inline-flex items-center gap-2 rounded-lg bg-primary-red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-dark-red"
         >
           <span className="text-lg leading-none">+</span>
@@ -159,6 +166,13 @@ const AdminProducts = () => {
           </table>
         </div>
       </section>
+
+      {/* Add Product Modal */}
+      {isAddProductModalOpen && (
+        <AddProductModal
+            onClose={() => setIsAddProductModalOpen(false)}
+        />
+        )}
     </div>
   )
 }
