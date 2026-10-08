@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+
 import { X, ImagePlus, Trash2 } from 'lucide-react'
 
 const CATEGORIES = [
@@ -26,82 +27,142 @@ const inputClass =
 const labelClass = 'mb-1.5 block text-sm font-semibold text-black'
 
 const FieldError = ({ message }) =>
-  message ? <p className="mt-1 text-xs text-red-600">{message}</p> : null
+  message ? (
+    <p className="mt-1 text-xs text-red-600">
+      {message}
+    </p>
+  ) : null
 
-const AddProductModal = ({ onClose, onSubmit }) => {
-  const [form, setForm] = useState(initialForm)
-  const [colors, setColors] = useState([])
+const AddProductModal = ({
+  onClose,
+  onSubmit,
+  initialProduct = null,
+  isEditing = false,
+}) => {
+  const [form, setForm] = useState(() => ({
+    name: initialProduct?.name || '',
+    category: initialProduct?.category || '',
+    description: initialProduct?.description || '',
+    isBestSeller: initialProduct?.isBestSeller || false,
+    price: initialProduct?.price?.toString() || '',
+    stock: initialProduct?.stock?.toString() || '',
+  }))
+
+  const [colors, setColors] = useState(
+    initialProduct?.colors || [],
+  )
+
   const [colorInput, setColorInput] = useState('#e11d48')
-  const [images, setImages] = useState([]) // [{ file, preview }]
+
+  const [images, setImages] = useState(() => {
+    const existingImages =
+      initialProduct?.imagePreviews?.length > 0
+        ? initialProduct.imagePreviews
+        : initialProduct?.image
+          ? [initialProduct.image]
+          : []
+
+    return existingImages.map((image) => ({
+      file: null,
+      preview: image,
+    }))
+  })
+
   const [errors, setErrors] = useState({})
   const fileInputRef = useRef(null)
 
   // Lock background scroll + close on Escape
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
+
     document.body.style.overflow = 'hidden'
 
-    console.log('onClose is:', onClose)
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') handleCancel()
+      if (e.key === 'Escape') {
+        handleCancel()
+      }
     }
+
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', handleKeyDown)
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images])
 
   const clearError = (field) =>
-    setErrors((prev) => ({ ...prev, [field]: undefined }))
+    setErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+    }))
 
   // ---------- Basic fields ----------
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
+
     setForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }))
+
     clearError(name)
   }
 
-  // Stock: digits only
+  // ---------- Stock ----------
   const handleStockChange = (e) => {
     const digitsOnly = e.target.value.replace(/\D/g, '')
-    setForm((prev) => ({ ...prev, stock: digitsOnly }))
+
+    setForm((prev) => ({
+      ...prev,
+      stock: digitsOnly,
+    }))
+
     clearError('stock')
   }
 
-  // Price: digits and one decimal point only
+  // ---------- Price ----------
   const handlePriceChange = (e) => {
     let value = e.target.value.replace(/[^\d.]/g, '')
+
     const firstDot = value.indexOf('.')
+
     if (firstDot !== -1) {
       value =
         value.slice(0, firstDot + 1) +
         value.slice(firstDot + 1).replace(/\./g, '')
     }
-    setForm((prev) => ({ ...prev, price: value }))
+
+    setForm((prev) => ({
+      ...prev,
+      price: value,
+    }))
+
     clearError('price')
   }
 
   // ---------- Colors ----------
   const handleAddColor = () => {
     const color = colorInput.toLowerCase()
+
     if (colors.includes(color)) return
+
     setColors((prev) => [...prev, color])
   }
 
   const handleRemoveColor = (color) => {
-    setColors((prev) => prev.filter((c) => c !== color))
+    setColors((prev) =>
+      prev.filter((item) => item !== color),
+    )
   }
 
   // ---------- Images ----------
   const handleImageSelect = (e) => {
     const selected = Array.from(e.target.files || [])
-    e.target.value = '' // allow re-selecting the same file
+
+    e.target.value = ''
 
     if (selected.length === 0) return
 
@@ -113,65 +174,98 @@ const AddProductModal = ({ onClose, onSubmit }) => {
         message = 'Only image files are allowed.'
         continue
       }
+
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         message = `Each image must be under ${MAX_FILE_SIZE_MB}MB.`
         continue
       }
+
       validFiles.push(file)
     }
 
     const remainingSlots = MAX_IMAGES - images.length
+
     if (validFiles.length > remainingSlots) {
       message = `You can upload a maximum of ${MAX_IMAGES} images.`
     }
 
-    const accepted = validFiles.slice(0, remainingSlots).map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
+    const accepted = validFiles
+      .slice(0, remainingSlots)
+      .map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }))
 
     if (accepted.length > 0) {
       setImages((prev) => [...prev, ...accepted])
     }
 
-    setErrors((prev) => ({ ...prev, images: message || undefined }))
+    setErrors((prev) => ({
+      ...prev,
+      images: message || undefined,
+    }))
   }
 
   const handleRemoveImage = (index) => {
     setImages((prev) => {
-      URL.revokeObjectURL(prev[index].preview)
+      const image = prev[index]
+
+      if (image?.file && image.preview.startsWith('blob:')) {
+        URL.revokeObjectURL(image.preview)
+      }
+
       return prev.filter((_, i) => i !== index)
     })
+
     clearError('images')
   }
 
   // ---------- Close / Submit ----------
   const handleCancel = () => {
-    images.forEach((img) => URL.revokeObjectURL(img.preview))
+    images.forEach((img) => {
+      if (img.file && img.preview.startsWith('blob:')) {
+        URL.revokeObjectURL(img.preview)
+      }
+    })
+
     onClose()
   }
 
   const validate = () => {
     const newErrors = {}
 
-    if (!form.name.trim()) newErrors.name = 'Product name is required.'
-    if (!form.category) newErrors.category = 'Please select a category.'
-    if (!form.description.trim())
+    if (!form.name.trim()) {
+      newErrors.name = 'Product name is required.'
+    }
+
+    if (!form.category) {
+      newErrors.category = 'Please select a category.'
+    }
+
+    if (!form.description.trim()) {
       newErrors.description = 'Description is required.'
+    }
 
-    if (form.price === '' || Number(form.price) <= 0)
+    if (form.price === '' || Number(form.price) <= 0) {
       newErrors.price = 'Enter a valid price.'
+    }
 
-    if (form.stock === '') newErrors.stock = 'Stock is required.'
+    if (form.stock === '') {
+      newErrors.stock = 'Stock is required.'
+    }
 
-    if (images.length < 1) newErrors.images = 'At least 1 image is required.'
+    if (images.length < 1) {
+      newErrors.images = 'At least 1 image is required.'
+    }
 
     setErrors(newErrors)
+
     return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     if (!validate()) return
 
     onSubmit({
@@ -182,8 +276,10 @@ const AddProductModal = ({ onClose, onSubmit }) => {
       price: Number(form.price),
       stock: Number(form.stock),
       colors,
-      images: images.map((img) => img.file), // File objects (for upload)
-      imagePreviews: images.map((img) => img.preview), // for local preview
+      images: images
+        .map((img) => img.file)
+        .filter(Boolean),
+      imagePreviews: images.map((img) => img.preview),
     })
   }
 
@@ -205,7 +301,7 @@ const AddProductModal = ({ onClose, onSubmit }) => {
             id="add-product-title"
             className="text-xl font-bold text-black"
           >
-            Add Product
+            {isEditing ? 'Edit Product' : 'Add Product'}
           </h2>
 
           <button
@@ -227,9 +323,13 @@ const AddProductModal = ({ onClose, onSubmit }) => {
           <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
             {/* Name */}
             <div>
-              <label htmlFor="name" className={labelClass}>
+              <label
+                htmlFor="name"
+                className={labelClass}
+              >
                 Name
               </label>
+
               <input
                 id="name"
                 name="name"
@@ -239,14 +339,19 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 placeholder="e.g. MaxQ Lantern"
                 className={inputClass}
               />
+
               <FieldError message={errors.name} />
             </div>
 
             {/* Category */}
             <div>
-              <label htmlFor="category" className={labelClass}>
+              <label
+                htmlFor="category"
+                className={labelClass}
+              >
                 Category
               </label>
+
               <select
                 id="category"
                 name="category"
@@ -254,21 +359,32 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 onChange={handleChange}
                 className={inputClass}
               >
-                <option value="">Select a category</option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                <option value="">
+                  Select a category
+                </option>
+
+                {CATEGORIES.map((category) => (
+                  <option
+                    key={category}
+                    value={category}
+                  >
+                    {category}
                   </option>
                 ))}
               </select>
+
               <FieldError message={errors.category} />
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className={labelClass}>
+              <label
+                htmlFor="description"
+                className={labelClass}
+              >
                 Description
               </label>
+
               <textarea
                 id="description"
                 name="description"
@@ -278,15 +394,20 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 placeholder="Describe the product..."
                 className={`${inputClass} resize-none`}
               />
+
               <FieldError message={errors.description} />
             </div>
 
             {/* Price + Stock */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
-                <label htmlFor="price" className={labelClass}>
+                <label
+                  htmlFor="price"
+                  className={labelClass}
+                >
                   Price (Rs.)
                 </label>
+
                 <input
                   id="price"
                   name="price"
@@ -297,13 +418,18 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                   placeholder="0"
                   className={inputClass}
                 />
+
                 <FieldError message={errors.price} />
               </div>
 
               <div>
-                <label htmlFor="stock" className={labelClass}>
+                <label
+                  htmlFor="stock"
+                  className={labelClass}
+                >
                   Stock
                 </label>
+
                 <input
                   id="stock"
                   name="stock"
@@ -315,19 +441,24 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                   placeholder="0"
                   className={inputClass}
                 />
+
                 <FieldError message={errors.stock} />
               </div>
             </div>
 
             {/* Colors */}
             <div>
-              <label className={labelClass}>Colors</label>
+              <label className={labelClass}>
+                Colors
+              </label>
 
               <div className="flex items-center gap-3">
                 <input
                   type="color"
                   value={colorInput}
-                  onChange={(e) => setColorInput(e.target.value)}
+                  onChange={(e) =>
+                    setColorInput(e.target.value)
+                  }
                   aria-label="Pick a color"
                   className="h-10 w-14 cursor-pointer rounded-lg border border-gray-300 bg-white p-1"
                 />
@@ -354,12 +485,18 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                     >
                       <span
                         className="h-5 w-5 rounded-full border border-gray-300"
-                        style={{ backgroundColor: color }}
+                        style={{
+                          backgroundColor: color,
+                        }}
                       />
+
                       {color}
+
                       <button
                         type="button"
-                        onClick={() => handleRemoveColor(color)}
+                        onClick={() =>
+                          handleRemoveColor(color)
+                        }
                         aria-label={`Remove ${color}`}
                         className="text-gray-400 transition-colors hover:text-red-600"
                       >
@@ -380,6 +517,7 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 onChange={handleChange}
                 className="h-4 w-4 cursor-pointer rounded border-gray-300 accent-primary-red"
               />
+
               <span className="text-sm font-semibold text-black">
                 Mark as Best Seller
               </span>
@@ -391,6 +529,7 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 <label className="text-sm font-semibold text-black">
                   Images
                 </label>
+
                 <span className="text-xs text-gray-dark">
                   {images.length}/{MAX_IMAGES} (min 1)
                 </span>
@@ -416,7 +555,9 @@ const AddProductModal = ({ onClose, onSubmit }) => {
 
                     <button
                       type="button"
-                      onClick={() => handleRemoveImage(index)}
+                      onClick={() =>
+                        handleRemoveImage(index)
+                      }
                       aria-label={`Remove image ${index + 1}`}
                       className="absolute right-1.5 top-1.5 rounded-full bg-white/90 p-1.5 text-red-600 opacity-0 shadow transition-opacity group-hover:opacity-100 focus:opacity-100"
                     >
@@ -428,11 +569,19 @@ const AddProductModal = ({ onClose, onSubmit }) => {
                 {images.length < MAX_IMAGES && (
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() =>
+                      fileInputRef.current?.click()
+                    }
                     className="flex aspect-square flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-gray-300 text-gray-dark transition-colors hover:border-primary-red hover:text-primary-red"
                   >
-                    <ImagePlus size={22} strokeWidth={1.8} />
-                    <span className="text-xs font-medium">Add image</span>
+                    <ImagePlus
+                      size={22}
+                      strokeWidth={1.8}
+                    />
+
+                    <span className="text-xs font-medium">
+                      Add image
+                    </span>
                   </button>
                 )}
               </div>
@@ -464,7 +613,7 @@ const AddProductModal = ({ onClose, onSubmit }) => {
               type="submit"
               className="rounded-lg bg-primary-red px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-dark-red"
             >
-              Add Product
+              {isEditing ? 'Save Changes' : 'Add Product'}
             </button>
           </div>
         </form>
