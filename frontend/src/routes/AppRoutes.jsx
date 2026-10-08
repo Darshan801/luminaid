@@ -44,6 +44,7 @@ import OrderDetailPage from '../pages/Orders/OrderDetailPage'
 import AdminRoute from '../components/common/AdminRoute'
 import AdminLayout from '../layouts/AdminLayout'
 import AdminDashboard from '../pages/Admin/AdminDashboard'
+import AdminProducts from '../pages/Admin/AdminProducts'
 
 const AppRoutes = () => {
     return (
@@ -137,6 +138,7 @@ const AppRoutes = () => {
             <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminDashboard />} />
+                    <Route path="products" element={<AdminProducts />} />
                 </Route>
             </Route>
         </Routes>
