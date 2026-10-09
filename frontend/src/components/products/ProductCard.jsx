@@ -133,11 +133,11 @@ const ProductCard = ({ product }) => {
           {/* Price */}
           <div className="flex items-center gap-2">
             <span className="text-base md:text-lg font-bold text-gray-900">
-              ${product.price.toFixed(2)}
+              RS {product.price.toFixed(2)}
             </span>
             {onSale && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.compareAtPrice.toFixed(2)}
+                RS {product.compareAtPrice.toFixed(2)}
               </span>
             )}
           </div>

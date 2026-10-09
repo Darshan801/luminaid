@@ -79,7 +79,7 @@ const PaymentQRStep = () => {
         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 text-center">
           <p className="text-sm text-gray-600 mb-1">Total Amount to Pay</p>
           <p className="text-4xl font-bold text-blue-600">
-            ${safeTotals.total.toFixed(2)}
+            RS {safeTotals.total.toFixed(2)}
           </p>
         </div>
 

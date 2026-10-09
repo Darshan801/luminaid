@@ -70,7 +70,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Product category is required'],
-      enum: ['Power Lanterns', 'String Lights', 'Accessories', 'Bundles', 'Gifts'],
+      enum: ['Power Lanterns', 'String Lights', 'Accessories', 'Bundles', 'Gifts', 'Donation'],
       index: true
     },
     subCategory: {

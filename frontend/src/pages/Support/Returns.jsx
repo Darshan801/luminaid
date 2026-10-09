@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Package, RotateCcw, Shield } from 'lucide-react'
 
 // ============================================================================
@@ -35,9 +36,9 @@ const Returns = () => {
       <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto">
           <nav className="breadcrumb__nav text-sm text-gray-600">
-            <a href="/" className="hover:text-black">Home</a>
+            <Link to="/" className="hover:text-black">Home</Link>
             <span className="mx-2">/</span>
-            <a href="/support/guides" className="hover:text-black">Support</a>
+            <Link to="/support/guides" className="hover:text-black">Support</Link>
             <span className="mx-2">/</span>
             <span className="text-black">returns</span>
           </nav>
@@ -102,7 +103,7 @@ const Returns = () => {
               </div>
             </div>
             <p className="text-[15px] text-gray-dark leading-relaxed mb-3">
-              We are not able to accept returns for opened packages unless a product is faulty or has a verified defect. If you would like to exchange or return a LuminAID product, please reach out to us via our <a href="/support/contact" className="text-primary-red underline">Contact Page</a>.
+              We are not able to accept returns for opened packages unless a product is faulty or has a verified defect. If you would like to exchange or return a LuminAID product, please reach out to us via our <Link to="/support/contact" className="text-primary-red underline">Contact Page</Link>.
             </p>
             <p className="text-[15px] text-gray-dark leading-relaxed">
               Please note that any return authorization will expire within 30 days. Once a return is approved by a LuminAID customer service representative, you will have 30 days to ship it back.

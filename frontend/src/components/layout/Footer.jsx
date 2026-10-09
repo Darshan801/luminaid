@@ -1,14 +1,35 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Button from '../common/Button';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement newsletter subscription
-    setEmail('');
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const response = await axios.post(`${API_URL}/api/support/newsletter`, { email });
+      
+      if (response.data.success) {
+        setMessage('Successfully subscribed!');
+        setEmail('');
+        setTimeout(() => setMessage(''), 5000);
+      }
+    } catch (error) {
+      setMessage(error.response?.data?.message || 'Subscription failed. Please try again.');
+      setTimeout(() => setMessage(''), 5000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Column 1 data
@@ -65,7 +86,7 @@ const Footer = () => {
     { text: 'Getting Started', href: '/support/guides' },
     { text: 'Reviews', href: '/reviews' },
     { text: 'Press Kit', href: '/press' },
-    { text: 'Accessibility', href: '/accessibility' },
+    { text: 'Accessibility', href: '/support/accessibility' },
   ];
 
   // Column 2 - Partner with Us (below Quick Links)
@@ -79,9 +100,9 @@ const Footer = () => {
   // Column 3 - Legal Links
   const legalLinks = [
     { text: 'Terms of Service', href: '/terms' },
-    { text: 'Accessibility', href: '/accessibility' },
+    { text: 'Accessibility', href: '/support/accessibility' },
     { text: 'Privacy Policy', href: '/privacy' },
-    { text: 'Shipping', href: '/shipping' },
+    { text: 'Shipping', href: '/support/shipping' },
     { text: 'Patents', href: '/patents' },
   ];
 
@@ -99,13 +120,13 @@ const Footer = () => {
               <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">SHOP BY COLLECTION</h3>
               <div className="flex flex-col gap-2">
                 {shopByCollection.map((link) => (
-                  <a
+                  <Link
                     key={link.text}
-                    href={link.href}
+                    to={link.href}
                     className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
                   >
                     {link.text}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -115,13 +136,13 @@ const Footer = () => {
               <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">STAY UP-TO-DATE</h3>
               <div className="flex flex-col gap-2">
                 {stayUpToDate.map((link) => (
-                  <a
+                  <Link
                     key={link.text}
-                    href={link.href}
+                    to={link.href}
                     className="text-sm text-white hover:text-gray-300 transition-colors underline underline-offset-2 w-fit"
                   >
                     {link.text}
-                  </a>
+                  </Link>
                 ))}
               </div>
 
@@ -161,13 +182,13 @@ const Footer = () => {
               <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">QUICK LINKS</h3>
               <div className="flex flex-col gap-2">
                 {quickLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.text}
-                    href={link.href}
+                    to={link.href}
                     className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
                   >
                     {link.text}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -177,13 +198,13 @@ const Footer = () => {
               <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">PARTNER WITH US</h3>
               <div className="flex flex-col gap-2">
                 {partnerLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.text}
-                    href={link.href}
+                    to={link.href}
                     className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
                   >
                     {link.text}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -204,18 +225,25 @@ const Footer = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-3 py-2 pr-10 text-sm bg-transparent border border-white/25 text-white placeholder:text-gray-400 hover:border-white focus:border-white focus:outline-none transition-colors"
+                  disabled={loading}
+                  className="w-full px-3 py-2 pr-10 text-sm bg-transparent border border-white/25 text-white placeholder:text-gray-400 hover:border-white focus:border-white focus:outline-none transition-colors disabled:opacity-50"
                 />
                 <Button 
                   type="submit" 
                   variant="ghost" 
                   size="sm"
+                  disabled={loading}
                   aria-label="Subscribe"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white hover:text-primary-red"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white hover:text-primary-red disabled:opacity-50"
                 >
                   <ArrowRight size={16} />
                 </Button>
               </form>
+              {message && (
+                <p className={`text-xs mt-2 ${message.includes('Success') ? 'text-green-400' : 'text-red-400'}`}>
+                  {message}
+                </p>
+              )}
             </div>
 
             {/* Legal Links */}
@@ -224,9 +252,9 @@ const Footer = () => {
                 const separator = index < legalLinks.length - 1 ? ' | ' : '';
                 return (
                   <span key={link.text} className="inline">
-                    <a href={link.href} className="hover:text-gray-300 transition-colors inline">
+                    <Link to={link.href} className="hover:text-gray-300 transition-colors inline">
                       {link.text}
-                    </a>
+                    </Link>
                     {separator}
                   </span>
                 );

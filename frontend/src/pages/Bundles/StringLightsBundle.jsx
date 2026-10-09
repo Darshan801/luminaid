@@ -1,28 +1,12 @@
-import { useState } from 'react'
-import { Star, Truck, ThumbsUp, Shield, ChevronDown, Plus, Minus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Star, Truck, ThumbsUp, Shield, ChevronDown, Plus, Minus, Loader } from 'lucide-react'
+import { getProductsByCategory } from '../../services/productService'
+import { useCart } from '../../hooks/useCart'
+import { formatCurrency } from '../../utils/format'
 
 // Image from public folder
 const glowTimeImage = '/images/glow-time.jpg';
-
-// ============================================================================
-// CONSTANTS
-// ============================================================================
-
-const PRODUCT_IMAGES = [
-  '/images/products/StringLightatSunset.jpg',
-  '/images/products/StringLightatSunset.jpg',
-  '/images/products/StringLightatSunset.jpg',
-  '/images/products/StringLightatSunset.jpg',
-  '/images/products/StringLightatSunset.jpg',
-  '/images/products/StringLightatSunset.jpg',
-]
-
-const BUNDLE_INCLUDES = [
-  '4 x Solar String Lights (12 LEDs each)',
-  'Warm white LED color',
-  'Weather-resistant design',
-  'No batteries or outlets needed'
-]
 
 const PRODUCT_FEATURES = [
   {
@@ -46,12 +30,6 @@ const PRODUCT_FEATURES = [
     icon: '🔗'
   }
 ]
-
-const TESTIMONIAL = {
-  rating: 5,
-  text: "These string lights are absolutely perfect! They create such a warm, cozy atmosphere on our patio. Love that they're solar powered so no hassle with cords or batteries.",
-  author: "Jessica M."
-}
 
 const REVIEWS_DATA = [
   {
@@ -137,33 +115,6 @@ const QUESTIONS_DATA = [
   }
 ]
 
-const BESTSELLING_BUNDLES = [
-  {
-    id: 1,
-    name: 'String Light 4-Pack',
-    price: 250.00,
-    originalPrice: 300.00,
-    badge: 'BEST SELLER',
-    image: '/images/products/StringLightatSunset.jpg'
-  },
-  {
-    id: 2,
-    name: 'Titan 4-Pack',
-    price: 290.99,
-    originalPrice: 388.00,
-    badge: 'BEST SELLER',
-    image: '/images/products/0196-150_Max_QI_product_image.jpg'
-  },
-  {
-    id: 3,
-    name: 'SolarPal 5-Pack',
-    price: 99.99,
-    originalPrice: 150.00,
-    badge: 'BEST SELLER',
-    image: '/images/products/0196-150_Max_QI_product_image.jpg'
-  }
-]
-
 const FAQ_ITEMS = [
   {
     question: 'How long do the lights last on a full charge?',
@@ -187,6 +138,12 @@ const FAQ_ITEMS = [
   }
 ]
 
+const TESTIMONIAL = {
+  rating: 5,
+  text: "These string lights are absolutely perfect! They create such a warm, cozy atmosphere on our patio. Love that they're solar powered so no hassle with cords or batteries.",
+  author: "Jessica M."
+}
+
 // ============================================================================
 // TRUST BADGES COMPONENT
 // ============================================================================
@@ -196,7 +153,7 @@ const TrustBadges = () => (
     <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
       <div className="trust-badge flex flex-col items-center gap-3">
         <Truck size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">FREE U.S. SHIPPING $99+</p>
+        <p className="trust-badge__text font-bold text-black text-[15px]">FREE SHIPPING RS 99+</p>
       </div>
       <div className="trust-badge flex flex-col items-center gap-3">
         <ThumbsUp size={36} className="text-black" />
@@ -215,19 +172,128 @@ const TrustBadges = () => (
 // ============================================================================
 
 const StringLightsBundle = () => {
+  const navigate = useNavigate()
+  const { addToCart, loading: cartLoading } = useCart()
+
   // State Management
-  const [selectedImage, setSelectedImage] = useState(PRODUCT_IMAGES[0])
+  const [bundleProduct, setBundleProduct] = useState(null)
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const [selectedImage, setSelectedImage] = useState('')
   const [quantity, setQuantity] = useState(1)
   const [openFaq, setOpenFaq] = useState(null)
-  const [activeReviewTab, setActiveReviewTab] = useState('reviews') // 'reviews' or 'questions'
+  const [activeReviewTab, setActiveReviewTab] = useState('reviews')
   const [showQuestionModal, setShowQuestionModal] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [addingToCart, setAddingToCart] = useState(false)
 
-  const basePrice = 250.00
+  // Fetch String Lights bundle
+  useEffect(() => {
+    const fetchStringLightsBundle = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Fetch String Lights category
+        const response = await getProductsByCategory('String Lights', { 
+          limit: 20 
+        })
+        
+        const products = response.data || []
+
+        // Find String Light bundle product
+        const stringLightProduct = products.find(p => 
+          p.name.toLowerCase().includes('string light')
+        ) || products[0]
+
+        if (stringLightProduct) {
+          setBundleProduct(stringLightProduct)
+          setSelectedImage(stringLightProduct.images?.[0]?.url || '/images/products/StringLightatSunset.jpg')
+          
+          // Set related bundles
+          const related = products.filter(p => p._id !== stringLightProduct._id).slice(0, 3)
+          setRelatedProducts(related)
+        } else {
+          setError('No String Lights products found in database')
+        }
+      } catch (err) {
+        console.error('Error fetching String Lights bundle:', err)
+        setError(err.message || 'Failed to load bundle')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStringLightsBundle()
+  }, [])
+
+  // If no bundle product found, show error
+  if (!bundleProduct && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold text-black mb-4">Product Not Found</h1>
+          <p className="text-gray-600 mb-6">
+            No String Lights products found in the database. Please add products to continue.
+          </p>
+          <Link to="/products" className="text-primary-red underline">
+            Browse All Products
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const displayProduct = bundleProduct
+
+  // Set selected image if not already set
+  const currentImage = selectedImage || displayProduct?.images?.[0]?.url || '/images/products/StringLightatSunset.jpg'
+
+  const basePrice = displayProduct?.price || 0
   const totalPrice = (basePrice * quantity).toFixed(2)
 
   const handleIncrement = () => setQuantity(prev => prev + 1)
   const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1))
+
+  // Handle add to cart
+  // Handle add to cart
+  const handleAddToCart = async (productId, qty, productName) => {
+    if (!productId) {
+      alert('Product ID not found. Please refresh the page.')
+      return
+    }
+
+    try {
+      setAddingToCart(true)
+      const result = await addToCart(productId, qty || 1)
+      
+      if (result.success) {
+        alert(`Added ${qty || 1} x ${productName || 'product'} to cart!`)
+      } else {
+        alert(result.error || 'Failed to add to cart')
+      }
+    } catch (err) {
+      console.error('Add to cart error:', err)
+      alert('Failed to add to cart. Please try again.')
+    } finally {
+      setAddingToCart(false)
+    }
+  }
+
+  // Handle product click
+  const handleProductClick = (product) => {
+    navigate(`/products/${product.slug}`)
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="animate-spin h-12 w-12 text-primary-red" />
+      </div>
+    )
+  }
 
   return (
     <div className="string-lights-bundle w-full">
@@ -239,7 +305,7 @@ const StringLightsBundle = () => {
       <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto">
           <nav className="breadcrumb__nav text-sm text-gray-600">
-            <a href="/" className="hover:text-black">Home</a>
+            <Link to="/" className="hover:text-black">Home</Link>
             <span className="mx-2">/</span>
             <span className="text-black">Solar String Light 4-Pack</span>
           </nav>
@@ -259,8 +325,8 @@ const StringLightsBundle = () => {
               {/* Main Image */}
               <div className="product-gallery__main relative bg-gray-100 rounded-sm overflow-hidden mb-4">
                 <img 
-                  src={selectedImage} 
-                  alt="Solar String Light 4-Pack Bundle" 
+                  src={currentImage} 
+                  alt={displayProduct.name} 
                   className="w-full h-auto"
                 />
                 {/* Zoom Button */}
@@ -273,56 +339,69 @@ const StringLightsBundle = () => {
               </div>
 
               {/* Thumbnail Gallery */}
-              <div className="product-gallery__thumbnails grid grid-cols-6 gap-3">
-                {PRODUCT_IMAGES.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(img)}
-                    className={`product-gallery__thumbnail border-2 rounded overflow-hidden hover:border-primary-red transition-colors ${
-                      selectedImage === img ? 'border-black' : 'border-gray-300'
-                    }`}
-                  >
-                    <img 
-                      src={img} 
-                      alt={`View ${index + 1}`}
-                      className="w-full h-auto object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+              {displayProduct.images?.length > 1 && (
+                <div className="product-gallery__thumbnails grid grid-cols-6 gap-3">
+                  {displayProduct.images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(img.url)}
+                      className={`product-gallery__thumbnail border-2 rounded overflow-hidden hover:border-primary-red transition-colors ${
+                        currentImage === img.url ? 'border-black' : 'border-gray-300'
+                      }`}
+                    >
+                      <img 
+                        src={img.url} 
+                        alt={img.altText || `View ${index + 1}`}
+                        className="w-full h-auto object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Product Info */}
             <div className="product-info">
               {/* Title */}
               <h1 className="product-info__title text-[40px] font-heading font-bold text-black mb-4 leading-tight">
-                Solar String Light 4-Pack
+                {displayProduct.name}
               </h1>
 
               {/* Price */}
               <div className="product-info__pricing flex items-center gap-3 mb-4">
                 <span className="product-info__price text-[32px] font-bold text-primary-red">
-                  ${totalPrice} USD
+                  {formatCurrency(parseFloat(totalPrice))}
                 </span>
-                <span className="product-info__original-price text-[20px] text-gray-500 line-through">
-                  $300.00 USD
-                </span>
-                <span className="product-info__badge bg-primary-red text-white text-[11px] font-bold px-3 py-1 rounded uppercase tracking-wide">
-                  SAVE $45.00
-                </span>
+                {displayProduct.compareAtPrice > displayProduct.price && (
+                  <>
+                    <span className="product-info__original-price text-[20px] text-gray-500 line-through">
+                      {formatCurrency(displayProduct.compareAtPrice * quantity)}
+                    </span>
+                    <span className="product-info__badge bg-primary-red text-white text-[11px] font-bold px-3 py-1 rounded uppercase tracking-wide">
+                      SAVE {formatCurrency((displayProduct.compareAtPrice - displayProduct.price) * quantity)}
+                    </span>
+                  </>
+                )}
               </div>
 
               {/* Reviews */}
-              <div className="product-info__reviews flex items-center gap-2 mb-6 pb-6 border-b border-gray-200">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#E8C441" stroke="#E8C441" />
-                  ))}
+              {displayProduct.rating > 0 && (
+                <div className="product-info__reviews flex items-center gap-2 mb-6 pb-6 border-b border-gray-200">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        size={16} 
+                        fill={i < Math.floor(displayProduct.rating) ? "#E8C441" : "none"}
+                        stroke="#E8C441" 
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[14px] text-black">
+                    {displayProduct.reviewCount || 0} reviews
+                  </span>
                 </div>
-                <a href="#reviews" className="text-[14px] text-black underline hover:text-primary-red">
-                  32 reviews
-                </a>
-              </div>
+              )}
 
               {/* Color Selector */}
               <div className="product-info__color-selector mb-6">
@@ -362,40 +441,44 @@ const StringLightsBundle = () => {
               </div>
 
               {/* Add to Cart Button */}
-              <button className="product-info__add-button w-full bg-primary-red text-white font-bold py-4 rounded hover:bg-dark-red transition-colors mb-6 text-[16px] tracking-wide shadow-md">
-                Add to Cart
+              <button 
+                onClick={() => handleAddToCart(displayProduct._id, quantity, displayProduct.name)}
+                disabled={addingToCart || cartLoading || !displayProduct.inStock}
+                className="product-info__add-button w-full bg-primary-red text-white font-bold py-4 rounded hover:bg-dark-red transition-colors mb-6 text-[16px] tracking-wide shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {addingToCart ? (
+                  <>
+                    <Loader className="animate-spin h-5 w-5" />
+                    Adding...
+                  </>
+                ) : !displayProduct.inStock ? (
+                  'Out of Stock'
+                ) : (
+                  'Add to Cart'
+                )}
               </button>
 
               {/* Description */}
               <div className="product-info__description mb-6 pb-6 border-b border-gray-200">
                 <p className="text-[15px] text-gray-dark leading-relaxed">
-                  Meet the newest addition to the LuminAID lineup: our solar string light 
-                  that also does triple duty as a 300-lumen lantern and 2000mAh phone 
-                  charger! With 32 feet of warm white LED bulbs, you can add a magical 
-                  glow to your tent, RV, backyard, or bedroom.
+                  {displayProduct.description || displayProduct.shortDescription}
                 </p>
               </div>
 
               {/* Bundle Includes */}
-              <div className="product-info__includes">
-                <h3 className="text-[15px] font-bold text-black mb-3">This Bundle Includes:</h3>
-                <ul className="space-y-2">
-                  {BUNDLE_INCLUDES.map((item, index) => (
-                    <li key={index} className="flex items-start gap-2 text-[15px] text-gray-dark">
-                      <span className="text-black mt-1">•</span>
-                      <span>
-                        {index === 0 ? (
-                          <>
-                            4 x <span className="font-bold text-black">Solar String Light</span>
-                          </>
-                        ) : (
-                          item
-                        )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {displayProduct.features?.length > 0 && (
+                <div className="product-info__includes">
+                  <h3 className="text-[15px] font-bold text-black mb-3">This Bundle Includes:</h3>
+                  <ul className="space-y-2">
+                    {displayProduct.features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-2 text-[15px] text-gray-dark">
+                        <span className="text-black mt-1">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -445,81 +528,21 @@ const StringLightsBundle = () => {
 
           {/* Lifestyle Grid */}
           <div className="lifestyle__grid grid grid-cols-1 md:grid-cols-5 gap-8">
-            {/* Image 1 - Extra Long */}
-            <div className="lifestyle-card group">
-              <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
-                <img 
-                  src={PRODUCT_IMAGES[0]} 
-                  alt="Extra Long string lights" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
+            {/* Use product images or fallback */}
+            {(displayProduct.images || [{ url: '/images/products/StringLightatSunset.jpg' }]).slice(0, 5).map((img, index) => (
+              <div key={index} className="lifestyle-card group">
+                <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
+                  <img 
+                    src={img.url} 
+                    alt={img.altText || `Feature ${index + 1}`} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
+                  {['Extra Long', 'Charges Your Phone', 'Ready for Camping', 'Bright Enough to Read By', 'Perfect for Cozy Nights In'][index]}
+                </h3>
               </div>
-              <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
-                Extra Long
-              </h3>
-            </div>
-
-            {/* Image 2 - Charges Your Phone */}
-            <div className="lifestyle-card group">
-              <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
-                <img 
-                  src={PRODUCT_IMAGES[1]} 
-                  alt="Charges Your Phone" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
-                Charges Your Phone
-              </h3>
-            </div>
-
-            {/* Image 3 - Ready for Camping */}
-            <div className="lifestyle-card group">
-              <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
-                <img 
-                  src={PRODUCT_IMAGES[2]} 
-                  alt="Ready for Camping" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
-                Ready for Camping
-              </h3>
-            </div>
-
-            {/* Image 4 - Bright Enough to Read By */}
-            <div className="lifestyle-card group">
-              <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
-                <img 
-                  src={PRODUCT_IMAGES[3]} 
-                  alt="Bright Enough to Read By" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
-                Bright Enough to Read By
-              </h3>
-            </div>
-
-            {/* Image 5 - Perfect for Cozy Nights In */}
-            <div className="lifestyle-card group">
-              <div className="lifestyle-card__image-wrapper relative overflow-hidden rounded-sm mb-5 aspect-square bg-gray-900">
-                <img 
-                  src={PRODUCT_IMAGES[4]} 
-                  alt="Perfect for Cozy Nights In" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                {/* Arrow Navigation Button */}
-                <button className="lifestyle-card__nav absolute bottom-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors z-10">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </button>
-              </div>
-              <h3 className="lifestyle-card__title text-[18px] font-bold text-black text-center leading-snug">
-                Perfect for Cozy Nights In
-              </h3>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -528,49 +551,63 @@ const StringLightsBundle = () => {
       {/* BUNDLE AND SAVE SECTION */}
       {/* ============================================================================ */}
       
-      <section className="section--bestselling py-20 px-8 bg-gray-light">
-        <div className="max-w-[1280px] mx-auto">
-          <h2 className="bestselling__heading text-[32px] font-heading font-bold text-black text-center mb-14">
-            Bundle and Save
-          </h2>
+      {relatedProducts.length > 0 && (
+        <section className="section--bestselling py-20 px-8 bg-gray-light">
+          <div className="max-w-[1280px] mx-auto">
+            <h2 className="bestselling__heading text-[32px] font-heading font-bold text-black text-center mb-14">
+              Bundle and Save
+            </h2>
 
-          <div className="bestselling__grid grid grid-cols-1 md:grid-cols-3 gap-8">
-            {BESTSELLING_BUNDLES.map((bundle) => (
-              <div key={bundle.id} className="bundle-card group bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-                <div className="bundle-card__image-wrapper relative bg-gray-100">
-                  {bundle.badge && (
-                    <span className="bundle-card__badge absolute top-3 left-3 bg-primary-red text-white text-[10px] font-bold px-2.5 py-1.5 rounded uppercase tracking-wide z-10">
-                      {bundle.badge}
-                    </span>
-                  )}
-                  <img 
-                    src={bundle.image} 
-                    alt={bundle.name} 
-                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-
-                <div className="bundle-card__content p-5">
-                  <h3 className="bundle-card__title text-[16px] font-bold text-black mb-3">
-                    {bundle.name}
-                  </h3>
-                  <div className="bundle-card__pricing flex items-center gap-2 mb-4">
-                    <span className="bundle-card__price text-[18px] font-bold text-primary-red">
-                      ${bundle.price} USD
-                    </span>
-                    <span className="bundle-card__original-price text-[14px] text-gray-500 line-through">
-                      ${bundle.originalPrice.toFixed(2)}
-                    </span>
+            <div className="bestselling__grid grid grid-cols-1 md:grid-cols-3 gap-8">
+              {relatedProducts.map((product) => (
+                <div 
+                  key={product._id} 
+                  onClick={() => handleProductClick(product)}
+                  className="bundle-card group bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
+                >
+                  <div className="bundle-card__image-wrapper relative bg-gray-100">
+                    {product.bestseller && (
+                      <span className="bundle-card__badge absolute top-3 left-3 bg-primary-red text-white text-[10px] font-bold px-2.5 py-1.5 rounded uppercase tracking-wide z-10">
+                        BEST SELLER
+                      </span>
+                    )}
+                    <img 
+                      src={product.images?.[0]?.url || '/images/products/StringLightatSunset.jpg'} 
+                      alt={product.name} 
+                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                  <button className="bundle-card__button w-full bg-primary-red text-white font-bold py-3 rounded hover:bg-dark-red transition-colors text-[13px]">
-                    Add to Cart
-                  </button>
+
+                  <div className="bundle-card__content p-5">
+                    <h3 className="bundle-card__title text-[16px] font-bold text-black mb-3 line-clamp-2">
+                      {product.name}
+                    </h3>
+                    <div className="bundle-card__pricing flex items-center gap-2 mb-4">
+                      <span className="bundle-card__price text-[18px] font-bold text-primary-red">
+                        {formatCurrency(product.price)}
+                      </span>
+                      {product.compareAtPrice > product.price && (
+                        <span className="bundle-card__original-price text-[14px] text-gray-500 line-through">
+                          {formatCurrency(product.compareAtPrice)}
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleAddToCart(product._id, 1, product.name)
+                      }}
+                      className="bundle-card__button w-full bg-primary-red text-white font-bold py-3 rounded hover:bg-dark-red transition-colors text-[13px]"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ============================================================================ */}
       {/* CUSTOMER REVIEWS SECTION */}
@@ -629,11 +666,11 @@ const StringLightsBundle = () => {
             {/* Right Side - Customer Photos */}
             <div className="reviews__photos">
               <div className="grid grid-cols-4 gap-3">
-                {PRODUCT_IMAGES.slice(0, 4).map((img, index) => (
+                {(displayProduct.images || []).slice(0, 4).map((img, index) => (
                   <div key={index} className="reviews__photo aspect-square rounded overflow-hidden bg-gray-100">
                     <img 
-                      src={img} 
-                      alt={`Customer photo ${index + 1}`}
+                      src={img.url} 
+                      alt={img.altText || `Customer photo ${index + 1}`}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-300 cursor-pointer"
                     />
                   </div>

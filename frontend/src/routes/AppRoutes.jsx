@@ -5,6 +5,10 @@ import Home from '../pages/Home/Home'
 // Products
 import ProductsPage from '../pages/Products/ProductsPage'
 import ProductDetail from '../pages/Products/ProductDetail'
+import Accessories from '../pages/Products/Accessories'
+import SolarLanterns from '../pages/Products/SolarLanterns'
+import PowerLanterns from '../pages/Products/PowerLanterns'
+import Gifts from '../pages/Products/Gifts'
 
 // Cart
 import Cart from '../pages/Cart/Cart'
@@ -67,6 +71,10 @@ const AppRoutes = () => {
                 
                 {/* Products Routes */}
                 <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/accessories" element={<Accessories />} />
+                <Route path="/products/solar-lanterns" element={<SolarLanterns />} />
+                <Route path="/products/power-lanterns" element={<PowerLanterns />} />
+                <Route path="/products/gifts" element={<Gifts />} />
                 <Route path="/products/:slug" element={<ProductDetail />} />
                 
                 {/* Cart */}

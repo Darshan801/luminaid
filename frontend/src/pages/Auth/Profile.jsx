@@ -403,9 +403,9 @@ const Profile = () => {
                     Customer Tier: {user?.customerTier?.toUpperCase()}
                   </h3>
                   <p className="text-sm text-blue-700">
-                    {user?.customerTier === 'bronze' && 'Spend $100 to reach Silver tier'}
-                    {user?.customerTier === 'silver' && 'Spend $250 to reach Gold tier'}
-                    {user?.customerTier === 'gold' && 'Spend $500 to reach Platinum tier'}
+                    {user?.customerTier === 'bronze' && 'Spend RS 100 to reach Silver tier'}
+                    {user?.customerTier === 'silver' && 'Spend RS 250 to reach Gold tier'}
+                    {user?.customerTier === 'gold' && 'Spend RS 500 to reach Platinum tier'}
                     {user?.customerTier === 'platinum' && 'You are at the highest tier! Enjoy exclusive benefits.'}
                   </p>
                 </div>

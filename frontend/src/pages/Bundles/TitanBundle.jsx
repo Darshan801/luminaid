@@ -1,59 +1,13 @@
-import { useState } from 'react'
-import { Star, Truck, ThumbsUp, Shield } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Star, Truck, ThumbsUp, Shield, Loader } from 'lucide-react'
+import { getProductsByCategory } from '../../services/productService'
+import { useCart } from '../../hooks/useCart'
+import { formatCurrency } from '../../utils/format'
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-
-const PRODUCT_IMAGES = [
-  '/images/products/0196-150_Max_QI_product_image.jpg',
-  '/images/products/0196-150_Max_QI_product_image.jpg',
-  '/images/products/0196-150_Max_QI_product_image.jpg',
-  '/images/products/0196-150_Max_QI_product_image.jpg',
-]
-
-const BUNDLE_INCLUDES = [
-  '4 x SolarPal Titan 2-in-1 Power Lanterns'
-]
-
-const BESTSELLING_BUNDLES = [
-  {
-    id: 1,
-    name: 'Titan 4-Pack',
-    price: 290.99,
-    originalPrice: 388.00,
-    badge: 'BEST SELLER',
-    quantity: 'x 4',
-    image: '/images/products/0196-150_Max_QI_product_image.jpg'
-  },
-  {
-    id: 2,
-    name: 'Solar String Light 4-Pack',
-    price: 250.00,
-    originalPrice: 300.00,
-    badge: 'BEST SELLER',
-    quantity: 'x 4',
-    image: '/images/products/StringLightatSunset.jpg'
-  },
-  {
-    id: 3,
-    name: 'SolarPal 5-Pack',
-    price: 99.99,
-    originalPrice: 150.00,
-    badge: 'BEST SELLER',
-    quantity: 'x 5',
-    image: '/images/products/0196-150_Max_QI_product_image.jpg'
-  },
-  {
-    id: 4,
-    name: 'Max 3-Pack',
-    price: 165.99,
-    originalPrice: 200.00,
-    badge: 'BEST SELLER',
-    quantity: 'x 3',
-    image: '/images/products/0196-150_Max_QI_product_image.jpg'
-  }
-]
 
 const TESTIMONIAL = {
   rating: 5,
@@ -70,7 +24,7 @@ const TrustBadges = () => (
     <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
       <div className="trust-badge flex flex-col items-center gap-3">
         <Truck size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">FREE U.S. SHIPPING $99+</p>
+        <p className="trust-badge__text font-bold text-black text-[15px]">FREE U.S. SHIPPING RS 99+</p>
       </div>
       <div className="trust-badge flex flex-col items-center gap-3">
         <ThumbsUp size={36} className="text-black" />
@@ -89,8 +43,116 @@ const TrustBadges = () => (
 // ============================================================================
 
 const TitanBundle = () => {
+  const navigate = useNavigate()
+  const { addToCart, loading: cartLoading } = useCart()
+
   // State Management
-  const [selectedImage, setSelectedImage] = useState(PRODUCT_IMAGES[0])
+  const [bundleProduct, setBundleProduct] = useState(null)
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const [selectedImage, setSelectedImage] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [addingToCart, setAddingToCart] = useState(false)
+
+  // Fetch Titan bundle products
+  useEffect(() => {
+    const fetchTitanBundle = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Fetch Bundles or Power Lanterns category
+        const response = await getProductsByCategory('Bundles', { 
+          limit: 20 
+        })
+        
+        const products = response.data || []
+
+        // Find Titan bundle product (look for "titan" in name)
+        const titanProduct = products.find(p => 
+          p.name.toLowerCase().includes('titan')
+        ) || products[0]
+
+        if (titanProduct) {
+          setBundleProduct(titanProduct)
+          setSelectedImage(titanProduct.images?.[0]?.url || '/images/products/0196-150_Max_QI_product_image.jpg')
+          
+          // Set related bundles (exclude main product)
+          const related = products.filter(p => p._id !== titanProduct._id).slice(0, 4)
+          setRelatedProducts(related)
+        } else {
+          setError('No Titan products found in database')
+        }
+      } catch (err) {
+        console.error('Error fetching Titan bundle:', err)
+        setError(err.message || 'Failed to load bundle')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTitanBundle()
+  }, [])
+
+  // Handle add to cart
+  const handleAddToCart = async (productId, productName) => {
+    if (!productId) {
+      alert('Product ID not found. Please refresh the page.')
+      return
+    }
+
+    try {
+      setAddingToCart(true)
+      const result = await addToCart(productId, 1)
+      
+      if (result.success) {
+        alert(`Added ${productName || 'product'} to cart!`)
+      } else {
+        alert(result.error || 'Failed to add to cart')
+      }
+    } catch (err) {
+      console.error('Add to cart error:', err)
+      alert('Failed to add to cart. Please try again.')
+    } finally {
+      setAddingToCart(false)
+    }
+  }
+
+  // Handle product click
+  const handleProductClick = (product) => {
+    navigate(`/products/${product.slug}`)
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="animate-spin h-12 w-12 text-primary-red" />
+      </div>
+    )
+  }
+
+  // If no bundle product found, show error
+  if (!bundleProduct && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold text-black mb-4">Product Not Found</h1>
+          <p className="text-gray-600 mb-6">
+            No Titan products found in the database. Please add products to continue.
+          </p>
+          <Link to="/products" className="text-primary-red underline">
+            Browse All Products
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const displayProduct = bundleProduct
+
+  // Set selected image if not already set
+  const currentImage = selectedImage || displayProduct?.images?.[0]?.url || '/images/products/0196-150_Max_QI_product_image.jpg'
 
   return (
     <div className="titan-bundle w-full">
@@ -102,7 +164,9 @@ const TitanBundle = () => {
       <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto">
           <nav className="breadcrumb__nav text-sm text-gray-600">
-            <a href="/" className="hover:text-black">Home</a>
+            <Link to="/" className="hover:text-black">Home</Link>
+            <span className="mx-2">/</span>
+            <Link to="/bundles/titan" className="hover:text-black">Bundles</Link>
             <span className="mx-2">/</span>
             <span className="text-black">Titan 4-Pack</span>
           </nav>
@@ -125,83 +189,129 @@ const TitanBundle = () => {
                   <span className="text-2xl font-bold text-black">x 4</span>
                 </div>
                 <img 
-                  src={selectedImage} 
-                  alt="Titan 4-Pack Bundle" 
+                  src={currentImage} 
+                  alt={displayProduct.name} 
                   className="w-full h-auto"
                 />
               </div>
 
               {/* Thumbnail Gallery */}
-              <div className="product-gallery__thumbnails grid grid-cols-4 gap-3">
-                {PRODUCT_IMAGES.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(img)}
-                    className={`product-gallery__thumbnail border-2 rounded overflow-hidden hover:border-primary-red transition-colors ${
-                      selectedImage === img ? 'border-primary-red' : 'border-gray-300'
-                    }`}
-                  >
-                    <img 
-                      src={img} 
-                      alt={`View ${index + 1}`}
-                      className="w-full h-auto object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+              {displayProduct.images?.length > 1 && (
+                <div className="product-gallery__thumbnails grid grid-cols-4 gap-3">
+                  {displayProduct.images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(img.url)}
+                      className={`product-gallery__thumbnail border-2 rounded overflow-hidden hover:border-primary-red transition-colors ${
+                        currentImage === img.url ? 'border-primary-red' : 'border-gray-300'
+                      }`}
+                    >
+                      <img 
+                        src={img.url} 
+                        alt={img.altText || `View ${index + 1}`}
+                        className="w-full h-auto object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Product Info */}
             <div className="product-info">
               {/* Title */}
               <h1 className="product-info__title text-[36px] font-heading font-bold text-black mb-3">
-                Titan 4-Pack
+                {displayProduct.name}
               </h1>
+
+              {/* Rating */}
+              {displayProduct.rating > 0 && (
+                <div className="product-info__reviews flex items-center gap-2 mb-4">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        size={16} 
+                        fill={i < Math.floor(displayProduct.rating) ? "#E8C441" : "none"} 
+                        stroke="#E8C441" 
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[14px] text-gray-600">
+                    {displayProduct.rating} ({displayProduct.reviewCount || 0} reviews)
+                  </span>
+                </div>
+              )}
 
               {/* Price */}
               <div className="product-info__pricing flex items-center gap-3 mb-6">
                 <span className="product-info__price text-[28px] font-bold text-primary-red">
-                  $290.99 USD
+                  {formatCurrency(displayProduct.price)}
                 </span>
-                <span className="product-info__original-price text-[20px] text-gray-500 line-through">
-                  $388.00 USD
-                </span>
-                <span className="product-info__badge bg-primary-red text-white text-[11px] font-bold px-2 py-1 rounded uppercase tracking-wide">
-                  BEST SELLER
-                </span>
+                {displayProduct.compareAtPrice > displayProduct.price && (
+                  <>
+                    <span className="product-info__original-price text-[20px] text-gray-500 line-through">
+                      {formatCurrency(displayProduct.compareAtPrice)}
+                    </span>
+                    <span className="product-info__badge bg-primary-red text-white text-[11px] font-bold px-2 py-1 rounded uppercase tracking-wide">
+                      SAVE {formatCurrency(displayProduct.compareAtPrice - displayProduct.price)}
+                    </span>
+                  </>
+                )}
               </div>
 
+              {/* Badges */}
+              {displayProduct.bestseller && (
+                <div className="mb-4">
+                  <span className="bg-primary-red text-white text-[11px] font-bold px-3 py-1 rounded uppercase">
+                    BEST SELLER
+                  </span>
+                </div>
+              )}
+
               {/* Add to Cart Button */}
-              <button className="product-info__add-button w-full bg-primary-red text-white font-bold py-4 rounded hover:bg-dark-red transition-colors mb-6 text-[15px] tracking-wide shadow-md">
-                Add to Cart
+              <button 
+                onClick={() => handleAddToCart(displayProduct._id, displayProduct.name)}
+                disabled={addingToCart || cartLoading || !displayProduct.inStock}
+                className="product-info__add-button w-full bg-primary-red text-white font-bold py-4 rounded hover:bg-dark-red transition-colors mb-6 text-[15px] tracking-wide shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {addingToCart ? (
+                  <>
+                    <Loader className="animate-spin h-5 w-5" />
+                    Adding...
+                  </>
+                ) : !displayProduct.inStock ? (
+                  'Out of Stock'
+                ) : (
+                  'Add to Cart'
+                )}
               </button>
 
               {/* Description */}
               <div className="product-info__description mb-6">
                 <p className="text-[15px] text-gray-dark leading-relaxed mb-4">
-                  For all adventurers: try night to try day. The Titan is our most popular 
-                  product: 300 lumens of ultra-bright, inflatable like a roll light mode, 
-                  and high efficiency solar power. Plus, a USB port for keeping your 
-                  on-while modern art, and you can try roving with life on or off.
+                  {displayProduct.description || displayProduct.shortDescription}
                 </p>
               </div>
 
-              {/* Bundle Includes */}
-              <div className="product-info__includes mb-6">
-                <h3 className="text-[15px] font-bold text-black mb-3">This Bundle Includes:</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {BUNDLE_INCLUDES.map((item, index) => (
-                    <li key={index} className="text-[14px] text-gray-dark">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* Features */}
+              {displayProduct.features?.length > 0 && (
+                <div className="product-info__includes mb-6">
+                  <h3 className="text-[15px] font-bold text-black mb-3">Features:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {displayProduct.features.map((feature, index) => (
+                      <li key={index} className="text-[14px] text-gray-dark">
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Shipping Notice */}
               <div className="product-info__shipping bg-gray-light px-6 py-4 rounded text-center">
                 <p className="text-[14px] font-bold text-black">
-                  FREE U.S. Shipping over $99!
+                  {displayProduct.freeShipping ? 'FREE SHIPPING!' : 'FREE U.S. Shipping over RS 99!'}
                 </p>
               </div>
             </div>
@@ -247,53 +357,67 @@ const TitanBundle = () => {
       {/* BESTSELLING BUNDLES SECTION */}
       {/* ============================================================================ */}
       
-      <section className="section--bestselling py-20 px-8 bg-white">
-        <div className="max-w-[1280px] mx-auto">
-          {/* Section Header */}
-          <h2 className="bestselling__heading text-[32px] font-heading font-bold text-black text-center mb-14">
-            Shop Bestselling Bundles
-          </h2>
+      {relatedProducts.length > 0 && (
+        <section className="section--bestselling py-20 px-8 bg-white">
+          <div className="max-w-[1280px] mx-auto">
+            {/* Section Header */}
+            <h2 className="bestselling__heading text-[32px] font-heading font-bold text-black text-center mb-14">
+              Shop Bestselling Bundles
+            </h2>
 
-          {/* Bundle Grid */}
-          <div className="bestselling__grid grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {BESTSELLING_BUNDLES.map((bundle) => (
-              <div key={bundle.id} className="bundle-card group">
-                {/* Image */}
-                <div className="bundle-card__image-wrapper relative bg-gray-100 rounded-t overflow-hidden mb-4">
-                  {bundle.badge && (
-                    <span className="bundle-card__badge absolute top-3 left-3 bg-primary-red text-white text-[10px] font-bold px-2.5 py-1.5 rounded uppercase tracking-wide">
-                      {bundle.badge}
-                    </span>
-                  )}
-                  <div className="bundle-card__quantity absolute top-3 right-3 bg-white px-3 py-1 rounded shadow-sm">
-                    <span className="text-sm font-bold text-black">{bundle.quantity}</span>
+            {/* Bundle Grid */}
+            <div className="bestselling__grid grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedProducts.map((product) => (
+                <div 
+                  key={product._id} 
+                  onClick={() => handleProductClick(product)}
+                  className="bundle-card group cursor-pointer"
+                >
+                  {/* Image */}
+                  <div className="bundle-card__image-wrapper relative bg-gray-100 rounded-t overflow-hidden mb-4">
+                    {product.bestseller && (
+                      <span className="bundle-card__badge absolute top-3 left-3 bg-primary-red text-white text-[10px] font-bold px-2.5 py-1.5 rounded uppercase tracking-wide z-10">
+                        BEST SELLER
+                      </span>
+                    )}
+                    <img 
+                      src={product.images?.[0]?.url || '/images/products/0196-150_Max_QI_product_image.jpg'} 
+                      alt={product.name} 
+                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                  <img 
-                    src={bundle.image} 
-                    alt={bundle.name} 
-                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
 
-                {/* Info */}
-                <div className="bundle-card__content">
-                  <h3 className="bundle-card__title text-[15px] font-bold text-black mb-2 group-hover:text-primary-red transition-colors">
-                    {bundle.name}
-                  </h3>
-                  <div className="bundle-card__pricing flex items-center gap-2 mb-3">
-                    <span className="bundle-card__price text-[15px] font-bold text-black">
-                      ${bundle.price} USD
-                    </span>
-                    <span className="bundle-card__original-price text-[13px] text-gray-500 line-through">
-                      ${bundle.originalPrice.toFixed(2)}
-                    </span>
+                  {/* Info */}
+                  <div className="bundle-card__content">
+                    <h3 className="bundle-card__title text-[15px] font-bold text-black mb-2 group-hover:text-primary-red transition-colors line-clamp-2">
+                      {product.name}
+                    </h3>
+                    <div className="bundle-card__pricing flex items-center gap-2 mb-3">
+                      <span className="bundle-card__price text-[15px] font-bold text-black">
+                        {formatCurrency(product.price)}
+                      </span>
+                      {product.compareAtPrice > product.price && (
+                        <span className="bundle-card__original-price text-[13px] text-gray-500 line-through">
+                          {formatCurrency(product.compareAtPrice)}
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleAddToCart(product._id, product.name)
+                      }}
+                      className="w-full bg-primary-red text-white font-bold py-2 rounded hover:bg-dark-red transition-colors text-[13px]"
+                    >
+                      Add to Cart
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <TrustBadges />
 

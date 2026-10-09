@@ -248,12 +248,12 @@ const ProductDetail = () => {
             {/* Price */}
             <div className="flex items-baseline gap-3 pb-6 border-b">
               <span className="text-4xl font-bold text-gray-900">
-                ${product.price.toFixed(2)}
+                RS {product.price.toFixed(2)}
               </span>
               {onSale && (
                 <>
                   <span className="text-2xl text-gray-500 line-through">
-                    ${product.compareAtPrice.toFixed(2)}
+                    RS {product.compareAtPrice.toFixed(2)}
                   </span>
                   <span className="text-lg font-bold text-green-600">
                     Save {discount}%
@@ -353,7 +353,7 @@ const ProductDetail = () => {
               <div className="text-center">
                 <Truck size={32} className="mx-auto mb-2 text-gray-700" />
                 <p className="text-xs font-semibold text-gray-700">Free Shipping</p>
-                <p className="text-xs text-gray-500">Orders $99+</p>
+                <p className="text-xs text-gray-500">Orders RS 99+</p>
               </div>
               <div className="text-center">
                 <Shield size={32} className="mx-auto mb-2 text-gray-700" />
@@ -555,9 +555,9 @@ const ProductDetail = () => {
                 </tr>
                 <tr>
                   <td className="p-4 font-semibold">Price</td>
-                  <td className="p-4 text-center bg-primary-red/5 font-bold">$88</td>
-                  <td className="p-4 text-center font-bold">$115</td>
-                  <td className="p-4 text-center font-bold">$60</td>
+                  <td className="p-4 text-center bg-primary-red/5 font-bold">RS 88</td>
+                  <td className="p-4 text-center font-bold">RS 115</td>
+                  <td className="p-4 text-center font-bold">RS 60</td>
                 </tr>
               </tbody>
             </table>
@@ -667,7 +667,7 @@ const ProductDetail = () => {
                 <div className="px-6 pb-6 space-y-4 text-gray-700">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Shipping</h4>
-                    <p>Free standard shipping on orders over $99. Orders typically ship within 1-2 business days.</p>
+                    <p>Free standard shipping on orders over RS 99. Orders typically ship within 1-2 business days.</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Returns</h4>

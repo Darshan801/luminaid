@@ -152,10 +152,10 @@ const Cart = () => {
                             {/* Price */}
                             <div className="text-right">
                               <p className="text-lg font-bold text-gray-900">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                RS {(item.price * item.quantity).toFixed(2)}
                               </p>
                               <p className="text-sm text-gray-600">
-                                ${item.price.toFixed(2)} each
+                                RS {item.price.toFixed(2)} each
                               </p>
                             </div>
                           </div>
@@ -207,36 +207,36 @@ const Cart = () => {
                 <div className="space-y-3 mb-4 pb-4 border-b border-gray-200">
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>RS {subtotal.toFixed(2)}</span>
                   </div>
                   
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600">
                       <span>Discount</span>
-                      <span>-${discount.toFixed(2)}</span>
+                      <span>-RS {discount.toFixed(2)}</span>
                     </div>
                   )}
                   
                   <div className="flex justify-between text-gray-700">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `RS ${shipping.toFixed(2)}`}</span>
                   </div>
                   
                   <div className="flex justify-between text-gray-700">
                     <span>Tax (estimated)</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>RS {tax.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="flex justify-between text-lg font-bold text-gray-900 mb-6">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>RS {total.toFixed(2)}</span>
                 </div>
 
                 {subtotal > 0 && subtotal < 99 && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                     <p className="text-sm text-blue-800">
-                      Add <strong>${(99 - subtotal).toFixed(2)}</strong> more for FREE shipping!
+                      Add <strong>RS {(99 - subtotal).toFixed(2)}</strong> more for FREE shipping!
                     </p>
                   </div>
                 )}
@@ -260,7 +260,7 @@ const Cart = () => {
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <span className="text-green-600">✓</span>
-                      <span>Free shipping over $99</span>
+                      <span>Free shipping over RS 99</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-green-600">✓</span>

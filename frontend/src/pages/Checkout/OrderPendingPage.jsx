@@ -53,7 +53,7 @@ const OrderPendingPage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Order Total:</span>
-                  <span className="font-semibold text-gray-900">${order.total.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-900">RS {order.total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Status:</span>

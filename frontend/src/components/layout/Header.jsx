@@ -66,13 +66,13 @@ const Header = () => {
       <div className="relative max-w-[1280px] mx-auto px-8 h-[72px] flex items-center justify-between">
 
         {/* logo  */}
-        <a href="/" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img 
             src={logoImage} 
             alt="LuminAID" 
             className="h-10 w-auto"
           />
-        </a>
+        </Link>
 
         {/* navigations (centered) */}
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-0 h-full -translate-x-1/2">

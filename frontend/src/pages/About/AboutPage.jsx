@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 
 const AboutPage = () => {
   // Image paths from public folder
@@ -14,18 +15,21 @@ const AboutPage = () => {
       <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto">
           <nav className="breadcrumb__nav text-sm text-gray-600">
-            <a href="/" className="hover:text-black">Home</a>
+            <Link to="/" className="hover:text-black">Home</Link>
             <span className="mx-2">/</span>
-            <a href="/about" className="hover:text-black">About luminaid</a>
+            <Link to="/about" className="hover:text-black">About luminaid</Link>
           </nav>
         </div>
       </section>
 
       {/* Page Title */}
-      <section className="w-full py-16 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+      <section className="w-full py-16 text-center bg-gradient-to-b from-gray-50 to-white">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-4">
           About LuminAID
         </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          Bringing safe, sustainable light to communities around the world
+        </p>
       </section>
 
 
@@ -36,11 +40,11 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-12">
             
             {/* Left - Image */}
-            <div>
+            <div className="overflow-hidden rounded-sm">
               <img
                 src={foundersImage}
                 alt="As Seen on Shark Tank: LuminAID's Founders Anna Stork and Andrea Sreshta with a Power Lantern Prototype"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
 
@@ -145,12 +149,12 @@ const AboutPage = () => {
                 need.
               </p>
 
-              <a
-                href="/give-light"
-                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-colors"
+              <Link
+                to="/give-light"
+                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-all duration-300 transform hover:scale-105"
               >
                 GET INVOLVED
-              </a>
+              </Link>
 
             </div>
 
@@ -185,12 +189,12 @@ const AboutPage = () => {
                 the world are using LuminAID lights in creative ways every day.
               </p>
 
-              <a
-                href="/products"
-                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-colors"
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-all duration-300 transform hover:scale-105"
               >
                 SHOP NOW
-              </a>
+              </Link>
 
             </div>
 
@@ -250,10 +254,12 @@ const AboutPage = () => {
               </p>
 
               <a
-                href="#"
-                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-colors"
+                href="https://www.youtube.com/results?search_query=luminaid+shark+tank"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-all duration-300 transform hover:scale-105"
               >
-                LEARN MORE
+                WATCH ON SHARK TANK
               </a>
 
             </div>

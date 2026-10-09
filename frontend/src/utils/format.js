@@ -1,13 +1,10 @@
 /**
- * Format a number as currency (USD)
+ * Format a number as currency (RS)
  * @param {number} amount - The amount to format
  * @returns {string} - Formatted currency string
  */
 export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount);
+  return `RS ${amount.toFixed(2)}`;
 };
 
 /**

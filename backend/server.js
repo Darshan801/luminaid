@@ -16,6 +16,7 @@ const cloudinaryRoutes = require('./routes/cloudinaryRoutes');
 const authRoutes = require('./routes/authRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 
 const app = express();
 
@@ -131,6 +132,7 @@ app.use('/api/cloudinary', cloudinaryRoutes);
 app.use('/api/auth', authLimiter, authRoutes); // Apply stricter rate limit to auth
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/support', supportRoutes);
 
 // 404 handler
 app.use((req, res) => {

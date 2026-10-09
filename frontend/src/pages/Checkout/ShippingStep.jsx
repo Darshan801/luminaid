@@ -238,7 +238,7 @@ const ShippingStep = () => {
                   </div>
                 </div>
                 <div className="font-semibold text-gray-900">
-                  ${option.cost.toFixed(2)}
+                  RS {option.cost.toFixed(2)}
                 </div>
               </label>
             ))}

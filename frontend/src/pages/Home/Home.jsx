@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom'
 import { Star, Accessibility, Truck, ThumbsUp, Shield, Play, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import backgroundImage from '../../assets/images/background.webp?url'
 import disasterResponseBg from '../../assets/images/Lumen_Rewards_Page.jpg?url'
+import ProductCard from '../../components/products/ProductCard'
+import { get } from '../../services/api'
+import { productTypes } from '../../data/categories'
+import { testimonials } from '../../data/testimonials'
+import { pressLogos } from '../../data/press'
+import { partners } from '../../data/partners'
 
 // Using local SVG placeholders to avoid external requests
 const createPlaceholderSVG = (text, width, height, bgColor = '#f5f5f5') => {
@@ -16,15 +22,6 @@ const createPlaceholderSVG = (text, width, height, bgColor = '#f5f5f5') => {
 
 const storyVideoThumb = createPlaceholderSVG('Story Video', 800, 450, '#2b2b2b')
 const worldMap = createPlaceholderSVG('World Map', 800, 400)
-
-import Card from '../../components/common/Card'
-import ProductCard from '../../components/products/ProductCard'
-import { getFeaturedProducts } from '../../services/productService'
-import { productTypes } from '../../data/categories'
-import { testimonials } from '../../data/testimonials'
-import { pressLogos } from '../../data/press'
-import { partners } from '../../data/partners'
-import { latestReviews } from '../../data/reviews'
 
 // ============================================================================
 // CONSTANTS
@@ -57,7 +54,7 @@ const TrustBadges = () => (
     <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
       <div className="flex flex-col items-center gap-3">
         <Truck size={36} className="text-black" />
-        <p className="font-bold text-black text-[15px]">Free US Shipping $99+</p>
+        <p className="font-bold text-black text-[15px]">Free US Shipping RS 99+</p>
       </div>
       <div className="flex flex-col items-center gap-3">
         <ThumbsUp size={36} className="text-black" />
@@ -81,15 +78,22 @@ const Home = () => {
   const [amount, setAmount] = useState(AMOUNTS[0])
   const [openHelp, setOpenHelp] = useState(null)
   const [featuredProducts, setFeaturedProducts] = useState([])
+  const [bestsellers, setBestsellers] = useState([])
+  const [categories, setCategories] = useState([])
+  const [latestReviews, setLatestReviews] = useState([])
   const [loadingProducts, setLoadingProducts] = useState(true)
+  const [loadingBestsellers, setLoadingBestsellers] = useState(true)
+  const [loadingReviews, setLoadingReviews] = useState(true)
 
-  // Fetch featured products
+  // Fetch featured products (Top Picks)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoadingProducts(true)
-        const products = await getFeaturedProducts(4)
-        setFeaturedProducts(products)
+        const response = await get('/products/featured')
+        if (response.success) {
+          setFeaturedProducts(response.data.slice(0, 4))
+        }
       } catch (error) {
         console.error('Failed to fetch featured products:', error)
       } finally {
@@ -97,6 +101,87 @@ const Home = () => {
       }
     }
     fetchProducts()
+  }, [])
+
+  // Fetch bestsellers
+  useEffect(() => {
+    const fetchBestsellers = async () => {
+      try {
+        setLoadingBestsellers(true)
+        const response = await get('/products/bestsellers')
+        if (response.success) {
+          setBestsellers(response.data.slice(0, 4))
+        }
+      } catch (error) {
+        console.error('Failed to fetch bestsellers:', error)
+      } finally {
+        setLoadingBestsellers(false)
+      }
+    }
+    fetchBestsellers()
+  }, [])
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await get('/products/categories/list')
+        if (response.success) {
+          setCategories(response.data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error)
+        // Fallback to static categories
+        setCategories(productTypes.map(type => type.name))
+      }
+    }
+    fetchCategories()
+  }, [])
+
+  // Fetch latest reviews (mock data for now - you can create a reviews endpoint later)
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setLoadingReviews(true)
+        // For now, use static data
+        // You can create an API endpoint later: await get('/reviews/latest')
+        const mockReviews = [
+          {
+            id: 1,
+            author: 'Sarah M.',
+            rating: 5,
+            text: 'These solar lanterns are amazing! Perfect for camping trips.',
+            product: 'PackLite Titan 2-in-1',
+            productImage: '/images/products/0196-150_Max_QI_product_image.jpg',
+            verified: true
+          },
+          {
+            id: 2,
+            author: 'John D.',
+            rating: 5,
+            text: 'Great quality and bright light. Charges my phone too!',
+            product: 'PackLite Max',
+            productImage: '/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
+            verified: true
+          },
+          {
+            id: 3,
+            author: 'Emily R.',
+            rating: 5,
+            text: 'Love the string lights for our backyard. Creates perfect ambiance.',
+            product: 'Solar String Lights',
+            productImage: '/images/products/StringLightatSunset.jpg',
+            verified: true
+          }
+        ]
+        setLatestReviews(mockReviews)
+      } catch (error) {
+        console.error('Failed to fetch reviews:', error)
+      } finally {
+        setLoadingReviews(false)
+      }
+    }
+    fetchReviews()
   }, [])
 
   // Give Light Images
@@ -175,20 +260,20 @@ const Home = () => {
             {/* Description */}
             <div className="hero__text text-white text-[15px] leading-7">
               <p>
-                Light up fall nights with <a href="/collections/power-lanterns" className="underline underline-offset-2 hover:text-gray-100">Power Lanterns</a>,{' '}
-                <a href="/products/solar-string-light" className="underline underline-offset-2 hover:text-gray-100">String Lights</a>, and{' '}
-                <a href="/collections/accessories" className="underline underline-offset-2 hover:text-gray-100">Outdoor Gear</a>!
+                Light up fall nights with <Link to="/products/power-lanterns" className="underline underline-offset-2 hover:text-gray-100">Power Lanterns</Link>,{' '}
+                <Link to="/products/solar-lights" className="underline underline-offset-2 hover:text-gray-100">String Lights</Link>, and{' '}
+                <Link to="/collections/accessories" className="underline underline-offset-2 hover:text-gray-100">Outdoor Gear</Link>!
               </p>
             </div>
 
             {/* CTA Button */}
             <div className="hero__button-wrapper pt-3">
-              <a 
-                href="/collections/solar-lanterns" 
+              <Link 
+                to="/collections/solar-lanterns" 
                 className="inline-block bg-primary-red hover:bg-red-700 text-white font-bold px-7 py-3 text-xs tracking-widest transition-colors rounded shadow-lg"
               >
                 SHOP BESTSELLERS
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -261,12 +346,12 @@ const Home = () => {
 
           {/* Load More Button */}
           <div className="top-picks__button-wrapper text-center mt-14">
-            <a 
-              href="/collections/gifts" 
+            <Link 
+              to="/products" 
               className="inline-flex items-center gap-2 bg-primary-red text-white font-bold px-10 py-4 rounded hover:bg-dark-red transition-colors shadow-md text-[13px] tracking-wide"
             >
               + Load More Products
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -289,8 +374,8 @@ const Home = () => {
             {productTypes.map((type) => (
               <div key={type.title} className="product-type text-center w-44">
                 {/* Circle Image */}
-                <a 
-                  href={type.link} 
+                <Link 
+                  to={type.link} 
                   className="product-type__image-link block w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden shadow-md hover:shadow-xl transition-shadow"
                 >
                   <img 
@@ -298,7 +383,7 @@ const Home = () => {
                     alt={type.title} 
                     className="product-type__image w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
                   />
-                </a>
+                </Link>
 
                 {/* Title */}
                 <h3 className="product-type__title font-bold text-black text-[17px] mb-3">
@@ -311,12 +396,12 @@ const Home = () => {
                 </p>
 
                 {/* CTA Button */}
-                <a 
-                  href={type.link} 
+                <Link 
+                  to={type.link} 
                   className="product-type__button inline-block bg-primary-red text-white font-bold text-[13px] px-7 py-3 rounded hover:bg-dark-red transition-colors shadow-md tracking-wide"
                 >
                   Shop Now
-                </a>
+                </Link>
               </div>
             ))}
           </div>
@@ -353,12 +438,12 @@ const Home = () => {
           <p className="give-light-banner__text text-[17px] leading-relaxed mb-10">
             Help us provide solar lanterns and phone chargers with a Give Light sponsorship:
           </p>
-          <a 
-            href="/products/give-light" 
+          <Link 
+            to="/give-light" 
             className="give-light-banner__button inline-block bg-white text-black font-bold px-10 py-4 rounded hover:bg-gray-200 transition-colors shadow-lg text-[13px] tracking-wide"
           >
             Learn More
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -406,7 +491,7 @@ const Home = () => {
               Give Light
             </h3>
             <p className="product-widget__price text-[26px] text-black mb-8">
-              ${amount.toFixed(2)} USD
+              RS {amount.toFixed(2)}
             </p>
 
             {/* Cause Selector */}
@@ -433,7 +518,7 @@ const Home = () => {
                 onChange={(e) => setAmount(Number(e.target.value))}
                 className="product-widget__select w-full border border-gray-300 rounded px-4 py-3 text-[15px] focus:border-primary-red focus:outline-none"
               >
-                {AMOUNTS.map((a) => <option key={a} value={a}>${a}</option>)}
+                {AMOUNTS.map((a) => <option key={a} value={a}>RS {a}</option>)}
               </select>
             </div>
 
@@ -444,7 +529,7 @@ const Home = () => {
 
             {/* Help Link */}
             <p className="product-widget__help-link text-[14px] text-gray-medium mb-6">
-              <a href="/pages/faq" className="underline hover:text-black">Need help?</a>
+              <Link to="/support/contact" className="underline hover:text-black">Need help?</Link>
             </p>
 
             {/* Accordion */}
@@ -472,7 +557,7 @@ const Home = () => {
 
             {/* Shipping Notice */}
             <p className="product-widget__shipping-notice text-[14px] font-bold text-center text-black mt-8 pt-8 border-t border-gray-200">
-              FREE U.S. Shipping over $99!
+              FREE U.S. Shipping over RS 99!
             </p>
           </div>
         </div>
@@ -671,12 +756,12 @@ const Home = () => {
         </h2>
         
         {/* CTA Button */}
-        <a 
-          href="/pages/give-light" 
+        <Link 
+          to="/give-light" 
           className="partners__button inline-block bg-primary-red text-white font-bold text-sm px-10 py-3.5 rounded hover:bg-dark-red transition-colors mb-16 tracking-wide"
         >
           GET INVOLVED
-        </a>
+        </Link>
         
         {/* World Map */}
         <div className="partners__map-wrapper max-w-3xl mx-auto">

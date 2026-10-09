@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'
 import { Truck, ThumbsUp, Shield } from 'lucide-react'
+import { get } from '../../services/api';
 
 // ============================================================================
 // CONSTANTS
@@ -52,7 +55,7 @@ const TrustBadges = () => (
     <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
       <div className="trust-badge flex flex-col items-center gap-3">
         <Truck size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">FREE US SHIPPING $99+</p>
+        <p className="trust-badge__text font-bold text-black text-[15px]">FREE US SHIPPING RS 99+</p>
       </div>
       <div className="trust-badge flex flex-col items-center gap-3">
         <ThumbsUp size={36} className="text-black" />
@@ -71,6 +74,39 @@ const TrustBadges = () => (
 // ============================================================================
 
 const Guides = () => {
+  const [guides, setGuides] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGuides = async () => {
+      try {
+        const response = await get('/support/guides');
+        if (response.success) {
+          setGuides(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch guides:', error);
+        // Fallback to static guides if API fails
+        setGuides(GUIDES);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGuides();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading guides...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="guides-page w-full bg-white">
 
@@ -78,9 +114,9 @@ const Guides = () => {
       <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto">
           <nav className="breadcrumb__nav text-sm text-gray-600">
-            <a href="/" className="hover:text-black">Home</a>
+            <Link to="/" className="hover:text-black">Home</Link>
             <span className="mx-2">/</span>
-            <a href="/support/guides" className="hover:text-black">Support</a>
+            <Link to="/support/guides" className="hover:text-black">Support</Link>
             <span className="mx-2">/</span>
             <span className="text-black">getstarted</span>
           </nav>
@@ -102,7 +138,7 @@ const Guides = () => {
           
           {/* First Row - 3 Guides */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {GUIDES.slice(0, 3).map((guide) => (
+            {guides.slice(0, 3).map((guide) => (
               <a 
                 key={guide.id}
                 href={guide.link}
@@ -138,9 +174,10 @@ const Guides = () => {
             ))}
           </div>
 
-          {/* Second Row - 2 Guides */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[880px]">
-            {GUIDES.slice(3, 5).map((guide) => (
+          {/* Second Row - Remaining Guides */}
+          {guides.length > 3 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[880px]">
+              {guides.slice(3).map((guide) => (
               <a 
                 key={guide.id}
                 href={guide.link}
@@ -165,6 +202,7 @@ const Guides = () => {
               </a>
             ))}
           </div>
+          )}
 
         </div>
       </section>

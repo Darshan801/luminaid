@@ -43,11 +43,11 @@ const OrderSummary = () => {
                 <p className="text-xs text-gray-500">{item.variant}</p>
               )}
               <p className="text-sm text-gray-600 mt-1">
-                ${(item.price || 0).toFixed(2)} × {item.quantity}
+                RS {(item.price || 0).toFixed(2)} × {item.quantity}
               </p>
             </div>
             <div className="text-sm font-semibold text-gray-900">
-              ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
+              RS {((item.price || 0) * (item.quantity || 0)).toFixed(2)}
             </div>
           </div>
         ))}
