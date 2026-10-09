@@ -119,6 +119,11 @@ const productSchema = new mongoose.Schema(
       trim: true
     }],
 
+    colors: [{
+      type: String,
+      trim: true
+    }],
+
     // Variants (for sizes, colors, etc.)
     hasVariants: {
       type: Boolean,

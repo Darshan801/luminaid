@@ -13,17 +13,6 @@ const MAX_IMAGES = 4
 
 const MAX_FILE_SIZE_MB = 5
 
-const initialForm = {
-  name: '',
-  category: '',
-  description: '',
-  isBestSeller: false,
-  isSoldOut: false,
-  isNew: false,
-  price: '',
-  stock: '',
-}
-
 const inputClass =
   'w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-black outline-none transition-colors placeholder:text-gray-400 focus:border-primary-red'
 
@@ -46,9 +35,9 @@ const AddProductModal = ({
     name: initialProduct?.name || '',
     category: initialProduct?.category || '',
     description: initialProduct?.description || '',
-    isBestSeller: initialProduct?.isBestSeller || false,
-    isSoldOut: initialProduct?.isSoldOut || false,
-    isNew: initialProduct?.isNew || false,
+    isBestSeller: initialProduct?.bestseller || false,
+    isSoldOut: initialProduct?.status === 'out-of-stock',
+    isNew: initialProduct?.newArrival || false,
     price: initialProduct?.price?.toString() || '',
     stock: initialProduct?.stock?.toString() || '',
   }))
@@ -59,21 +48,16 @@ const AddProductModal = ({
 
   const [colorInput, setColorInput] = useState('#e11d48')
 
-  const [images, setImages] = useState(() => {
-    const existingImages =
-      initialProduct?.imagePreviews?.length > 0
-        ? initialProduct.imagePreviews
-        : initialProduct?.image
-          ? [initialProduct.image]
-          : []
-
-    return existingImages.map((image) => ({
+  const [images, setImages] = useState(() =>
+    (initialProduct?.images || []).map((image) => ({
       file: null,
-      preview: image,
-    }))
-  })
+      preview: image.url,
+    })),
+  )
 
   const [errors, setErrors] = useState({})
+  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const fileInputRef = useRef(null)
 
@@ -96,7 +80,7 @@ const AddProductModal = ({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [images])
+  }, [images, isSubmitting])
 
   const clearError = (field) =>
     setErrors((prev) => ({
@@ -226,13 +210,18 @@ const AddProductModal = ({
   }
 
   // ---------- Close / Submit ----------
-  const handleCancel = () => {
+  const revokePreviews = () => {
     images.forEach((img) => {
       if (img.file && img.preview.startsWith('blob:')) {
         URL.revokeObjectURL(img.preview)
       }
     })
+  }
 
+  const handleCancel = () => {
+    if (isSubmitting) return
+
+    revokePreviews()
     onClose()
   }
 
@@ -268,26 +257,41 @@ const AddProductModal = ({
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!validate()) return
 
-    onSubmit({
-      name: form.name.trim(),
-      category: form.category,
-      description: form.description.trim(),
-      isBestSeller: form.isBestSeller,
-      isSoldOut: form.isSoldOut,
-      isNew: form.isNew,
-      price: Number(form.price),
-      stock: Number(form.stock),
-      colors,
-      images: images
-        .map((img) => img.file)
-        .filter(Boolean),
-      imagePreviews: images.map((img) => img.preview),
-    })
+    setIsSubmitting(true)
+    setSubmitError('')
+
+    try {
+      await onSubmit({
+        name: form.name.trim(),
+        category: form.category,
+        description: form.description.trim(),
+        isBestSeller: form.isBestSeller,
+        isSoldOut: form.isSoldOut,
+        isNew: form.isNew,
+        price: Number(form.price),
+        stock: Number(form.stock),
+        colors,
+        images: images
+          .map((img) => img.file)
+          .filter(Boolean),
+        existingImages: images
+          .filter((img) => !img.file)
+          .map((img) => img.preview),
+      })
+
+      revokePreviews()
+    } catch (error) {
+      setSubmitError(
+        error.message || 'Something went wrong. Please try again.',
+      )
+
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -638,19 +642,31 @@ const AddProductModal = ({
 
           {/* Footer */}
           <div className="flex items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+            {submitError && (
+              <p className="mr-auto text-sm text-red-600">
+                {submitError}
+              </p>
+            )}
+
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gray-100"
+              disabled={isSubmitting}
+              className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="rounded-lg bg-primary-red px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-dark-red"
+              disabled={isSubmitting}
+              className="rounded-lg bg-primary-red px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-dark-red disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isEditing ? 'Save Changes' : 'Add Product'}
+              {isSubmitting
+                ? 'Saving...'
+                : isEditing
+                  ? 'Save Changes'
+                  : 'Add Product'}
             </button>
           </div>
         </form>

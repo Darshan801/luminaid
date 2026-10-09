@@ -4,7 +4,7 @@
  * Handles all product-related API calls to the backend
  */
 
-import { get } from './api';
+import { get, post, put, del } from './api';
 
 /**
  * Get all products with filters
@@ -136,6 +136,84 @@ export const checkStock = async (productId, quantity = 1) => {
   }
 };
 
+const buildProductFormData = (productData) => {
+  const formData = new FormData();
+
+  formData.append('name', productData.name);
+  formData.append('category', productData.category);
+  formData.append('description', productData.description);
+  formData.append('price', productData.price);
+  formData.append('stock', productData.stock);
+  formData.append('isBestSeller', productData.isBestSeller);
+  formData.append('isSoldOut', productData.isSoldOut);
+  formData.append('isNew', productData.isNew);
+  formData.append('colors', JSON.stringify(productData.colors));
+  formData.append('existingImages', JSON.stringify(productData.existingImages));
+
+  productData.images.forEach((file) => formData.append('images', file));
+
+  return formData;
+};
+
+/**
+ * Get all products for admin (any status)
+ * @returns {Promise} Products list
+ */
+export const getAdminProducts = async () => {
+  try {
+    const response = await get('/products/admin/all');
+    return response.data;
+  } catch (error) {
+    console.error('Get Admin Products Error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Create product (admin)
+ * @param {object} productData - Product form data
+ * @returns {Promise} Created product
+ */
+export const createProduct = async (productData) => {
+  try {
+    const response = await post('/products', buildProductFormData(productData));
+    return response.data;
+  } catch (error) {
+    console.error('Create Product Error:', error);
+    throw error;
+  }
+};
+
+
+/**
+ * Update product (admin)
+ * @param {string} id - Product ID
+ * @param {object} productData - Product form data
+ * @returns {Promise} Updated product
+ */
+export const updateProduct = async (id, productData) => {
+  try {
+    const response = await put(`/products/${id}`, buildProductFormData(productData));
+    return response.data;
+  } catch (error) {
+    console.error('Update Product Error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete product (admin)
+ * @param {string} id - Product ID
+ */
+export const deleteProduct = async (id) => {
+  try {
+    await del(`/products/${id}`);
+  } catch (error) {
+    console.error('Delete Product Error:', error);
+    throw error;
+  }
+};
+
 export default {
   getAllProducts,
   getProduct,
@@ -145,4 +223,8 @@ export default {
   getProductsByCategory,
   getCategories,
   checkStock,
+  getAdminProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 };

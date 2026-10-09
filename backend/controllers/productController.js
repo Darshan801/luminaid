@@ -1,4 +1,69 @@
 const Product = require('../models/Product');
+const { uploadImage, deleteImage } = require('../utils/cloudinaryUpload');
+
+const parseJSON = (value, fallback) => {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+};
+
+const generateSlug = async (name) => {
+  const base =
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') || 'product';
+
+  let slug = base;
+  let count = 1;
+
+  while (await Product.exists({ slug })) {
+    slug = `${base}-${count++}`;
+  }
+
+  return slug;
+};
+
+const generateSku = () => `LUM-${Date.now().toString(36).toUpperCase()}`;
+
+const resolveStatus = (isSoldOut, stock, currentStatus) => {
+  if (isSoldOut || stock === 0) return 'out-of-stock';
+  if (currentStatus === 'out-of-stock') return 'active';
+  return currentStatus;
+};
+
+const parseProductBody = (body, currentStatus = 'active') => {
+  const stock = Number(body.stock);
+
+  return {
+    name: body.name?.trim(),
+    category: body.category,
+    description: body.description?.trim(),
+    price: Number(body.price),
+    stock,
+    colors: parseJSON(body.colors, []),
+    bestseller: body.isBestSeller === 'true',
+    newArrival: body.isNew === 'true',
+    status: resolveStatus(body.isSoldOut === 'true', stock, currentStatus)
+  };
+};
+
+const buildImages = (images, name) =>
+  images.map((image, index) => ({
+    url: image.url,
+    publicId: image.publicId,
+    altText: name,
+    isPrimary: index === 0
+  }));
+
+const removeImages = (images) =>
+  Promise.allSettled(
+    images
+      .filter((image) => image.publicId)
+      .map((image) => deleteImage(image.publicId))
+  );
 
 // @desc    Get all products with filtering, sorting, and pagination
 // @route   GET /api/products
@@ -358,12 +423,54 @@ exports.checkStock = async (req, res) => {
 
 // ==================== ADMIN ROUTES ====================
 
+// @desc    Get all products for admin (any status)
+// @route   GET /api/products/admin/all
+// @access  Private/Admin
+exports.getAdminProducts = async (req, res) => {
+  try {
+    const products = await Product.find().sort('-createdAt').select('-__v');
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products
+    });
+  } catch (error) {
+    console.error('Get Admin Products Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products',
+      error: error.message
+    });
+  }
+};
+
 // @desc    Create new product
 // @route   POST /api/products
 // @access  Private/Admin
 exports.createProduct = async (req, res) => {
+  let uploaded = [];
+
   try {
-    const product = await Product.create(req.body);
+    const files = req.files || [];
+
+    if (files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one image is required'
+      });
+    }
+
+    const data = parseProductBody(req.body);
+
+    uploaded = await Promise.all(files.map((file) => uploadImage(file.buffer)));
+
+    const product = await Product.create({
+      ...data,
+      slug: await generateSlug(data.name),
+      sku: generateSku(),
+      images: buildImages(uploaded, data.name)
+    });
 
     res.status(201).json({
       success: true,
@@ -372,7 +479,16 @@ exports.createProduct = async (req, res) => {
     });
   } catch (error) {
     console.error('Create Product Error:', error);
-    
+
+    await removeImages(uploaded);
+
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: Object.values(error.errors).map((err) => err.message).join(', ')
+      });
+    }
+
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
@@ -392,17 +508,10 @@ exports.createProduct = async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 exports.updateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
+  let uploaded = [];
 
-    const product = await Product.findByIdAndUpdate(
-      id,
-      req.body,
-      {
-        returnDocument: 'after',
-        runValidators: true
-      }
-    );
+  try {
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -411,6 +520,28 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
+    const files = req.files || [];
+    const keptUrls = parseJSON(req.body.existingImages, []);
+    const keptImages = product.images.filter((image) => keptUrls.includes(image.url));
+    const removedImages = product.images.filter((image) => !keptUrls.includes(image.url));
+
+    if (keptImages.length + files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one image is required'
+      });
+    }
+
+    const data = parseProductBody(req.body, product.status);
+
+    uploaded = await Promise.all(files.map((file) => uploadImage(file.buffer)));
+
+    Object.assign(product, data);
+    product.images = buildImages([...keptImages, ...uploaded], data.name);
+
+    await product.save();
+    await removeImages(removedImages);
+
     res.status(200).json({
       success: true,
       message: 'Product updated successfully',
@@ -418,6 +549,16 @@ exports.updateProduct = async (req, res) => {
     });
   } catch (error) {
     console.error('Update Product Error:', error);
+
+    await removeImages(uploaded);
+
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: Object.values(error.errors).map((err) => err.message).join(', ')
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Failed to update product',
@@ -431,9 +572,7 @@ exports.updateProduct = async (req, res) => {
 // @access  Private/Admin
 exports.deleteProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const product = await Product.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -441,6 +580,8 @@ exports.deleteProduct = async (req, res) => {
         message: 'Product not found'
       });
     }
+
+    await removeImages(product.images);
 
     res.status(200).json({
       success: true,

@@ -169,7 +169,7 @@ const ProductDetail = () => {
                     Save {discount}%
                   </span>
                 )}
-                {product.tags?.includes('new') && (
+                {(product.newArrival || product.tags?.includes('new')) && (
                   <span className="bg-blue-600 text-white px-3 py-1.5 text-xs font-bold uppercase shadow-md">
                     New
                   </span>

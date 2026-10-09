@@ -80,7 +80,7 @@ export const post = (endpoint, body, options = {}) => {
 export const put = (endpoint, body, options = {}) => {
   return apiRequest(endpoint, {
     method: 'PUT',
-    body: JSON.stringify(body),
+    body: body instanceof FormData ? body : JSON.stringify(body),
     ...options,
   });
 };
