@@ -25,29 +25,29 @@ const AdminDashboard = () => {
   ]
 
   return (
-    <div className="min-h-full bg-gray-light px-8 py-8 lg:px-10">
+    <div className="min-h-full bg-gray-light px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       {/* Welcome Section */}
-      <section className="relative mb-8 min-h-[390px] overflow-hidden rounded-[24px] border border-gray-200 bg-white shadow-sm">
-        <div className="flex h-full min-h-[390px] items-center">
+      <section className="relative mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm lg:mb-8 lg:rounded-[24px]">
+        <div className="flex min-h-[300px] flex-col items-center sm:min-h-[350px] lg:min-h-[390px] lg:flex-row">
           {/* Text */}
-          <div className="relative z-10 w-full px-8 py-12 sm:px-10 lg:w-[52%] lg:px-12">
-            <span className="mb-5 inline-flex rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-primary-red">
+          <div className="relative z-10 w-full px-6 py-8 sm:px-8 sm:py-10 lg:w-[52%] lg:px-12 lg:py-12">
+            <span className="mb-4 inline-flex rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-primary-red sm:mb-5 sm:px-4 sm:py-2 sm:text-sm">
               LuminAID Admin Dashboard
             </span>
 
-            <h1 className="mb-4 text-4xl font-bold leading-tight text-black sm:text-5xl">
+            <h1 className="mb-3 text-3xl font-bold leading-tight text-black sm:text-4xl lg:mb-4 lg:text-5xl">
               Welcome back!
             </h1>
 
-            <p className="mb-8 max-w-[520px] text-base leading-7 text-gray-dark">
+            <p className="mb-6 max-w-[520px] text-sm leading-6 text-gray-dark sm:text-base sm:leading-7 lg:mb-8">
               Manage your products, orders and users - all from one place.
               Choose a section below to get started.
             </p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 to="/admin/products"
-                className="inline-flex items-center gap-3 rounded-lg bg-primary-red px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-dark-red"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary-red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-dark-red sm:gap-3 sm:px-6 sm:py-3.5"
               >
                 Manage Products
                 <ArrowRight size={18} strokeWidth={2} />
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
 
               <Link
                 to="/admin/orders"
-                className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-black transition-colors hover:border-primary-red hover:text-primary-red"
+                className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-black transition-colors hover:border-primary-red hover:text-primary-red sm:px-6 sm:py-3.5"
               >
                 View Orders
               </Link>
@@ -63,11 +63,11 @@ const AdminDashboard = () => {
           </div>
 
           {/* Illustration */}
-          <div className="absolute right-0 top-0 hidden h-full w-[52%] lg:block">
+          <div className="relative h-48 w-full sm:h-64 lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-[52%]">
             <img
               src={adminOverview}
               alt="Admin dashboard overview"
-              className="h-full w-full object-contain object-right"
+              className="h-full w-full object-contain object-center lg:object-right"
             />
           </div>
         </div>
@@ -75,11 +75,11 @@ const AdminDashboard = () => {
 
       {/* Quick Access */}
       <section>
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-dark">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-dark sm:mb-4 sm:text-sm">
           Quick Access
         </h2>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {quickAccess.map((item) => {
             const Icon = item.icon
 
@@ -87,25 +87,25 @@ const AdminDashboard = () => {
               <Link
                 key={item.title}
                 to={item.path}
-                className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-red hover:shadow-md"
+                className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-red hover:shadow-md sm:rounded-2xl sm:p-6"
               >
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-primary-red transition-colors group-hover:bg-primary-red group-hover:text-white">
-                  <Icon size={23} strokeWidth={1.8} />
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-primary-red transition-colors group-hover:bg-primary-red group-hover:text-white sm:mb-5 sm:h-12 sm:w-12">
+                  <Icon size={22} strokeWidth={1.8} className="sm:h-[23px] sm:w-[23px]" />
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-black">
+                  <h3 className="text-lg font-semibold text-black sm:text-xl">
                     {item.title}
                   </h3>
 
                   <ArrowRight
-                    size={19}
+                    size={18}
                     strokeWidth={1.8}
-                    className="text-gray-medium transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary-red"
+                    className="text-gray-medium transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary-red sm:h-[19px] sm:w-[19px]"
                   />
                 </div>
 
-                <p className="mt-2 text-sm leading-6 text-gray-dark">
+                <p className="mt-1.5 text-xs leading-5 text-gray-dark sm:mt-2 sm:text-sm sm:leading-6">
                   {item.description}
                 </p>
               </Link>
