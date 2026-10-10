@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/common/Button';
+import Modal from '../../components/common/Modal';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   // Get the page user was trying to access
   const from = location.state?.from?.pathname || '/';
@@ -36,15 +39,22 @@ const Login = () => {
     try {
       const result = await login(formData);
       
-      // Redirect admin users to admin panel
-      if (result.user.role === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
-        // Redirect regular users to previous page or home
-        navigate(from, { replace: true });
-      }
+      // Show success modal
+      setLoginSuccess(result);
+      setShowSuccessModal(true);
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
+    }
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    
+    // Redirect after modal closes
+    if (loginSuccess && loginSuccess.user.role === 'admin') {
+      navigate('/admin', { replace: true });
+    } else {
+      navigate(from, { replace: true });
     }
   };
 
@@ -198,6 +208,17 @@ const Login = () => {
           </p>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <Modal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        title="Login Successful!"
+        message={`Welcome back, ${loginSuccess?.user?.firstName || 'User'}! You have been successfully logged in.`}
+        type="success"
+        confirmText="Continue"
+        onConfirm={handleSuccessModalClose}
+      />
     </div>
   );
 };

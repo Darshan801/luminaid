@@ -262,14 +262,14 @@ const Home = () => {
               <p>
                 Light up fall nights with <Link to="/products/power-lanterns" className="underline underline-offset-2 hover:text-gray-100">Power Lanterns</Link>,{' '}
                 <Link to="/products/solar-lights" className="underline underline-offset-2 hover:text-gray-100">String Lights</Link>, and{' '}
-                <Link to="/collections/accessories" className="underline underline-offset-2 hover:text-gray-100">Outdoor Gear</Link>!
+                <Link to="products/accessories" className="underline underline-offset-2 hover:text-gray-100">Outdoor Gear</Link>!
               </p>
             </div>
 
             {/* CTA Button */}
             <div className="hero__button-wrapper pt-3">
               <Link 
-                to="/collections/solar-lanterns" 
+                to="/products" 
                 className="inline-block bg-primary-red hover:bg-red-700 text-white font-bold px-7 py-3 text-xs tracking-widest transition-colors rounded shadow-lg"
               >
                 SHOP BESTSELLERS

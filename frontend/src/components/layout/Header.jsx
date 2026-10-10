@@ -4,19 +4,26 @@ import { Search, User, ShoppingCart, ChevronDown, LogOut } from 'lucide-react'
 import logoImage from '../../assets/images/logo.png?url'
 import { useCart } from '../../hooks/useCart'
 import { useAuth } from '../../hooks/useAuth'
+import Modal from '../common/Modal'
 
 const Header = () => {
   const [activeDropdown , setActiveDropdown] = useState(null)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const { itemCount } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setShowUserMenu(false);
+    setShowLogoutModal(true);
+  };
+
+  const handleLogoutConfirm = async () => {
     try {
       await logout();
-      setShowUserMenu(false);
-      navigate('/');
+      setShowLogoutModal(false);
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -179,7 +186,7 @@ const Header = () => {
                       </Link>
                       <hr className="my-2" />
                       <button
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                         className="w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-primary-red transition-colors flex items-center gap-2"
                       >
                         <LogOut size={16} />
@@ -211,6 +218,19 @@ const Header = () => {
           </Link>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Confirm Logout"
+        message="Are you sure you want to logout?"
+        type="confirm"
+        showCancel={true}
+        confirmText="Logout"
+        cancelText="Cancel"
+        onConfirm={handleLogoutConfirm}
+      />
     </header>
   );
 };
