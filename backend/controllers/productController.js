@@ -249,7 +249,7 @@ exports.getBestsellerProducts = async (req, res) => {
   }
 };
 
-// @desc    Search products
+// @desc    Search products with advanced filtering
 // @route   GET /api/products/search
 // @access  Public
 exports.searchProducts = async (req, res) => {
@@ -266,29 +266,57 @@ exports.searchProducts = async (req, res) => {
       sort = '-createdAt'
     } = req.query;
 
-    if (!q) {
-      return res.status(400).json({
-        success: false,
-        message: 'Search query is required'
-      });
+    // Build search query
+    const searchQuery = { status: 'active' };
+
+    // If search term provided, use flexible regex matching
+    if (q && q.trim()) {
+      const searchTerm = q.trim();
+      
+      // Use regex search for partial matches (case-insensitive)
+      // This is more reliable than combining $text with $or
+      searchQuery.$or = [
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { description: { $regex: searchTerm, $options: 'i' } },
+        { tags: { $regex: searchTerm, $options: 'i' } },
+        { category: { $regex: searchTerm, $options: 'i' } },
+        { sku: { $regex: searchTerm, $options: 'i' } }
+      ];
     }
 
-    const filters = {};
-    if (category) filters.category = category;
-    if (minPrice) filters.minPrice = Number(minPrice);
-    if (maxPrice) filters.maxPrice = Number(maxPrice);
-    if (minRating) filters.minRating = Number(minRating);
-    if (tags) filters.tags = tags.split(',').map(tag => tag.trim());
+    // Category filter
+    if (category) {
+      searchQuery.category = category;
+    }
 
-    const query = Product.searchProducts(q, filters);
-    
+    // Price range filter
+    if (minPrice || maxPrice) {
+      searchQuery.price = {};
+      if (minPrice) searchQuery.price.$gte = Number(minPrice);
+      if (maxPrice) searchQuery.price.$lte = Number(maxPrice);
+    }
+
+    // Rating filter
+    if (minRating) {
+      searchQuery.rating = { $gte: Number(minRating) };
+    }
+
+    // Tags filter
+    if (tags) {
+      const tagArray = tags.split(',').map(tag => tag.trim());
+      searchQuery.tags = { $in: tagArray };
+    }
+
+    // Execute query with pagination
     const skip = (Number(page) - 1) * Number(limit);
-    const products = await query
+    
+    const products = await Product.find(searchQuery)
       .sort(sort)
       .skip(skip)
-      .limit(Number(limit));
+      .limit(Number(limit))
+      .select('-__v');
 
-    const total = await Product.searchProducts(q, filters).countDocuments();
+    const total = await Product.countDocuments(searchQuery);
 
     res.status(200).json({
       success: true,
@@ -296,7 +324,14 @@ exports.searchProducts = async (req, res) => {
       total,
       page: Number(page),
       pages: Math.ceil(total / Number(limit)),
-      query: q,
+      query: q || '',
+      filters: {
+        category,
+        minPrice,
+        maxPrice,
+        minRating,
+        tags
+      },
       data: products
     });
   } catch (error) {
@@ -304,6 +339,59 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to search products',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get search suggestions (autocomplete)
+// @route   GET /api/products/search/suggestions
+// @access  Public
+exports.getSearchSuggestions = async (req, res) => {
+  try {
+    const { q, limit = 5 } = req.query;
+
+    if (!q || q.trim().length < 2) {
+      return res.status(200).json({
+        success: true,
+        data: []
+      });
+    }
+
+    const searchTerm = q.trim();
+
+    // Find products matching the search term
+    const suggestions = await Product.find({
+      status: 'active',
+      $or: [
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { tags: { $regex: searchTerm, $options: 'i' } },
+        { category: { $regex: searchTerm, $options: 'i' } }
+      ]
+    })
+    .select('name slug category images')
+    .limit(Number(limit))
+    .sort({ purchaseCount: -1, rating: -1 });
+
+    // Format suggestions
+    const formattedSuggestions = suggestions.map(product => ({
+      id: product._id,
+      name: product.name,
+      slug: product.slug,
+      category: product.category,
+      image: product.images?.[0]?.url || null
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: formattedSuggestions.length,
+      data: formattedSuggestions
+    });
+  } catch (error) {
+    console.error('Get Search Suggestions Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get search suggestions',
       error: error.message
     });
   }

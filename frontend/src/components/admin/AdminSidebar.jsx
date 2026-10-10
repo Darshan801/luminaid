@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -6,9 +7,11 @@ import {
   Users,
   LogOut,
 } from 'lucide-react'
+import { AuthContext } from '../../context/AuthContext'
 
 const AdminSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate()
+  const { logout } = useContext(AuthContext)
 
   const navigation = [
     {
@@ -34,9 +37,15 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     },
   ]
 
-  const handleLogout = () => {
-    // We'll connect this to your auth system later
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+      // Still navigate to login even if logout request fails
+      navigate('/login')
+    }
   }
 
   const handleNavClick = () => {
@@ -58,8 +67,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[260px] shrink-0 flex-col border-r border-gray-200 bg-white transition-transform duration-300 lg:static lg:z-0 lg:w-[220px] lg:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed bottom-0 top-[72px] z-50 flex w-[260px] shrink-0 flex-col border-r border-gray-200 bg-white transition-transform duration-300 lg:left-0 lg:w-[220px] lg:translate-x-0 ${
+          isOpen ? 'left-0 translate-x-0' : '-translate-x-full'
         }`}
       >
         <nav className="flex-1 overflow-y-auto px-4 py-6">

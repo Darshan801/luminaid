@@ -10,6 +10,9 @@ import SolarLanterns from '../pages/Products/SolarLanterns'
 import PowerLanterns from '../pages/Products/PowerLanterns'
 import Gifts from '../pages/Products/Gifts'
 
+// Search
+import SearchResults from '../pages/SearchResults'
+
 // Cart
 import Cart from '../pages/Cart/Cart'
 
@@ -75,7 +78,10 @@ const AppRoutes = () => {
                 <Route path="/products/solar-lanterns" element={<SolarLanterns />} />
                 <Route path="/products/power-lanterns" element={<PowerLanterns />} />
                 <Route path="/products/gifts" element={<Gifts />} />
-                <Route path="/products/:slug" element={<ProductDetail />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
+                
+                {/* Search Route */}
+                <Route path="/search" element={<SearchResults />} />
                 
                 {/* Cart */}
                 <Route path="/cart" element={<Cart />} />

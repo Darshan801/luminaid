@@ -21,7 +21,8 @@ const AdminLayout = () => {
       <div className="flex min-h-[calc(100vh-72px)]">
         <AdminSidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-        <main className="flex-1">
+        {/* Main content with margin for fixed sidebar on desktop */}
+        <main className="flex-1 lg:ml-[220px]">
           <Outlet />
         </main>
       </div>

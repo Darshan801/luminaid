@@ -5,11 +5,13 @@ import logoImage from '../../assets/images/logo.png?url'
 import { useCart } from '../../hooks/useCart'
 import { useAuth } from '../../hooks/useAuth'
 import Modal from '../common/Modal'
+import SearchSidebar from '../search/SearchSidebar'
 
 const Header = () => {
   const [activeDropdown , setActiveDropdown] = useState(null)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const [showSearchSidebar, setShowSearchSidebar] = useState(false)
   const { itemCount } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
@@ -135,7 +137,11 @@ const Header = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <button className="text-black hover:text-primary-red transition-colors">
+          <button 
+            onClick={() => setShowSearchSidebar(true)}
+            className="text-black hover:text-primary-red transition-colors"
+            aria-label="Search"
+          >
             <Search size={18} />
           </button>
           
@@ -218,6 +224,12 @@ const Header = () => {
           </Link>
         </div>
       </div>
+
+      {/* Search Sidebar */}
+      <SearchSidebar 
+        isOpen={showSearchSidebar} 
+        onClose={() => setShowSearchSidebar(false)} 
+      />
 
       {/* Logout Confirmation Modal */}
       <Modal

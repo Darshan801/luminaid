@@ -58,6 +58,7 @@ const upload = multer({
 // Public routes
 router.get('/featured', productController.getFeaturedProducts);
 router.get('/bestsellers', productController.getBestsellerProducts);
+router.get('/search/suggestions', productController.getSearchSuggestions);
 router.get('/search', productController.searchProducts);
 router.get('/categories/list', productController.getCategories);
 router.get('/category/:category', productController.getProductsByCategory);
