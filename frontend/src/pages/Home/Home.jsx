@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Star, Accessibility, Truck, ThumbsUp, Shield, Play, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
-import backgroundImage from '../../assets/images/background.webp?url'
+import backgroundImage from '../../assets/images/From_Darkness_to_Golden_Light.webp'
 import disasterResponseBg from '../../assets/images/Lumen_Rewards_Page.jpg?url'
 import ProductCard from '../../components/products/ProductCard'
 import { get } from '../../services/api'
@@ -242,27 +242,27 @@ const Home = () => {
         </div>
 
         {/* Content Container */}
-        <div className="hero__content-wrapper relative max-w-[1280px] w-full mx-auto px-8 py-16">
-          <div className="hero__content-box bg-primary-orange max-w-[420px] px-12 py-14 space-y-5 text-center rounded-2xl shadow-2xl ml-20">
+        <div className="hero__content-wrapper relative max-w-[1280px] w-full mx-auto px-8 py-16 flex items-center justify-center">
+          <div className="hero__content-box max-w-[420px] px-12 py-14 space-y-5 text-center border border-white/60 rounded-lg shadow-md">
             {/* Reviews Badge */}
             <div className="hero__reviews flex items-center justify-center gap-2">
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => <Star key={i} size={13} fill="#E8C441" stroke="#E8C441" />)}
               </div>
-              <span className="text-[11px] font-bold text-white tracking-widest">10,000+ 5-STAR REVIEWS</span>
+              <span className="text-[11px] font-bold text-white tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">10,000+ 5-STAR REVIEWS</span>
             </div>
 
             {/* Heading */}
-            <h1 className="hero__heading text-[32px] font-heading font-bold text-white leading-tight">
+            <h1 className="hero__heading text-[32px] font-heading font-bold text-white leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               Gear Up for Adventure
             </h1>
 
             {/* Description */}
-            <div className="hero__text text-white text-[15px] leading-7">
+            <div className="hero__text text-white text-[15px] leading-7 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               <p>
-                Light up fall nights with <Link to="/products/power-lanterns" className="underline underline-offset-2 hover:text-gray-100">Power Lanterns</Link>,{' '}
-                <Link to="/products/solar-lights" className="underline underline-offset-2 hover:text-gray-100">String Lights</Link>, and{' '}
-                <Link to="products/accessories" className="underline underline-offset-2 hover:text-gray-100">Outdoor Gear</Link>!
+                Light up fall nights with <Link to="/products/power-lanterns" className="underline underline-offset-2 hover:text-primary-orange transition-colors">Power Lanterns</Link>,{' '}
+                <Link to="/products/solar-lights" className="underline underline-offset-2 hover:text-primary-orange transition-colors">String Lights</Link>, and{' '}
+                <Link to="products/accessories" className="underline underline-offset-2 hover:text-primary-orange transition-colors">Outdoor Gear</Link>!
               </p>
             </div>
 
@@ -270,7 +270,7 @@ const Home = () => {
             <div className="hero__button-wrapper pt-3">
               <Link 
                 to="/products" 
-                className="inline-block bg-primary-red hover:bg-red-700 text-white font-bold px-7 py-3 text-xs tracking-widest transition-colors rounded shadow-lg"
+                className="inline-block bg-primary-red hover:bg-primary-orange text-white font-bold px-7 py-3 text-xs tracking-widest transition-colors rounded shadow-lg"
               >
                 SHOP BESTSELLERS
               </Link>
