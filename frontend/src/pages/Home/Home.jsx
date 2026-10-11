@@ -243,7 +243,7 @@ const Home = () => {
 
         {/* Content Container */}
         <div className="hero__content-wrapper relative max-w-[1280px] w-full mx-auto px-8 py-16">
-          <div className="hero__content-box bg-primary-orange max-w-[420px] px-12 py-14 space-y-5 text-center rounded-sm shadow-2xl ml-20">
+          <div className="hero__content-box bg-primary-orange max-w-[420px] px-12 py-14 space-y-5 text-center rounded-2xl shadow-2xl ml-20">
             {/* Reviews Badge */}
             <div className="hero__reviews flex items-center justify-center gap-2">
               <div className="flex gap-0.5">
