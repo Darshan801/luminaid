@@ -12,6 +12,12 @@ const ProductCard = ({ product }) => {
     e.preventDefault(); // Prevent navigation
     e.stopPropagation();
     
+    // Validate product has an ID
+    if (!product || !product._id) {
+      console.error('Cannot add to cart: Product or product ID is missing', product);
+      return;
+    }
+    
     setIsAdding(true);
     
     try {

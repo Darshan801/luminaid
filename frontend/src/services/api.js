@@ -34,12 +34,20 @@ export const apiRequest = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    const data = await response.json();
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type');
+    let data = null;
+    
+    if (contentType && contentType.includes('application/json')) {
+      const text = await response.text();
+      data = text ? JSON.parse(text) : null;
+    }
 
     // Removed verbose logging 
 
     if (!response.ok) {
-      throw new Error(data.message || 'API request failed');
+      throw new Error(data?.message || 'API request failed');
     }
 
     return data;

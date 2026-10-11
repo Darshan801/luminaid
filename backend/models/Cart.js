@@ -160,51 +160,60 @@ cartSchema.pre('save', function() {
 
 // Instance method to add item
 cartSchema.methods.addItem = async function(productId, quantity = 1, variant = null, price) {
-  // Normalize variant (null, undefined, or empty string should all be treated the same)
-  const normalizedVariant = variant || null;
-  
-  // Check if item already exists
-  const existingItemIndex = this.items.findIndex(item => {
-    const itemVariant = item.variant || null;
+  try {
+    // Normalize variant (null, undefined, or empty string should all be treated the same)
+    const normalizedVariant = variant || null;
     
-    // Handle both populated and unpopulated product references
-    const itemProductId = item.product._id ? item.product._id.toString() : item.product.toString();
-    
-    return itemProductId === productId.toString() && itemVariant === normalizedVariant;
-  });
-  
-  if (existingItemIndex > -1) {
-    // Update quantity
-    this.items[existingItemIndex].quantity += quantity;
-  } else {
-    // Get product info for snapshot
-    const Product = mongoose.model('Product');
-    const product = await Product.findById(productId);
-    
-    if (!product) {
-      throw new Error('Product not found');
-    }
-    
-    if (product.trackInventory && product.stock < quantity) {
-      throw new Error('Insufficient stock');
-    }
-    
-    // Add new item
-    this.items.push({
-      product: productId,
-      quantity,
-      variant: normalizedVariant,
-      price: price || product.price,
-      productSnapshot: {
-        name: product.name,
-        image: product.images[0]?.url || '',
-        sku: product.sku
+    // Check if item already exists
+    const existingItemIndex = this.items.findIndex(item => {
+      const itemVariant = item.variant || null;
+      
+      // Handle both populated and unpopulated product references
+      if (!item.product) {
+        return false; // Skip null/undefined products
       }
+      
+      const itemProductId = item.product._id ? item.product._id.toString() : item.product.toString();
+      
+      return itemProductId === productId.toString() && itemVariant === normalizedVariant;
     });
+    
+    if (existingItemIndex > -1) {
+      // Update quantity
+      this.items[existingItemIndex].quantity += quantity;
+    } else {
+      // Get product info for snapshot
+      const Product = mongoose.model('Product');
+      const product = await Product.findById(productId);
+      
+      if (!product) {
+        throw new Error('Product not found');
+      }
+      
+      if (product.trackInventory && product.stock < quantity) {
+        throw new Error('Insufficient stock');
+      }
+      
+      // Add new item
+      this.items.push({
+        product: productId,
+        quantity,
+        variant: normalizedVariant,
+        price: price || product.price,
+        productSnapshot: {
+          name: product.name,
+          image: (product.images && product.images[0]) ? product.images[0].url : '',
+          sku: product.sku
+        }
+      });
+    }
+    
+    const savedCart = await this.save();
+    return savedCart;
+  } catch (error) {
+    console.error('addItem error:', error);
+    throw error;
   }
-  
-  const savedCart = await this.save();
-  return savedCart;
 };
 
 // Instance method to update item quantity

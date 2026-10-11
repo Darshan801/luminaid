@@ -78,7 +78,7 @@ const AppRoutes = () => {
                 <Route path="/products/solar-lanterns" element={<SolarLanterns />} />
                 <Route path="/products/power-lanterns" element={<PowerLanterns />} />
                 <Route path="/products/gifts" element={<Gifts />} />
-                <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
                 
                 {/* Search Route */}
                 <Route path="/search" element={<SearchResults />} />

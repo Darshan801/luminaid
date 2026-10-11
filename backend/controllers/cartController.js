@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const logger = require('../utils/logger');
@@ -67,6 +68,8 @@ exports.addToCart = async (req, res) => {
   try {
     const { productId, quantity = 1, variant = null } = req.body;
 
+    logger.info('Add to cart request:', { productId, quantity, variant, hasUser: !!req.user, hasCookie: !!req.cookies?.cartSessionId });
+
     if (!productId) {
       return res.status(400).json({
         success: false,
@@ -81,10 +84,20 @@ exports.addToCart = async (req, res) => {
       });
     }
 
+    // Validate productId format
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      logger.error('Invalid product ID format:', productId);
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format'
+      });
+    }
+
     // Get product to verify it exists and get price
     const product = await Product.findById(productId);
     
     if (!product) {
+      logger.error('Product not found:', productId);
       return res.status(404).json({
         success: false,
         message: 'Product not found'
@@ -112,13 +125,19 @@ exports.addToCart = async (req, res) => {
     if (req.user) {
       cart = await Cart.findUserCart(req.user.id);
     } else {
-      const sessionId = req.cookies?.cartSessionId;
+      let sessionId = req.cookies?.cartSessionId;
+      
+      // If no session exists, create one
       if (!sessionId) {
-        return res.status(400).json({
-          success: false,
-          message: 'No cart session found. Please enable cookies.'
+        sessionId = require('crypto').randomBytes(16).toString('hex');
+        res.cookie('cartSessionId', sessionId, {
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
         });
       }
+      
       cart = await Cart.findOne({ sessionId, status: 'active' }).populate('items.product');
       
       if (!cart) {
