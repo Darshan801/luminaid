@@ -1,78 +1,116 @@
-import { cn } from '../../utils/cn'
+import { cn } from '../../utils/cn';
 
 /**
- * Production Card Component
- * Flexible container with consistent styling across the application
+ * Card Component - "Light in Motion" Design System
+ * 
+ * Flexible container with consistent styling and elevation.
+ * 
+ * FEATURES:
+ * - Refined shadow system
+ * - Hover lift effect
+ * - Soft border radius
+ * - Accessible focus states
  * 
  * USAGE:
- * - Product cards in product grid
- * - Order summary cards
- * - Admin dashboard stat cards
- * - Review/testimonial cards
- * - Any boxed content that needs elevation
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - Card content
- * @param {boolean} props.hoverable - Enable hover effect (scale + shadow)
- * @param {boolean} props.clickable - Shows pointer cursor and adds focus styles
- * @param {Function} props.onClick - Click handler
- * @param {string} props.padding - Padding variant
- * @param {string} props.className - Additional classes
+ * <Card hoverable clickable onClick={handler}>
+ *   <Card.Header>Title</Card.Header>
+ *   <Card.Body>Content</Card.Body>
+ *   <Card.Footer>Actions</Card.Footer>
+ * </Card>
  */
 
+const paddingVariants = {
+  none: 'p-0',
+  sm: 'p-4',
+  default: 'p-6',
+  lg: 'p-8',
+  xl: 'p-10',
+};
 
 const Card = ({
-    children ,
-    hoverable = false,
-    clickable = false,
-    onClick,
-    padding='default',
-    className,
-    ...props
+  children,
+  hoverable = false,
+  clickable = false,
+  onClick,
+  padding = 'default',
+  className,
+  ...props
 }) => {
-    const paddingVariants = {
-        none: 'p-0',
-        sm: 'p-4',
-        default: 'p-6',
-        lg: 'p-8',
-    };
+  const isInteractive = hoverable || clickable || onClick;
 
-    // Determine if card should be interactive
-    const isInteractive = hoverable || clickable || onClick;
+  return (
+    <div
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick(e);
+              }
+            }
+          : undefined
+      }
+      className={cn(
+        // Base styles
+        'bg-white rounded-soft shadow-soft overflow-hidden',
+        'transition-all duration-normal',
+        
+        // Padding
+        paddingVariants[padding],
+        
+        // Interactive states
+        isInteractive && 'cursor-pointer',
+        hoverable && 'hover:shadow-medium hover:-translate-y-1',
+        onClick && 'focus-ring',
+        
+        // Custom classes
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
-    return(
-        <div
-            onClick={onClick}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
-            onKeyDown={
-                onClick
-                    ? (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            onClick(e);
-                        }
-                        }
-                    : undefined
-                }
-                className={cn(
-                // Base styles
-                'bg-white rounded-lg shadow-md overflow-hidden',
-                'transition-all duration-300',
-                
-                // Padding
-                paddingVariants[padding],
-                
-                // Interactive states
-                isInteractive && 'cursor-pointer',
-                hoverable && 'hover:shadow-xl hover:scale-[1.02]',
-                onClick && 'focus:outline-none focus:ring-2 focus:ring-primary-red focus:ring-offset-2',
-                
-                // Custom classes
-                className
-            )}
-            {...props}
-        >
+// Card sub-components
+Card.Header = ({ children, className, ...props }) => (
+  <div
+    className={cn(
+      'border-b border-gray-100 pb-4 mb-4',
+      'text-title-md font-bold text-charcoal',
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+Card.Body = ({ children, className, ...props }) => (
+  <div className={cn('text-body-md text-charcoal', className)} {...props}>
+    {children}
+  </div>
+);
+
+Card.Footer = ({ children, className, ...props }) => (
+  <div
+    className={cn(
+      'border-t border-gray-100 pt-4 mt-4',
+      'flex items-center gap-3',
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+export default Card;
+
             {children}
         </div>
     );

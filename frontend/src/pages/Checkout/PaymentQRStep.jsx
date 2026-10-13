@@ -72,42 +72,45 @@ const PaymentQRStep = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Scan QR Code to Pay</h2>
+      <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-6">
+        Scan QR Code to Pay
+      </h2>
 
       <div className="space-y-6">
         {/* Order Amount */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-gray-600 mb-1">Total Amount to Pay</p>
-          <p className="text-4xl font-bold text-blue-600">
+        <div className="bg-gradient-to-br from-brand-orange to-brand-orange-dark 
+                      rounded-soft p-6 text-center shadow-glow-md">
+          <p className="text-sm text-white/90 mb-2 font-medium">Total Amount to Pay</p>
+          <p className="text-4xl md:text-5xl font-bold text-white">
             RS {safeTotals.total.toFixed(2)}
           </p>
         </div>
 
         {/* QR Code Display */}
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-8">
+        <div className="bg-white border-2 border-gray-200 rounded-soft p-6 md:p-8 shadow-medium">
           <div className="flex flex-col items-center">
             <div className="mb-6">
               <img
                 src={qrDetails?.qrCodeUrl || '/images/payment/bank-qr-code.svg'}
                 alt="Payment QR Code"
-                className="w-64 h-64 object-contain border-4 border-gray-200 rounded-lg"
+                className="w-64 h-64 object-contain border-4 border-gray-200 rounded-soft shadow-soft"
               />
             </div>
 
             {/* Bank Details */}
             {qrDetails && (
               <div className="w-full max-w-md space-y-2 text-sm">
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600">Bank Name:</span>
-                  <span className="font-semibold">{qrDetails.bankName}</span>
+                <div className="flex justify-between py-3 border-b-2 border-gray-200">
+                  <span className="text-gray-600 font-medium">Bank Name:</span>
+                  <span className="font-bold text-gray-900">{qrDetails.bankName}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600">Account Name:</span>
-                  <span className="font-semibold">{qrDetails.accountName}</span>
+                <div className="flex justify-between py-3 border-b-2 border-gray-200">
+                  <span className="text-gray-600 font-medium">Account Name:</span>
+                  <span className="font-bold text-gray-900">{qrDetails.accountName}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600">Account Number:</span>
-                  <span className="font-semibold">{qrDetails.accountNumber}</span>
+                <div className="flex justify-between py-3 border-b-2 border-gray-200">
+                  <span className="text-gray-600 font-medium">Account Number:</span>
+                  <span className="font-bold text-gray-900">{qrDetails.accountNumber}</span>
                 </div>
               </div>
             )}
@@ -115,21 +118,21 @@ const PaymentQRStep = () => {
         </div>
 
         {/* Instructions */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-soft p-4 shadow-soft">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg className="h-6 w-6 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800 mb-2">
+              <h3 className="text-sm font-bold text-yellow-900 mb-2">
                 Important Instructions
               </h3>
               {qrDetails?.instructions && (
-                <ol className="list-decimal list-inside space-y-1 text-sm text-yellow-700">
+                <ol className="list-decimal list-inside space-y-2 text-sm text-yellow-800">
                   {qrDetails.instructions.map((instruction, index) => (
-                    <li key={index}>{instruction}</li>
+                    <li key={index} className="leading-relaxed">{instruction}</li>
                   ))}
                 </ol>
               )}
@@ -138,10 +141,14 @@ const PaymentQRStep = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-between pt-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-6">
           <button
             onClick={prevStep}
-            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-soft 
+                     hover:border-gray-400 hover:bg-gray-50
+                     active:scale-98
+                     transition-all duration-fast
+                     focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
             Back to Shipping
           </button>
@@ -149,7 +156,13 @@ const PaymentQRStep = () => {
           <button
             onClick={handleContinue}
             disabled={loading || isCreatingOrder}
-            className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-3 bg-brand-orange text-white font-bold rounded-soft 
+                     hover:bg-brand-orange-dark 
+                     active:scale-95
+                     transition-all duration-fast 
+                     shadow-glow-sm hover:shadow-glow-md
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
           >
             {isCreatingOrder ? 'Creating Order...' : loading ? 'Processing...' : 'I\'ve Made the Payment'}
           </button>

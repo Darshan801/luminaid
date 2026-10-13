@@ -71,10 +71,10 @@ const CheckoutPage = () => {
   // Show redirecting or loading message
   if (redirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Redirecting to cart...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Redirecting to cart...</p>
         </div>
       </div>
     );
@@ -82,10 +82,10 @@ const CheckoutPage = () => {
 
   if (cartLoading || !cart) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Loading cart...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading cart...</p>
         </div>
       </div>
     );
@@ -93,10 +93,10 @@ const CheckoutPage = () => {
 
   if (!cart.items || cart.items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Cart is empty, redirecting...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Cart is empty, redirecting...</p>
         </div>
       </div>
     );
@@ -104,10 +104,10 @@ const CheckoutPage = () => {
 
   if (!initialized && !redirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-2">Preparing checkout...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Preparing checkout...</p>
         </div>
       </div>
     );
@@ -116,27 +116,34 @@ const CheckoutPage = () => {
   const steps = ['Shipping', 'Payment', 'Upload Proof'];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center">
+        <div className="mb-8 md:mb-12">
+          <div className="flex items-center justify-center flex-wrap gap-2">
             {steps.map((step, index) => (
               <div key={step} className="flex items-center">
+                {/* Step Circle */}
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 
+                              font-bold text-sm
+                              transition-all duration-normal
                   ${index <= currentStep 
-                    ? 'bg-blue-600 border-blue-600 text-white' 
+                    ? 'bg-brand-orange border-brand-orange text-white shadow-glow-sm' 
                     : 'bg-white border-gray-300 text-gray-500'
                   }`}>
                   {index + 1}
                 </div>
-                <div className={`ml-2 text-sm font-medium 
-                  ${index <= currentStep ? 'text-blue-600' : 'text-gray-500'}`}>
+                
+                {/* Step Label */}
+                <div className={`ml-2 text-sm font-bold transition-colors duration-fast
+                  ${index <= currentStep ? 'text-brand-orange' : 'text-gray-500'}`}>
                   {step}
                 </div>
+                
+                {/* Connector Line */}
                 {index < steps.length - 1 && (
-                  <div className={`w-20 h-0.5 mx-4 
-                    ${index < currentStep ? 'bg-blue-600' : 'bg-gray-300'}`} 
+                  <div className={`w-12 md:w-20 h-0.5 mx-3 md:mx-4 transition-all duration-normal
+                    ${index < currentStep ? 'bg-brand-orange' : 'bg-gray-300'}`} 
                   />
                 )}
               </div>
@@ -146,7 +153,7 @@ const CheckoutPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
+          <div className="mb-6 bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-soft font-medium">
             {error}
           </div>
         )}
@@ -154,7 +161,7 @@ const CheckoutPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white rounded-soft shadow-medium p-6 md:p-8">
               {currentStep === 0 && <ShippingStep />}
               {currentStep === 1 && <PaymentQRStep />}
               {currentStep === 2 && <UploadProofStep />}
@@ -170,10 +177,10 @@ const CheckoutPage = () => {
 
       {/* Loading Overlay */}
       {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Processing...</p>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-soft shadow-glow-lg p-8 max-w-sm mx-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-gray-700 font-medium text-center">Processing...</p>
           </div>
         </div>
       )}

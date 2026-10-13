@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import Button from '../common/Button';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+/**
+ * Footer Component - "Light in Motion" Design System
+ * 
+ * Structured, consistent footer with:
+ * - Clear visual hierarchy
+ * - Refined newsletter form
+ * - Warm hover states
+ * - Responsive grid layout
+ */
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -32,7 +41,6 @@ const Footer = () => {
     }
   };
 
-  // Column 1 data
   const shopByCollection = [
     { text: 'Shop Bundles', href: '/bundles' },
     { text: 'Emergency Lanterns', href: '/collections/emergency' },
@@ -45,7 +53,6 @@ const Footer = () => {
     { text: 'Read Our Blogs', href: '/blog' },
   ];
 
-  // Social icons (inline SVG paths, no extra dependency needed)
   const socialLinks = [
     {
       name: 'Facebook',
@@ -80,7 +87,6 @@ const Footer = () => {
     },
   ];
 
-  // Column 2 - Quick Links
   const quickLinks = [
     { text: 'Lumen Rewards', href: '/rewards' },
     { text: 'Getting Started', href: '/support/guides' },
@@ -89,7 +95,6 @@ const Footer = () => {
     { text: 'Accessibility', href: '/support/accessibility' },
   ];
 
-  // Column 2 - Partner with Us (below Quick Links)
   const partnerLinks = [
     { text: 'Corporate Gifting', href: '/business' },
     { text: 'Nonprofit Subsidy Program', href: '/nonprofit' },
@@ -97,7 +102,6 @@ const Footer = () => {
     { text: 'More Ways To Partner', href: '/partnership' },
   ];
 
-  // Column 3 - Legal Links
   const legalLinks = [
     { text: 'Terms of Service', href: '/terms' },
     { text: 'Accessibility', href: '/support/accessibility' },
@@ -107,23 +111,26 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-[#2b2b2b] text-white">
+    <footer className="w-full bg-charcoal text-white">
       
       {/* Main Footer - 3 Columns */}
-      <div className="max-w-[1280px] mx-auto px-8 pt-14 pb-7">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px]">
+      <div className="container max-w-content mx-auto px-6 md:px-8 pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
           
           {/* Column 1: Shop by Collection + Stay Up-to-Date */}
-          <div className="space-y-8">
+          <div className="space-y-10">
             {/* Shop by Collection */}
             <div>
-              <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">SHOP BY COLLECTION</h3>
-              <div className="flex flex-col gap-2">
+              <h3 className="text-label-lg font-bold mb-4 tracking-wider uppercase text-warm-paper">
+                Shop by Collection
+              </h3>
+              <div className="flex flex-col gap-3">
                 {shopByCollection.map((link) => (
                   <Link
                     key={link.text}
                     to={link.href}
-                    className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
+                    className="text-body-sm text-white hover:text-brand-orange 
+                             transition-colors duration-fast w-fit"
                   >
                     {link.text}
                   </Link>
@@ -133,13 +140,17 @@ const Footer = () => {
 
             {/* Stay Up-to-Date */}
             <div>
-              <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">STAY UP-TO-DATE</h3>
-              <div className="flex flex-col gap-2">
+              <h3 className="text-label-lg font-bold mb-4 tracking-wider uppercase text-warm-paper">
+                Stay Up-to-Date
+              </h3>
+              <div className="flex flex-col gap-3">
                 {stayUpToDate.map((link) => (
                   <Link
                     key={link.text}
                     to={link.href}
-                    className="text-sm text-white hover:text-gray-300 transition-colors underline underline-offset-2 w-fit"
+                    className="text-body-sm text-white hover:text-brand-orange 
+                             underline decoration-1 underline-offset-4
+                             transition-colors duration-fast w-fit"
                   >
                     {link.text}
                   </Link>
@@ -147,19 +158,22 @@ const Footer = () => {
               </div>
 
               {/* Social Icons */}
-              <div className="mt-4 flex w-fit border border-white/20">
-                {socialLinks.map((social) => (
+              <div className="mt-6 flex w-fit border border-white/20 rounded-soft overflow-hidden">
+                {socialLinks.map((social, idx) => (
                   <a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.name}
-                    className="w-[41px] h-[41px] flex items-center justify-center border-r border-white/20 last:border-r-0 text-white hover:bg-white/10 transition-colors"
+                    className={`w-11 h-11 flex items-center justify-center 
+                             text-white hover:bg-brand-orange hover:text-white
+                             transition-all duration-fast
+                             ${idx < socialLinks.length - 1 ? 'border-r border-white/20' : ''}`}
                   >
                     <svg
-                      width="14"
-                      height="14"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -176,16 +190,19 @@ const Footer = () => {
           </div>
 
           {/* Column 2: Quick Links + Partner with Us */}
-          <div className="space-y-8">
+          <div className="space-y-10">
             {/* Quick Links */}
             <div>
-              <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">QUICK LINKS</h3>
-              <div className="flex flex-col gap-2">
+              <h3 className="text-label-lg font-bold mb-4 tracking-wider uppercase text-warm-paper">
+                Quick Links
+              </h3>
+              <div className="flex flex-col gap-3">
                 {quickLinks.map((link) => (
                   <Link
                     key={link.text}
                     to={link.href}
-                    className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
+                    className="text-body-sm text-white hover:text-brand-orange 
+                             transition-colors duration-fast w-fit"
                   >
                     {link.text}
                   </Link>
@@ -195,13 +212,16 @@ const Footer = () => {
 
             {/* Partner with Us */}
             <div>
-              <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">PARTNER WITH US</h3>
-              <div className="flex flex-col gap-2">
+              <h3 className="text-label-lg font-bold mb-4 tracking-wider uppercase text-warm-paper">
+                Partner with Us
+              </h3>
+              <div className="flex flex-col gap-3">
                 {partnerLinks.map((link) => (
                   <Link
                     key={link.text}
                     to={link.href}
-                    className="text-sm text-white hover:text-gray-300 transition-colors w-fit"
+                    className="text-body-sm text-white hover:text-brand-orange 
+                             transition-colors duration-fast w-fit"
                   >
                     {link.text}
                   </Link>
@@ -211,11 +231,13 @@ const Footer = () => {
           </div>
 
           {/* Column 3: Newsletter + Legal Links + Copyright */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Newsletter */}
             <div>
-              <h3 className="text-[11px] leading-4 font-bold mb-4 tracking-wider">JOIN OUR EMAIL LIST</h3>
-              <p className="text-sm text-white mb-4">
+              <h3 className="text-label-lg font-bold mb-4 tracking-wider uppercase text-warm-paper">
+                Join Our Email List
+              </h3>
+              <p className="text-body-sm text-white/90 mb-5 leading-relaxed">
                 Get notified of upcoming sales and new product launches.
               </p>
               <form onSubmit={handleNewsletterSubmit} className="relative">
@@ -226,45 +248,54 @@ const Footer = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={loading}
-                  className="w-full px-3 py-2 pr-10 text-sm bg-transparent border border-white/25 text-white placeholder:text-gray-400 hover:border-white focus:border-white focus:outline-none transition-colors disabled:opacity-50"
+                  className="w-full px-4 py-3 pr-12 text-body-sm 
+                           bg-transparent border border-white/30 rounded-soft
+                           text-white placeholder:text-white/60
+                           hover:border-white/50 focus:border-brand-orange focus:outline-none 
+                           transition-colors duration-fast
+                           disabled:opacity-50 disabled:cursor-not-allowed"
                 />
-                <Button 
-                  type="submit" 
-                  variant="ghost" 
-                  size="sm"
+                <button
+                  type="submit"
                   disabled={loading}
                   aria-label="Subscribe"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white hover:text-primary-red disabled:opacity-50"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 
+                           text-white hover:text-brand-orange 
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           transition-colors duration-fast
+                           p-1 focus-ring"
                 >
-                  <ArrowRight size={16} />
-                </Button>
+                  <ArrowRight size={20} />
+                </button>
               </form>
               {message && (
-                <p className={`text-xs mt-2 ${message.includes('Success') ? 'text-green-400' : 'text-red-400'}`}>
+                <p className={`text-label-sm mt-3 font-medium animate-fade-in ${
+                  message.includes('Success') ? 'text-green-400' : 'text-red-400'
+                }`}>
                   {message}
                 </p>
               )}
             </div>
 
             {/* Legal Links */}
-            <div className="pt-16 text-sm leading-6 text-white">
-              {legalLinks.map((link, index) => {
-                const separator = index < legalLinks.length - 1 ? ' | ' : '';
-                return (
-                  <span key={link.text} className="inline">
-                    <Link to={link.href} className="hover:text-gray-300 transition-colors inline">
-                      {link.text}
-                    </Link>
-                    {separator}
-                  </span>
-                );
-              })}
+            <div className="text-body-sm leading-relaxed text-white/80">
+              {legalLinks.map((link, index) => (
+                <span key={link.text}>
+                  <Link 
+                    to={link.href} 
+                    className="hover:text-brand-orange transition-colors duration-fast"
+                  >
+                    {link.text}
+                  </Link>
+                  {index < legalLinks.length - 1 && ' | '}
+                </span>
+              ))}
             </div>
 
-            {/* Copyright & Address (below legal links) */}
-            <div className="text-sm leading-6 text-white">
-              <p className="font-bold">© 2026 LuminAID Lab LLC</p>
-              <p className="italic">944 Industrial Park Rd.</p>
+            {/* Copyright & Address */}
+            <div className="text-body-sm leading-relaxed text-white/80 pt-4 border-t border-white/10">
+              <p className="font-bold text-white">© 2026 LuminAID Lab LLC</p>
+              <p className="italic mt-1">944 Industrial Park Rd.</p>
               <p className="italic">Littleton, NH 03561</p>
             </div>
           </div>

@@ -172,14 +172,21 @@ const Login = () => {
 
           {/* Submit Button */}
           <div>
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              className="w-full"
               disabled={loading}
+              className="w-full flex justify-center py-3 px-4 
+                       border-2 border-gray-300 rounded-soft
+                       text-base font-bold text-gray-900
+                       bg-white
+                       hover:border-gray-400 hover:shadow-medium
+                       active:scale-98
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       transition-all duration-fast
+                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
+              {loading ? 'Signing in...' : 'SIGN IN'}
+            </button>
           </div>
         </form>
 

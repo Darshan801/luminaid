@@ -81,22 +81,24 @@ const UploadProofStep = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Upload Payment Proof</h2>
+      <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-6">
+        Upload Payment Proof
+      </h2>
 
       <div className="space-y-6">
         {/* Instructions */}
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+        <div className="bg-blue-50 border-l-4 border-blue-500 rounded-soft p-4 shadow-soft">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg className="h-6 w-6 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-blue-800 mb-1">
+              <h3 className="text-sm font-bold text-blue-900 mb-2">
                 Please upload a clear screenshot of your payment
               </h3>
-              <div className="text-sm text-blue-700 space-y-1">
+              <div className="text-sm text-blue-800 space-y-1">
                 <p>• The screenshot should show the transaction details</p>
                 <p>• Make sure the amount and date are clearly visible</p>
                 <p>• Accepted formats: JPG, PNG (max 10MB)</p>
@@ -107,14 +109,16 @@ const UploadProofStep = () => {
 
         {/* File Upload Area */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-bold text-gray-900 mb-3">
             Payment Screenshot *
           </label>
           
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer"
+            className="border-2 border-dashed border-gray-300 rounded-soft p-8 text-center 
+                     hover:border-brand-orange hover:bg-orange-50/50
+                     transition-all duration-fast cursor-pointer"
             onClick={() => document.getElementById('file-input').click()}
           >
             {preview ? (
@@ -122,11 +126,11 @@ const UploadProofStep = () => {
                 <img
                   src={preview}
                   alt="Payment screenshot preview"
-                  className="max-h-64 mx-auto rounded-lg shadow-sm"
+                  className="max-h-64 mx-auto rounded-soft shadow-medium"
                 />
-                <div className="text-sm text-gray-600">
-                  <p className="font-medium">{selectedFile.name}</p>
-                  <p>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                <div className="text-sm text-gray-700">
+                  <p className="font-bold">{selectedFile.name}</p>
+                  <p className="text-gray-600">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
                 <button
                   type="button"
@@ -135,7 +139,8 @@ const UploadProofStep = () => {
                     setSelectedFile(null);
                     setPreview(null);
                   }}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                  className="text-sm text-red-600 hover:text-red-700 font-bold
+                           transition-colors duration-fast"
                 >
                   Remove file
                 </button>
@@ -143,7 +148,7 @@ const UploadProofStep = () => {
             ) : (
               <div>
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
+                  className="mx-auto h-16 w-16 text-gray-400"
                   stroke="currentColor"
                   fill="none"
                   viewBox="0 0 48 48"
@@ -156,10 +161,10 @@ const UploadProofStep = () => {
                   />
                 </svg>
                 <div className="mt-4">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold text-blue-600">Click to upload</span> or drag and drop
+                  <p className="text-sm text-gray-700">
+                    <span className="font-bold text-brand-orange">Click to upload</span> or drag and drop
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
+                  <p className="text-xs text-gray-600 mt-2">PNG, JPG up to 10MB</p>
                 </div>
               </div>
             )}
@@ -174,16 +179,21 @@ const UploadProofStep = () => {
           />
 
           {error && (
-            <p className="mt-2 text-sm text-red-600">{error}</p>
+            <p className="mt-2 text-sm text-red-600 font-medium">{error}</p>
           )}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-between pt-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-6">
           <button
             onClick={prevStep}
             disabled={uploading}
-            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-soft 
+                     hover:border-gray-400 hover:bg-gray-50
+                     active:scale-98
+                     transition-all duration-fast
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
             Back
           </button>
@@ -191,10 +201,16 @@ const UploadProofStep = () => {
           <button
             onClick={handleUpload}
             disabled={!selectedFile || uploading || loading}
-            className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-3 bg-brand-orange text-white font-bold rounded-soft 
+                     hover:bg-brand-orange-dark 
+                     active:scale-95
+                     transition-all duration-fast 
+                     shadow-glow-sm hover:shadow-glow-md
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
           >
             {uploading || loading ? (
-              <span className="flex items-center">
+              <span className="flex items-center justify-center">
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

@@ -96,10 +96,10 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red mb-4"></div>
-          <p className="text-gray-600">Loading product...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading product...</p>
         </div>
       </div>
     );
@@ -107,13 +107,15 @@ const ProductDetail = () => {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h2>
-          <p className="text-gray-600 mb-6">{error || "The product you're looking for doesn't exist."}</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center max-w-md">
+          <h2 className="text-3xl font-heading font-bold text-gray-900 mb-4">Product Not Found</h2>
+          <p className="text-gray-600 mb-8 text-lg">{error || "The product you're looking for doesn't exist."}</p>
           <Link
             to="/products"
-            className="inline-block bg-primary-red text-white px-6 py-3 font-bold hover:bg-red-700 transition-colors"
+            className="inline-block bg-brand-orange text-white px-8 py-3.5 font-bold rounded-soft
+                     hover:bg-brand-orange-dark active:scale-95
+                     transition-all duration-fast shadow-glow-sm hover:shadow-glow-md"
           >
             Back to Products
           </Link>
@@ -131,14 +133,14 @@ const ProductDetail = () => {
     <div className="w-full bg-white">
       
       {/* Breadcrumb */}
-      <div className="border-b">
+      <div className="border-b border-gray-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center gap-2 text-sm text-gray-600">
-            <Link to="/" className="hover:text-primary-red transition-colors">Home</Link>
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">Home</Link>
             <span>/</span>
-            <Link to="/products" className="hover:text-primary-red transition-colors">Products</Link>
+            <Link to="/products" className="hover:text-brand-orange transition-colors duration-fast">Products</Link>
             <span>/</span>
-            <span className="text-gray-900 font-medium">{product.name}</span>
+            <span className="text-gray-900 font-semibold">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -150,7 +152,7 @@ const ProductDetail = () => {
           {/* Left: Images */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+            <div className="relative aspect-square bg-gray-100 rounded-soft overflow-hidden shadow-medium">
               <img
                 src={mainImage}
                 alt={product.name}
@@ -160,25 +162,28 @@ const ProductDetail = () => {
               {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {product.bestseller && (
-                  <span className="bg-primary-orange text-white px-3 py-1.5 text-xs font-bold uppercase shadow-md">
+                  <span className="bg-brand-orange text-white px-3 py-1.5 text-xs font-bold uppercase 
+                               rounded-soft shadow-glow-sm">
                     Bestseller
                   </span>
                 )}
                 {onSale && (
-                  <span className="bg-green-600 text-white px-3 py-1.5 text-xs font-bold uppercase shadow-md">
+                  <span className="bg-green-600 text-white px-3 py-1.5 text-xs font-bold uppercase 
+                               rounded-soft shadow-soft">
                     Save {discount}%
                   </span>
                 )}
                 {(product.newArrival || product.tags?.includes('new')) && (
-                  <span className="bg-blue-600 text-white px-3 py-1.5 text-xs font-bold uppercase shadow-md">
+                  <span className="bg-blue-600 text-white px-3 py-1.5 text-xs font-bold uppercase 
+                               rounded-soft shadow-soft">
                     New
                   </span>
                 )}
               </div>
 
               {!inStock && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="bg-white text-black px-6 py-3 text-lg font-bold">
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                  <span className="bg-white text-black px-6 py-3 text-lg font-bold rounded-soft shadow-medium">
                     OUT OF STOCK
                   </span>
                 </div>
@@ -192,9 +197,12 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square bg-gray-100 rounded overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? 'border-primary-red' : 'border-transparent hover:border-gray-300'
-                    }`}
+                    className={`aspect-square bg-gray-100 rounded-soft overflow-hidden border-2 
+                              transition-all duration-fast ${
+                              selectedImage === index 
+                                ? 'border-brand-orange shadow-glow-sm' 
+                                : 'border-transparent hover:border-gray-300'
+                            }`}
                   >
                     <img
                       src={image.url}
@@ -212,11 +220,11 @@ const ProductDetail = () => {
             
             {/* Title */}
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-3 leading-tight">
                 {product.name}
               </h1>
               {product.shortDescription && (
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-gray-600 leading-relaxed">
                   {product.shortDescription}
                 </p>
               )}
@@ -224,9 +232,9 @@ const ProductDetail = () => {
 
             {/* Rating & Reviews */}
             {product.rating > 0 && (
-              <div className="flex items-center gap-4 pb-4 border-b">
+              <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
                 <div className="flex items-center gap-2">
-                  <div className="flex">
+                  <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
@@ -235,7 +243,7 @@ const ProductDetail = () => {
                       />
                     ))}
                   </div>
-                  <span className="text-lg font-semibold text-gray-900">{product.rating.toFixed(1)}</span>
+                  <span className="text-lg font-bold text-gray-900">{product.rating.toFixed(1)}</span>
                 </div>
                 {product.reviewCount > 0 && (
                   <span className="text-sm text-gray-600">
@@ -246,7 +254,7 @@ const ProductDetail = () => {
             )}
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 pb-6 border-b">
+            <div className="flex items-baseline gap-3 pb-6 border-b border-gray-200">
               <span className="text-4xl font-bold text-gray-900">
                 RS {product.price.toFixed(2)}
               </span>
@@ -255,7 +263,7 @@ const ProductDetail = () => {
                   <span className="text-2xl text-gray-500 line-through">
                     RS {product.compareAtPrice.toFixed(2)}
                   </span>
-                  <span className="text-lg font-bold text-green-600">
+                  <span className="text-lg font-bold text-green-600 bg-green-50 px-2 py-1 rounded-soft">
                     Save {discount}%
                   </span>
                 </>
@@ -269,13 +277,16 @@ const ProductDetail = () => {
                   <Check size={20} />
                   <span className="font-semibold">In Stock</span>
                   {product.trackInventory && product.stock < 10 && (
-                    <span className="text-orange-600 ml-2">
+                    <span className="text-brand-orange ml-2 font-semibold">
                       (Only {product.stock} left!)
                     </span>
                   )}
                 </div>
               ) : (
-                <div className="text-red-600 font-semibold">Out of Stock</div>
+                <div className="text-red-600 font-semibold flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+                  Out of Stock
+                </div>
               )}
             </div>
 
@@ -286,27 +297,32 @@ const ProductDetail = () => {
                   Quantity:
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center border-2 border-gray-300 rounded">
+                  <div className="flex items-center border-2 border-gray-300 rounded-soft overflow-hidden
+                                hover:border-brand-orange transition-colors duration-fast">
                     <button
                       onClick={decrementQuantity}
                       disabled={quantity <= 1}
-                      className="p-3 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-3 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed 
+                               transition-colors duration-fast"
+                      aria-label="Decrease quantity"
                     >
                       <Minus size={20} />
                     </button>
-                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-lg">
+                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-lg border-x-2 border-gray-300">
                       {quantity}
                     </span>
                     <button
                       onClick={incrementQuantity}
                       disabled={product.trackInventory && quantity >= product.stock}
-                      className="p-3 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-3 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed 
+                               transition-colors duration-fast"
+                      aria-label="Increase quantity"
                     >
                       <Plus size={20} />
                     </button>
                   </div>
                   {product.trackInventory && (
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 font-medium">
                       {product.stock} available
                     </span>
                   )}
@@ -320,9 +336,13 @@ const ProductDetail = () => {
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding || justAdded}
-                  className="w-full bg-primary-red text-white py-4 px-6 font-bold text-lg rounded
-                           hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed
-                           flex items-center justify-center gap-3"
+                  className="w-full bg-brand-orange text-white py-4 px-6 font-bold text-lg rounded-soft
+                           hover:bg-brand-orange-dark 
+                           active:scale-95
+                           transition-all duration-fast 
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           flex items-center justify-center gap-3
+                           shadow-glow-sm hover:shadow-glow-md"
                 >
                   {justAdded ? (
                     <>
@@ -340,8 +360,12 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={isAdding}
-                  className="w-full bg-gray-900 text-white py-4 px-6 font-bold text-lg rounded
-                           hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gray-900 text-white py-4 px-6 font-bold text-lg rounded-soft
+                           hover:bg-gray-800 
+                           active:scale-95
+                           transition-all duration-fast 
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           shadow-soft"
                 >
                   Buy It Now
                 </button>
@@ -349,21 +373,30 @@ const ProductDetail = () => {
             )}
 
             {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-4 pt-6 border-t">
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
               <div className="text-center">
-                <Truck size={32} className="mx-auto mb-2 text-gray-700" />
-                <p className="text-xs font-semibold text-gray-700">Free Shipping</p>
-                <p className="text-xs text-gray-500">Orders RS 99+</p>
+                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-brand-orange/10 
+                              flex items-center justify-center text-brand-orange">
+                  <Truck size={24} />
+                </div>
+                <p className="text-xs font-bold text-gray-900 mb-0.5">Free Shipping</p>
+                <p className="text-xs text-gray-600">Orders RS 99+</p>
               </div>
               <div className="text-center">
-                <Shield size={32} className="mx-auto mb-2 text-gray-700" />
-                <p className="text-xs font-semibold text-gray-700">Warranty</p>
-                <p className="text-xs text-gray-500">1 Year</p>
+                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-brand-orange/10 
+                              flex items-center justify-center text-brand-orange">
+                  <Shield size={24} />
+                </div>
+                <p className="text-xs font-bold text-gray-900 mb-0.5">Warranty</p>
+                <p className="text-xs text-gray-600">1 Year</p>
               </div>
               <div className="text-center">
-                <Package size={32} className="mx-auto mb-2 text-gray-700" />
-                <p className="text-xs font-semibold text-gray-700">Easy Returns</p>
-                <p className="text-xs text-gray-500">30 Days</p>
+                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-brand-orange/10 
+                              flex items-center justify-center text-brand-orange">
+                  <Package size={24} />
+                </div>
+                <p className="text-xs font-bold text-gray-900 mb-0.5">Easy Returns</p>
+                <p className="text-xs text-gray-600">30 Days</p>
               </div>
             </div>
           </div>
@@ -371,28 +404,28 @@ const ProductDetail = () => {
       </div>
 
       {/* Feature Blocks Section */}
-      <div className="bg-gray-50 py-16">
+      <div className="bg-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Feature Block 1 - Red Background */}
-          <div className="bg-primary-red rounded-lg overflow-hidden mb-8">
+          <div className="bg-brand-red-secondary rounded-soft overflow-hidden mb-8 shadow-medium">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              <div className="p-12 flex flex-col justify-center text-white">
-                <h2 className="text-3xl font-bold mb-4">3-in-1 Solar Power</h2>
-                <p className="text-lg mb-6">
+              <div className="p-8 md:p-12 flex flex-col justify-center text-white">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">3-in-1 Solar Power</h2>
+                <p className="text-lg mb-6 leading-relaxed text-white/90">
                   Solar powered LED lantern charges phones and small devices. Perfect for camping, 
                   emergency preparedness, and outdoor adventures.
                 </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5" />
                     <span>Integrated solar panel</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5" />
                     <span>USB charging capability</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5" />
                     <span>Ultra-bright LED lights</span>
                   </li>
@@ -409,7 +442,7 @@ const ProductDetail = () => {
           </div>
 
           {/* Feature Block 2 - Gray Background */}
-          <div className="bg-gray-200 rounded-lg overflow-hidden mb-8">
+          <div className="bg-white border border-gray-200 rounded-soft overflow-hidden mb-8 shadow-medium">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="aspect-square md:aspect-auto order-2 md:order-1">
                 <img
@@ -418,22 +451,24 @@ const ProductDetail = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-12 flex flex-col justify-center order-1 md:order-2">
-                <h2 className="text-3xl font-bold mb-4 text-gray-900">Waterproof & Durable</h2>
-                <p className="text-lg mb-6 text-gray-700">
+              <div className="p-8 md:p-12 flex flex-col justify-center order-1 md:order-2">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-gray-900">
+                  Waterproof & Durable
+                </h2>
+                <p className="text-lg mb-6 text-gray-700 leading-relaxed">
                   Built to withstand the elements. IP67 waterproof rating means it can handle rain, 
                   snow, and even being submerged in water.
                 </p>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>IP67 waterproof rated</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>Dustproof construction</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>Shatterproof design</span>
                   </li>
@@ -443,24 +478,27 @@ const ProductDetail = () => {
           </div>
 
           {/* Feature Block 3 - Yellow Background */}
-          <div className="bg-yellow-100 rounded-lg overflow-hidden">
+          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 
+                        rounded-soft overflow-hidden shadow-medium">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              <div className="p-12 flex flex-col justify-center">
-                <h2 className="text-3xl font-bold mb-4 text-gray-900">Ultra Portable</h2>
-                <p className="text-lg mb-6 text-gray-700">
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-gray-900">
+                  Ultra Portable
+                </h2>
+                <p className="text-lg mb-6 text-gray-700 leading-relaxed">
                   Lightweight and collapsible design packs down flat for easy storage and transport. 
                   Perfect for backpacking and travel.
                 </p>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-start gap-2">
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>Collapses to 1.5 inches</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>Weighs only 9.5 oz</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <Check size={20} className="flex-shrink-0 mt-0.5 text-green-600" />
                     <span>Built-in handle</span>
                   </li>
@@ -479,85 +517,103 @@ const ProductDetail = () => {
       </div>
 
       {/* Video Section */}
-      <div className="bg-black py-16">
+      <div className="bg-gray-900 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden group cursor-pointer">
+          <div className="relative aspect-video bg-black rounded-soft overflow-hidden group cursor-pointer
+                        shadow-glow-lg hover:shadow-glow-xl transition-all duration-normal">
             <img
               src={product.images?.[0]?.url || '/images/placeholder-product.jpg'}
               alt="Video thumbnail"
               className="w-full h-full object-cover opacity-70"
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform mb-4">
-                <Play size={32} className="text-black ml-1" fill="black" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center 
+                          bg-black/20 group-hover:bg-black/30 transition-all duration-normal">
+              <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm
+                            flex items-center justify-center 
+                            group-hover:scale-110 
+                            transition-transform duration-normal
+                            shadow-glow-md mb-4">
+                <Play size={32} className="text-gray-900 ml-1" fill="currentColor" />
               </div>
-              <h3 className="text-white text-2xl font-bold">See It In Action</h3>
-              <p className="text-white/80 mt-2">Watch how {product.name} works</p>
+              <h3 className="text-white text-2xl md:text-3xl font-heading font-bold mb-2">See It In Action</h3>
+              <p className="text-white/80 text-lg">Watch how {product.name} works</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Comparison Table */}
-      <div className="py-16 bg-white">
+      <div className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Compare Power Lanterns</h2>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
+            Compare Power Lanterns
+          </h2>
           
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <div className="overflow-x-auto rounded-soft shadow-medium border border-gray-200">
+            <table className="w-full border-collapse bg-white">
               <thead>
-                <tr className="border-b-2 border-gray-300">
-                  <th className="text-left p-4 font-bold text-gray-900">Feature</th>
-                  <th className="text-center p-4 bg-primary-red/10">
-                    <div className="font-bold text-gray-900">Titan</div>
-                    <div className="text-sm text-gray-600">Most Popular</div>
+                <tr className="border-b-2 border-gray-300 bg-gray-50">
+                  <th className="text-left p-4 md:p-6 font-bold text-gray-900">Feature</th>
+                  <th className="text-center p-4 md:p-6 bg-brand-orange/10">
+                    <div className="font-bold text-gray-900 mb-1">Titan</div>
+                    <div className="text-xs md:text-sm text-brand-orange font-semibold">Most Popular</div>
                   </th>
-                  <th className="text-center p-4">
-                    <div className="font-bold text-gray-900">Survivor</div>
-                    <div className="text-sm text-gray-600">Premium</div>
+                  <th className="text-center p-4 md:p-6">
+                    <div className="font-bold text-gray-900 mb-1">Survivor</div>
+                    <div className="text-xs md:text-sm text-gray-600">Premium</div>
                   </th>
-                  <th className="text-center p-4">
-                    <div className="font-bold text-gray-900">Max</div>
-                    <div className="text-sm text-gray-600">Budget</div>
+                  <th className="text-center p-4 md:p-6">
+                    <div className="font-bold text-gray-900 mb-1">Max</div>
+                    <div className="text-xs md:text-sm text-gray-600">Budget</div>
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                <tr>
-                  <td className="p-4 font-semibold">Brightness</td>
-                  <td className="p-4 text-center bg-primary-red/5">300 lumens</td>
-                  <td className="p-4 text-center">350 lumens</td>
-                  <td className="p-4 text-center">150 lumens</td>
+                <tr className="hover:bg-gray-50 transition-colors duration-fast">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Brightness</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/5 font-medium">300 lumens</td>
+                  <td className="p-4 md:p-6 text-center font-medium">350 lumens</td>
+                  <td className="p-4 md:p-6 text-center font-medium">150 lumens</td>
                 </tr>
-                <tr>
-                  <td className="p-4 font-semibold">Runtime</td>
-                  <td className="p-4 text-center bg-primary-red/5">50 hours</td>
-                  <td className="p-4 text-center">100 hours</td>
-                  <td className="p-4 text-center">40 hours</td>
+                <tr className="hover:bg-gray-50 transition-colors duration-fast">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Runtime</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/5 font-medium">50 hours</td>
+                  <td className="p-4 md:p-6 text-center font-medium">100 hours</td>
+                  <td className="p-4 md:p-6 text-center font-medium">40 hours</td>
                 </tr>
-                <tr>
-                  <td className="p-4 font-semibold">Phone Charging</td>
-                  <td className="p-4 text-center bg-primary-red/5"><Check className="inline text-green-600" size={20} /></td>
-                  <td className="p-4 text-center"><Check className="inline text-green-600" size={20} /></td>
-                  <td className="p-4 text-center"><Check className="inline text-green-600" size={20} /></td>
+                <tr className="hover:bg-gray-50 transition-colors duration-fast">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Phone Charging</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/5">
+                    <Check className="inline text-green-600" size={20} />
+                  </td>
+                  <td className="p-4 md:p-6 text-center">
+                    <Check className="inline text-green-600" size={20} />
+                  </td>
+                  <td className="p-4 md:p-6 text-center">
+                    <Check className="inline text-green-600" size={20} />
+                  </td>
                 </tr>
-                <tr>
-                  <td className="p-4 font-semibold">Red Night Vision</td>
-                  <td className="p-4 text-center bg-primary-red/5">—</td>
-                  <td className="p-4 text-center"><Check className="inline text-green-600" size={20} /></td>
-                  <td className="p-4 text-center">—</td>
+                <tr className="hover:bg-gray-50 transition-colors duration-fast">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Red Night Vision</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/5 text-gray-400">—</td>
+                  <td className="p-4 md:p-6 text-center">
+                    <Check className="inline text-green-600" size={20} />
+                  </td>
+                  <td className="p-4 md:p-6 text-center text-gray-400">—</td>
                 </tr>
-                <tr>
-                  <td className="p-4 font-semibold">Weight</td>
-                  <td className="p-4 text-center bg-primary-red/5">9.5 oz</td>
-                  <td className="p-4 text-center">11 oz</td>
-                  <td className="p-4 text-center">7 oz</td>
+                <tr className="hover:bg-gray-50 transition-colors duration-fast">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Weight</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/5 font-medium">9.5 oz</td>
+                  <td className="p-4 md:p-6 text-center font-medium">11 oz</td>
+                  <td className="p-4 md:p-6 text-center font-medium">7 oz</td>
                 </tr>
-                <tr>
-                  <td className="p-4 font-semibold">Price</td>
-                  <td className="p-4 text-center bg-primary-red/5 font-bold">RS 88</td>
-                  <td className="p-4 text-center font-bold">RS 115</td>
-                  <td className="p-4 text-center font-bold">RS 60</td>
+                <tr className="bg-gray-50">
+                  <td className="p-4 md:p-6 font-semibold text-gray-900">Price</td>
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/10 font-bold text-lg text-gray-900">
+                    RS 88
+                  </td>
+                  <td className="p-4 md:p-6 text-center font-bold text-lg text-gray-900">RS 115</td>
+                  <td className="p-4 md:p-6 text-center font-bold text-lg text-gray-900">RS 60</td>
                 </tr>
               </tbody>
             </table>
@@ -566,24 +622,28 @@ const ProductDetail = () => {
       </div>
 
       {/* Product Details Accordion */}
-      <div className="bg-gray-50 py-16">
+      <div className="bg-gray-50 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-b divide-y bg-white rounded-lg overflow-hidden shadow-sm">
+          <div className="border border-gray-200 divide-y divide-gray-200 bg-white rounded-soft overflow-hidden shadow-medium">
             
             {/* Description */}
             <div>
               <button
                 onClick={() => setOpenSection(openSection === 'description' ? null : 'description')}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left 
+                         hover:bg-gray-50 transition-colors duration-fast
+                         focus-ring"
               >
                 <span className="text-lg font-bold text-gray-900">Description</span>
                 <ChevronDown
                   size={24}
-                  className={`transition-transform ${openSection === 'description' ? 'rotate-180' : ''}`}
+                  className={`transition-transform duration-normal ${
+                    openSection === 'description' ? 'rotate-180' : ''
+                  }`}
                 />
               </button>
               {openSection === 'description' && (
-                <div className="px-6 pb-6 text-gray-700 leading-relaxed">
+                <div className="px-6 pb-6 text-gray-700 leading-relaxed animate-slideDown">
                   <p>{product.description}</p>
                 </div>
               )}
@@ -594,16 +654,20 @@ const ProductDetail = () => {
               <div>
                 <button
                   onClick={() => setOpenSection(openSection === 'features' ? null : 'features')}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left 
+                           hover:bg-gray-50 transition-colors duration-fast
+                           focus-ring"
                 >
                   <span className="text-lg font-bold text-gray-900">Features</span>
                   <ChevronDown
                     size={24}
-                    className={`transition-transform ${openSection === 'features' ? 'rotate-180' : ''}`}
+                    className={`transition-transform duration-normal ${
+                      openSection === 'features' ? 'rotate-180' : ''
+                    }`}
                   />
                 </button>
                 {openSection === 'features' && (
-                  <div className="px-6 pb-6">
+                  <div className="px-6 pb-6 animate-slideDown">
                     <ul className="space-y-3">
                       {product.features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3 text-gray-700">
@@ -622,18 +686,22 @@ const ProductDetail = () => {
               <div>
                 <button
                   onClick={() => setOpenSection(openSection === 'specifications' ? null : 'specifications')}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left 
+                           hover:bg-gray-50 transition-colors duration-fast
+                           focus-ring"
                 >
                   <span className="text-lg font-bold text-gray-900">Specifications</span>
                   <ChevronDown
                     size={24}
-                    className={`transition-transform ${openSection === 'specifications' ? 'rotate-180' : ''}`}
+                    className={`transition-transform duration-normal ${
+                      openSection === 'specifications' ? 'rotate-180' : ''
+                    }`}
                   />
                 </button>
                 {openSection === 'specifications' && (
-                  <div className="px-6 pb-6">
+                  <div className="px-6 pb-6 animate-slideDown">
                     <table className="w-full">
-                      <tbody className="divide-y">
+                      <tbody className="divide-y divide-gray-200">
                         {product.specifications.map((spec, index) => (
                           <tr key={index}>
                             <td className="py-3 pr-6 font-semibold text-gray-900 w-1/3">
@@ -655,27 +723,37 @@ const ProductDetail = () => {
             <div>
               <button
                 onClick={() => setOpenSection(openSection === 'shipping' ? null : 'shipping')}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left 
+                         hover:bg-gray-50 transition-colors duration-fast
+                         focus-ring"
               >
                 <span className="text-lg font-bold text-gray-900">Shipping & Returns</span>
                 <ChevronDown
                   size={24}
-                  className={`transition-transform ${openSection === 'shipping' ? 'rotate-180' : ''}`}
+                  className={`transition-transform duration-normal ${
+                    openSection === 'shipping' ? 'rotate-180' : ''
+                  }`}
                 />
               </button>
               {openSection === 'shipping' && (
-                <div className="px-6 pb-6 space-y-4 text-gray-700">
+                <div className="px-6 pb-6 space-y-4 text-gray-700 animate-slideDown">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Shipping</h4>
-                    <p>Free standard shipping on orders over RS 99. Orders typically ship within 1-2 business days.</p>
+                    <p className="leading-relaxed">
+                      Free standard shipping on orders over RS 99. Orders typically ship within 1-2 business days.
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Returns</h4>
-                    <p>30-day return policy. Items must be unused and in original packaging.</p>
+                    <p className="leading-relaxed">
+                      30-day return policy. Items must be unused and in original packaging.
+                    </p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Warranty</h4>
-                    <p>All LuminAID products come with a 1-year warranty against manufacturing defects.</p>
+                    <p className="leading-relaxed">
+                      All LuminAID products come with a 1-year warranty against manufacturing defects.
+                    </p>
                   </div>
                 </div>
               )}
@@ -686,10 +764,12 @@ const ProductDetail = () => {
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <div className="py-16 bg-white">
+        <div className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center mb-12">You May Also Like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
+              You May Also Like
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {relatedProducts.map((relatedProduct) => (
                 <ProductCard key={relatedProduct._id} product={relatedProduct} />
               ))}

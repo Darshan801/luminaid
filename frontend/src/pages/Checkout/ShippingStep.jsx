@@ -74,12 +74,14 @@ const ShippingStep = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipping Information</h2>
+      <h2 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-6">
+        Shipping Information
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Full Name */}
         <div>
-          <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="fullName" className="block text-sm font-bold text-gray-900 mb-2">
             Full Name *
           </label>
           <input
@@ -88,17 +90,19 @@ const ShippingStep = () => {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+            className={`w-full px-4 py-3 border-2 rounded-soft 
+                      focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                      transition-all duration-fast
               ${errors.fullName ? 'border-red-500' : 'border-gray-300'}`}
           />
           {errors.fullName && (
-            <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
+            <p className="mt-2 text-sm text-red-600 font-medium">{errors.fullName}</p>
           )}
         </div>
 
         {/* Address Line 1 */}
         <div>
-          <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="addressLine1" className="block text-sm font-bold text-gray-900 mb-2">
             Address Line 1 *
           </label>
           <input
@@ -108,18 +112,20 @@ const ShippingStep = () => {
             value={formData.addressLine1}
             onChange={handleChange}
             placeholder="Street address"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+            className={`w-full px-4 py-3 border-2 rounded-soft 
+                      focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                      transition-all duration-fast
               ${errors.addressLine1 ? 'border-red-500' : 'border-gray-300'}`}
           />
           {errors.addressLine1 && (
-            <p className="mt-1 text-sm text-red-600">{errors.addressLine1}</p>
+            <p className="mt-2 text-sm text-red-600 font-medium">{errors.addressLine1}</p>
           )}
         </div>
 
         {/* Address Line 2 */}
         <div>
-          <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
-            Address Line 2 (Optional)
+          <label htmlFor="addressLine2" className="block text-sm font-bold text-gray-900 mb-2">
+            Address Line 2 <span className="font-normal text-gray-600">(Optional)</span>
           </label>
           <input
             type="text"
@@ -128,14 +134,16 @@ const ShippingStep = () => {
             value={formData.addressLine2}
             onChange={handleChange}
             placeholder="Apartment, suite, etc."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-soft 
+                     focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                     transition-all duration-fast"
           />
         </div>
 
         {/* City, State, ZIP */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="city" className="block text-sm font-bold text-gray-900 mb-2">
               City *
             </label>
             <input
@@ -144,16 +152,18 @@ const ShippingStep = () => {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+              className={`w-full px-4 py-3 border-2 rounded-soft 
+                        focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                        transition-all duration-fast
                 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.city && (
-              <p className="mt-1 text-sm text-red-600">{errors.city}</p>
+              <p className="mt-2 text-sm text-red-600 font-medium">{errors.city}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="state" className="block text-sm font-bold text-gray-900 mb-2">
               State *
             </label>
             <input
@@ -164,16 +174,18 @@ const ShippingStep = () => {
               onChange={handleChange}
               maxLength={2}
               placeholder="CA"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase
+              className={`w-full px-4 py-3 border-2 rounded-soft uppercase
+                        focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                        transition-all duration-fast
                 ${errors.state ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.state && (
-              <p className="mt-1 text-sm text-red-600">{errors.state}</p>
+              <p className="mt-2 text-sm text-red-600 font-medium">{errors.state}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="zipCode" className="block text-sm font-bold text-gray-900 mb-2">
               ZIP Code *
             </label>
             <input
@@ -183,19 +195,21 @@ const ShippingStep = () => {
               value={formData.zipCode}
               onChange={handleChange}
               placeholder="12345"
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+              className={`w-full px-4 py-3 border-2 rounded-soft 
+                        focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                        transition-all duration-fast
                 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.zipCode && (
-              <p className="mt-1 text-sm text-red-600">{errors.zipCode}</p>
+              <p className="mt-2 text-sm text-red-600 font-medium">{errors.zipCode}</p>
             )}
           </div>
         </div>
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number (Optional)
+          <label htmlFor="phone" className="block text-sm font-bold text-gray-900 mb-2">
+            Phone Number <span className="font-normal text-gray-600">(Optional)</span>
           </label>
           <input
             type="tel"
@@ -204,23 +218,26 @@ const ShippingStep = () => {
             value={formData.phone}
             onChange={handleChange}
             placeholder="(555) 123-4567"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-soft 
+                     focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
+                     transition-all duration-fast"
           />
         </div>
 
         {/* Shipping Method */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-bold text-gray-900 mb-4">
             Shipping Method *
           </label>
           <div className="space-y-3">
             {shippingOptions.map((option) => (
               <label
                 key={option.value}
-                className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-colors
+                className={`flex items-center justify-between p-4 border-2 rounded-soft cursor-pointer 
+                          transition-all duration-fast
                   ${shippingMethod === option.value 
-                    ? 'border-blue-600 bg-blue-50' 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-brand-orange bg-orange-50 shadow-glow-sm' 
+                    : 'border-gray-200 hover:border-gray-300 hover:shadow-soft'
                   }`}
               >
                 <div className="flex items-center">
@@ -230,14 +247,14 @@ const ShippingStep = () => {
                     value={option.value}
                     checked={shippingMethod === option.value}
                     onChange={(e) => updateShippingMethod(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
+                    className="w-4 h-4 text-brand-orange focus:ring-brand-orange"
                   />
                   <div className="ml-3">
-                    <div className="font-medium text-gray-900">{option.label}</div>
-                    <div className="text-sm text-gray-500">{option.days}</div>
+                    <div className="font-bold text-gray-900">{option.label}</div>
+                    <div className="text-sm text-gray-600">{option.days}</div>
                   </div>
                 </div>
-                <div className="font-semibold text-gray-900">
+                <div className="font-bold text-gray-900">
                   RS {option.cost.toFixed(2)}
                 </div>
               </label>
@@ -246,10 +263,14 @@ const ShippingStep = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end pt-6">
           <button
             type="submit"
-            className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className="px-8 py-3.5 bg-brand-orange text-white font-bold rounded-soft 
+                     hover:bg-brand-orange-dark active:scale-95
+                     transition-all duration-fast
+                     shadow-glow-sm hover:shadow-glow-md
+                     focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
           >
             Continue to Payment
           </button>
