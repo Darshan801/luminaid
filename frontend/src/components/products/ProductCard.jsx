@@ -46,6 +46,14 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  // Save scroll position before navigating
+  const handleProductClick = () => {
+    // Save current scroll position immediately (before navigation)
+    const currentPath = window.location.pathname + window.location.search;
+    const scrollPosition = window.scrollY;
+    sessionStorage.setItem(`scroll_${currentPath}`, scrollPosition.toString());
+  };
+
   // Get primary image
   const primaryImage = product.images?.find(img => img.isPrimary)?.url || 
                       product.images?.[0]?.url || 
@@ -58,11 +66,15 @@ const ProductCard = ({ product }) => {
     : 0;
 
   return (
-    <div className="group relative">
-      <Link to={`/products/${product.slug}`} className="block">
+    <div className="group relative h-full flex flex-col">
+      <Link 
+        to={`/products/${product.slug}`}
+        onClick={handleProductClick}
+        className="block flex-grow flex flex-col"
+      >
         {/* Product Image */}
         <div className="relative aspect-square bg-warm-paper overflow-hidden rounded-soft mb-4 
-                      transition-all duration-normal group-hover:shadow-medium">
+                      transition-all duration-normal group-hover:shadow-medium flex-shrink-0">
           <img
             src={primaryImage}
             alt={product.name}
@@ -137,17 +149,18 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Product Info */}
-        <div className="space-y-2">
+        {/* Product Info - Flex container to push button to bottom */}
+        <div className="flex flex-col flex-grow">
+          {/* Product Title - Fixed height with line clamp */}
           <h3 className="text-body-sm md:text-body-md font-semibold text-charcoal 
                        leading-tight group-hover:text-brand-orange 
-                       transition-colors duration-fast line-clamp-2">
+                       transition-colors duration-fast line-clamp-2 min-h-[2.5rem] mb-2">
             {product.name}
           </h3>
 
           {/* Rating */}
           {product.rating > 0 && (
-            <div className="flex items-center gap-2 text-label-md text-muted-neutral">
+            <div className="flex items-center gap-2 text-label-md text-muted-neutral mb-2">
               <div className="flex items-center gap-1">
                 <span className="text-yellow-500">★</span>
                 <span className="font-medium text-charcoal">{product.rating.toFixed(1)}</span>
@@ -159,7 +172,7 @@ const ProductCard = ({ product }) => {
           )}
 
           {/* Price */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap mb-2">
             <span className="text-title-sm md:text-title-md font-bold text-charcoal">
               RS {product.price.toFixed(2)}
             </span>
@@ -172,12 +185,15 @@ const ProductCard = ({ product }) => {
 
           {/* Stock Status */}
           {product.trackInventory && product.stock < 10 && product.stock > 0 && (
-            <p className="text-label-md text-orange-600 font-medium">
+            <p className="text-label-md text-orange-600 font-medium mb-2">
               Only {product.stock} left in stock!
             </p>
           )}
 
-          {/* Mobile Add to Cart Button */}
+          {/* Spacer to push button to bottom */}
+          <div className="flex-grow"></div>
+
+          {/* Mobile Add to Cart Button - Always at bottom */}
           {product.status === 'active' && (
             <button
               onClick={handleAddToCart}

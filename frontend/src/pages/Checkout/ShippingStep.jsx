@@ -90,7 +90,7 @@ const ShippingStep = () => {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border-2 rounded-soft 
+            className={`w-full px-4 py-3 border rounded-soft 
                       focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                       transition-all duration-fast
               ${errors.fullName ? 'border-red-500' : 'border-gray-300'}`}
@@ -112,7 +112,7 @@ const ShippingStep = () => {
             value={formData.addressLine1}
             onChange={handleChange}
             placeholder="Street address"
-            className={`w-full px-4 py-3 border-2 rounded-soft 
+            className={`w-full px-4 py-3 border rounded-soft 
                       focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                       transition-all duration-fast
               ${errors.addressLine1 ? 'border-red-500' : 'border-gray-300'}`}
@@ -134,7 +134,7 @@ const ShippingStep = () => {
             value={formData.addressLine2}
             onChange={handleChange}
             placeholder="Apartment, suite, etc."
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-soft 
+            className="w-full px-4 py-3 border border-gray-300 rounded-soft 
                      focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                      transition-all duration-fast"
           />
@@ -152,7 +152,7 @@ const ShippingStep = () => {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border-2 rounded-soft 
+              className={`w-full px-4 py-3 border rounded-soft 
                         focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                         transition-all duration-fast
                 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
@@ -174,7 +174,7 @@ const ShippingStep = () => {
               onChange={handleChange}
               maxLength={2}
               placeholder="CA"
-              className={`w-full px-4 py-3 border-2 rounded-soft uppercase
+              className={`w-full px-4 py-3 border rounded-soft uppercase
                         focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                         transition-all duration-fast
                 ${errors.state ? 'border-red-500' : 'border-gray-300'}`}
@@ -195,7 +195,7 @@ const ShippingStep = () => {
               value={formData.zipCode}
               onChange={handleChange}
               placeholder="12345"
-              className={`w-full px-4 py-3 border-2 rounded-soft 
+              className={`w-full px-4 py-3 border rounded-soft 
                         focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                         transition-all duration-fast
                 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'}`}
@@ -218,7 +218,7 @@ const ShippingStep = () => {
             value={formData.phone}
             onChange={handleChange}
             placeholder="(555) 123-4567"
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-soft 
+            className="w-full px-4 py-3 border border-gray-300 rounded-soft 
                      focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange
                      transition-all duration-fast"
           />
@@ -233,7 +233,7 @@ const ShippingStep = () => {
             {shippingOptions.map((option) => (
               <label
                 key={option.value}
-                className={`flex items-center justify-between p-4 border-2 rounded-soft cursor-pointer 
+                className={`flex items-center justify-between p-4 border rounded-soft cursor-pointer 
                           transition-all duration-fast
                   ${shippingMethod === option.value 
                     ? 'border-brand-orange bg-orange-50 shadow-glow-sm' 

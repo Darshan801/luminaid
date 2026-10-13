@@ -197,7 +197,7 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square bg-gray-100 rounded-soft overflow-hidden border-2 
+                    className={`aspect-square bg-gray-100 rounded-soft overflow-hidden border
                               transition-all duration-fast ${
                               selectedImage === index 
                                 ? 'border-brand-orange shadow-glow-sm' 
@@ -297,7 +297,7 @@ const ProductDetail = () => {
                   Quantity:
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center border-2 border-gray-300 rounded-soft overflow-hidden
+                  <div className="flex items-center border border-gray-300 rounded-soft overflow-hidden
                                 hover:border-brand-orange transition-colors duration-fast">
                     <button
                       onClick={decrementQuantity}
@@ -308,7 +308,7 @@ const ProductDetail = () => {
                     >
                       <Minus size={20} />
                     </button>
-                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-lg border-x-2 border-gray-300">
+                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-lg border-x border-gray-300">
                       {quantity}
                     </span>
                     <button

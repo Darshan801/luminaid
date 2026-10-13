@@ -116,7 +116,7 @@ const UploadProofStep = () => {
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-gray-300 rounded-soft p-8 text-center 
+            className="border border-dashed border-gray-300 rounded-soft p-8 text-center 
                      hover:border-brand-orange hover:bg-orange-50/50
                      transition-all duration-fast cursor-pointer"
             onClick={() => document.getElementById('file-input').click()}
@@ -188,7 +188,7 @@ const UploadProofStep = () => {
           <button
             onClick={prevStep}
             disabled={uploading}
-            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-soft 
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-bold rounded-soft 
                      hover:border-gray-400 hover:bg-gray-50
                      active:scale-98
                      transition-all duration-fast

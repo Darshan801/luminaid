@@ -85,7 +85,18 @@ const Header = () => {
       <div className="relative container max-w-content mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center focus-ring rounded-soft">
+        <Link 
+          to="/" 
+          onClick={(e) => {
+            // If already on homepage, just scroll to top
+            if (window.location.pathname === '/') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            // Otherwise let React Router handle navigation (ScrollToTop will handle scroll)
+          }}
+          className="flex items-center focus-ring rounded-soft"
+        >
           <img 
             src={logoImage} 
             alt="LuminAID" 
@@ -103,10 +114,6 @@ const Header = () => {
                 className="relative h-full flex items-center"
                 onMouseEnter={() => setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
-                onFocus={() => setActiveDropdown(item.label)}
-                onBlur={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget)) setActiveDropdown(null);
-                }}
               >
                 <button
                   aria-haspopup="true"
@@ -122,9 +129,14 @@ const Header = () => {
                   />
                 </button>
 
+                {/* Invisible bridge to prevent gap issues */}
+                {isOpen && (
+                  <div className="absolute top-full left-0 right-0 h-2" />
+                )}
+
                 {/* Dropdown */}
                 <div
-                  className={`absolute top-full left-0 mt-1 w-max min-w-[220px] 
+                  className={`absolute top-full left-0 w-max min-w-[220px] 
                            bg-white rounded-soft shadow-medium border border-gray-100
                            py-2 transition-all duration-fast ease-out ${
                     isOpen

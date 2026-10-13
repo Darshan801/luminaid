@@ -81,63 +81,70 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-gray-50">
 
       {/* Collection Header */}
-      <section className="w-full py-12 md:py-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold">
-          Solar Lanterns
-        </h1>
+      <section className="w-full py-12 md:py-16 bg-white border-b border-gray-200">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-4">
+            Solar Lanterns
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Discover our complete collection of solar-powered lighting solutions
+          </p>
+        </div>
       </section>
 
 
       {/* Collection Content */}
-      <section className="w-full">
+      <section className="w-full py-12">
 
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
 
-          <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12">
 
 
             {/* Filters Sidebar */}
             <aside className="hidden lg:block">
 
-              <div className="sticky top-24">
+              <div className="sticky top-24 bg-white rounded-soft border border-gray-200 p-6">
 
-                <h2 className="text-sm font-bold uppercase mb-7">
+                <h2 className="text-sm font-bold uppercase text-gray-900 mb-6 tracking-wide">
                   Filters
                 </h2>
 
 
                 {/* Best For */}
-                <div className="pb-7 border-b border-gray-200">
+                <div className="pb-6 mb-6">
 
-                  <h3 className="text-sm font-bold mb-5">
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">
                     Best For
                   </h3>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
 
                     {bestFor.map((item) => (
                       <label
                         key={item}
-                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer"
+                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
+                                 hover:text-brand-orange transition-colors duration-fast group"
                       >
 
                         <div className="flex items-center gap-3">
 
                           <input
                             type="checkbox"
-                            className="w-4 h-4 accent-black"
+                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                                     focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
-                          <span>
+                          <span className="group-hover:text-brand-orange transition-colors duration-fast">
                             {item}
                           </span>
 
                         </div>
 
-                        <span className="text-gray-400">
+                        <span className="text-xs text-gray-400 font-medium">
                           ({getFilterCount('bestFor', item)})
                         </span>
 
@@ -150,34 +157,36 @@ const ProductsPage = () => {
 
 
                 {/* Features */}
-                <div className="py-7 border-b border-gray-200">
+                <div className="pb-6 mb-6">
 
-                  <h3 className="text-sm font-bold mb-5">
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">
                     Features
                   </h3>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
 
                     {features.map((item) => (
                       <label
                         key={item}
-                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer"
+                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
+                                 hover:text-brand-orange transition-colors duration-fast group"
                       >
 
                         <div className="flex items-center gap-3">
 
                           <input
                             type="checkbox"
-                            className="w-4 h-4 accent-black"
+                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                                     focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
-                          <span>
+                          <span className="group-hover:text-brand-orange transition-colors duration-fast">
                             {item}
                           </span>
 
                         </div>
 
-                        <span className="text-gray-400">
+                        <span className="text-xs text-gray-400 font-medium">
                           ({getFilterCount('features', item)})
                         </span>
 
@@ -190,34 +199,36 @@ const ProductsPage = () => {
 
 
                 {/* Light Color */}
-                <div className="py-7 border-b border-gray-200">
+                <div className="pb-6 mb-6">
 
-                  <h3 className="text-sm font-bold mb-5">
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">
                     Light Color
                   </h3>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
 
                     {lightColors.map((item) => (
                       <label
                         key={item}
-                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer"
+                        className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
+                                 hover:text-brand-orange transition-colors duration-fast group"
                       >
 
                         <div className="flex items-center gap-3">
 
                           <input
                             type="checkbox"
-                            className="w-4 h-4 accent-black"
+                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                                     focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
-                          <span>
+                          <span className="group-hover:text-brand-orange transition-colors duration-fast">
                             {item}
                           </span>
 
                         </div>
 
-                        <span className="text-gray-400">
+                        <span className="text-xs text-gray-400 font-medium">
                           ({getFilterCount('lightColor', item)})
                         </span>
 
@@ -230,46 +241,44 @@ const ProductsPage = () => {
 
 
                 {/* Price */}
-                <div className="py-7">
+                <div>
 
-                  <h3 className="text-sm font-bold mb-5">
-                    Price
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">
+                    Price Range
                   </h3>
 
-                  <div className="flex items-center gap-2">
-
-                    <div className="flex items-center border border-gray-300 px-3 py-2">
-
-                      <span className="text-sm text-gray-500">
-                        $
+                  <div className="space-y-2">
+                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2">
+                      <span className="text-sm text-gray-500 font-medium mr-2">
+                        RS
                       </span>
-
                       <input
                         type="number"
-                        placeholder="0"
-                        className="w-16 pl-2 text-sm outline-none"
+                        placeholder="Min"
+                        value={filters.minPrice}
+                        onChange={(e) => setFilters({...filters, minPrice: e.target.value})}
+                        className="w-full text-sm outline-none bg-transparent
+                                 focus:bg-white transition-colors duration-fast"
                       />
-
                     </div>
 
-                    <span className="text-sm text-gray-500">
+                    <div className="flex items-center justify-center text-xs text-gray-500 font-medium">
                       to
-                    </span>
-
-                    <div className="flex items-center border border-gray-300 px-3 py-2">
-
-                      <span className="text-sm text-gray-500">
-                        $
-                      </span>
-
-                      <input
-                        type="number"
-                        placeholder="448"
-                        className="w-16 pl-2 text-sm outline-none"
-                      />
-
                     </div>
 
+                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2">
+                      <span className="text-sm text-gray-500 font-medium mr-2">
+                        RS
+                      </span>
+                      <input
+                        type="number"
+                        placeholder="Max"
+                        value={filters.maxPrice}
+                        onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
+                        className="w-full text-sm outline-none bg-transparent
+                                 focus:bg-white transition-colors duration-fast"
+                      />
+                    </div>
                   </div>
 
                 </div>
@@ -283,18 +292,18 @@ const ProductsPage = () => {
             <div>
 
               {/* Collection Controls */}
-              <div className="flex items-center justify-between border-b border-gray-200 pb-5 mb-8">
+              <div className="flex items-center justify-between bg-white rounded-soft border border-gray-200 px-6 py-4 mb-8">
 
-                <p className="text-sm text-gray-500">
-                  {products.length} products
+                <p className="text-sm font-medium text-gray-700">
+                  <span className="font-bold text-gray-900">{products.length}</span> products
                 </p>
 
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
 
                   <label
                     htmlFor="sort"
-                    className="text-sm text-gray-600"
+                    className="text-sm font-medium text-gray-700"
                   >
                     Sort by
                   </label>
@@ -303,7 +312,9 @@ const ProductsPage = () => {
                     id="sort"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-transparent text-sm font-medium outline-none cursor-pointer"
+                    className="bg-gray-50 rounded-soft px-3 py-2 text-sm font-medium 
+                             focus:outline-none focus:bg-white
+                             transition-colors duration-fast cursor-pointer"
                   >
                     <option value="featured">Featured</option>
                     <option value="relevant">Most relevant</option>
@@ -322,26 +333,29 @@ const ProductsPage = () => {
 
 
               {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 {loading ? (
                   <div className="col-span-full text-center py-20">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red"></div>
-                    <p className="mt-4 text-gray-600">Loading products...</p>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-brand-orange border-t-transparent"></div>
+                    <p className="mt-4 text-gray-600 font-medium">Loading products...</p>
                   </div>
                 ) : error ? (
-                  <div className="col-span-full text-center py-20">
-                    <p className="text-red-600 mb-4">{error}</p>
+                  <div className="col-span-full text-center py-20 bg-white rounded-soft border border-gray-200 p-8">
+                    <p className="text-red-600 font-medium mb-6">{error}</p>
                     <button 
                       onClick={fetchProducts}
-                      className="bg-primary-red text-white px-6 py-2 hover:bg-red-700 transition-colors"
+                      className="bg-brand-orange text-white px-8 py-3 rounded-soft font-bold
+                               hover:bg-brand-orange-dark active:scale-95
+                               transition-all duration-fast"
                     >
                       Retry
                     </button>
                   </div>
                 ) : products.length === 0 ? (
-                  <div className="col-span-full text-center py-20">
-                    <p className="text-gray-600 text-lg">No products found</p>
+                  <div className="col-span-full text-center py-20 bg-white rounded-soft border border-gray-200 p-8">
+                    <p className="text-gray-600 text-lg font-medium">No products found</p>
+                    <p className="text-gray-500 text-sm mt-2">Try adjusting your filters</p>
                   </div>
                 ) : (
                   products.map((product) => (
@@ -361,17 +375,18 @@ const ProductsPage = () => {
 
 
       {/* Get More Gift Ideas */}
-      <section className="w-full py-16 md:py-20">
+      <section className="w-full py-16 md:py-20 bg-white">
 
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
 
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-10">
             Get More Gift Ideas
           </h2>
 
-          <div className="bg-gray-100 h-64 flex items-center justify-center">
+          <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-soft h-64 
+                        flex items-center justify-center shadow-medium">
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 font-medium">
               Promotional content / images
             </p>
 
@@ -383,13 +398,13 @@ const ProductsPage = () => {
 
 
       {/* Save With Multipacks */}
-      <section className="w-full bg-gray-100 py-16 md:py-20">
+      <section className="w-full bg-gradient-to-br from-orange-50 to-red-50 py-16 md:py-20">
 
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-            <div className="bg-white aspect-video flex items-center justify-center">
+            <div className="bg-white aspect-video rounded-soft flex items-center justify-center shadow-medium overflow-hidden">
 
               {/*
               <img
@@ -399,8 +414,8 @@ const ProductsPage = () => {
               />
               */}
 
-              <p className="text-sm text-gray-400">
-                Image
+              <p className="text-sm text-gray-400 font-medium">
+                Multipack Image
               </p>
 
             </div>
@@ -408,18 +423,22 @@ const ProductsPage = () => {
 
             <div className="max-w-[550px]">
 
-              <h2 className="text-3xl md:text-4xl font-bold mb-5">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-5">
                 Save With Multipacks
               </h2>
 
-              <p className="text-base md:text-lg leading-7 text-gray-600 mb-7">
+              <p className="text-base md:text-lg leading-relaxed text-gray-700 mb-8">
                 Stock up on your favorite LuminAID lights and save with
                 multipacks made for adventures, emergencies, and everyday use.
               </p>
 
               <a
                 href="/bundles/titan"
-                className="inline-flex bg-black text-white px-7 py-3 text-sm font-semibold hover:bg-primary-red transition-colors"
+                className="inline-flex bg-brand-orange text-white px-8 py-3.5 rounded-soft
+                         text-sm font-bold tracking-wide
+                         hover:bg-brand-orange-dark active:scale-95
+                         transition-all duration-fast
+                         shadow-glow-sm hover:shadow-glow-md"
               >
                 SHOP MULTIPACKS
               </a>
@@ -434,15 +453,15 @@ const ProductsPage = () => {
 
 
       {/* Shop Curated Bundles */}
-      <section className="w-full py-16 md:py-20">
+      <section className="w-full py-16 md:py-20 bg-gray-50">
 
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
 
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-10">
             Shop Curated Bundles
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
             {[
               'Survival Bundle',
@@ -452,18 +471,21 @@ const ProductsPage = () => {
             ].map((bundle) => (
               <div
                 key={bundle}
-                className="bg-gray-100 aspect-square flex items-center justify-center"
+                className="bg-white aspect-square rounded-soft flex items-center justify-center 
+                         shadow-soft hover:shadow-medium
+                         transition-all duration-normal
+                         group cursor-pointer overflow-hidden"
               >
 
                 {/*
                 <img
                   src={bundle.image}
                   alt={bundle.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-normal"
                 />
                 */}
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 font-medium">
                   {bundle}
                 </p>
 

@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
+import ScrollToTop from '../components/common/ScrollToTop'
 import Home from '../pages/Home/Home'
 
 // Products
@@ -55,7 +56,9 @@ import AdminProducts from '../pages/Admin/AdminProducts'
 
 const AppRoutes = () => {
     return (
-        <Routes>
+        <>
+            <ScrollToTop />
+            <Routes>
             <Route element={<MainLayout />}>
                 {/* Home */}
                 <Route path="/" element={<Home />} />
@@ -156,6 +159,7 @@ const AppRoutes = () => {
                 </Route>
             </Route>
         </Routes>
+        </>
     )
 }
 

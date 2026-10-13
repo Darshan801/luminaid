@@ -124,7 +124,7 @@ const CheckoutPage = () => {
             {steps.map((step, index) => (
               <div key={step} className="flex items-center">
                 {/* Step Circle */}
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border
                               font-bold text-sm
                               transition-all duration-normal
                   ${index <= currentStep 
@@ -153,7 +153,7 @@ const CheckoutPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-soft font-medium">
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-soft font-medium">
             {error}
           </div>
         )}

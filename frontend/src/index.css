@@ -11,6 +11,11 @@
    BASE LAYER - Typography & Fundamentals
    ==================================== */
 @layer base {
+  /* Smooth scrolling for entire document */
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* Typography Hierarchy */
   body {
     @apply font-sans text-body-md; /* DM Sans for body text */

@@ -87,7 +87,7 @@ const PaymentQRStep = () => {
         </div>
 
         {/* QR Code Display */}
-        <div className="bg-white border-2 border-gray-200 rounded-soft p-6 md:p-8 shadow-medium">
+        <div className="bg-white border border-gray-200 rounded-soft p-6 md:p-8 shadow-medium">
           <div className="flex flex-col items-center">
             <div className="mb-6">
               <img
@@ -144,7 +144,7 @@ const PaymentQRStep = () => {
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-6">
           <button
             onClick={prevStep}
-            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-soft 
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-bold rounded-soft 
                      hover:border-gray-400 hover:bg-gray-50
                      active:scale-98
                      transition-all duration-fast

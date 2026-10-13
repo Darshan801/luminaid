@@ -170,7 +170,7 @@ const Cart = () => {
 
                           {/* Quantity Controls */}
                           <div className="flex items-center gap-4 mt-4">
-                            <div className="flex items-center border-2 border-gray-300 rounded-soft overflow-hidden
+                            <div className="flex items-center border border-gray-300 rounded-soft overflow-hidden
                                           hover:border-brand-orange transition-colors duration-fast">
                               <button
                                 onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
@@ -181,7 +181,7 @@ const Cart = () => {
                               >
                                 <Minus size={16} />
                               </button>
-                              <span className="px-4 py-2 min-w-[3rem] text-center font-bold border-x-2 border-gray-300">
+                              <span className="px-4 py-2 min-w-[3rem] text-center font-bold border-x border-gray-300">
                                 {item.quantity}
                               </span>
                               <button
@@ -269,7 +269,7 @@ const Cart = () => {
 
                 <Link
                   to="/products"
-                  className="block w-full text-center border-2 border-gray-300 text-gray-700 py-3.5 px-6 
+                  className="block w-full text-center border border-gray-300 text-gray-700 py-3.5 px-6 
                            font-bold rounded-soft hover:border-brand-orange hover:text-brand-orange
                            active:scale-95
                            transition-all duration-fast"
