@@ -220,11 +220,11 @@ const ProductDetail = () => {
             
             {/* Title */}
             <div>
-              <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-3 leading-tight">
+              <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-3 leading-tight">
                 {product.name}
               </h1>
               {product.shortDescription && (
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-base text-gray-600 leading-relaxed">
                   {product.shortDescription}
                 </p>
               )}
@@ -238,12 +238,12 @@ const ProductDetail = () => {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        size={20}
+                        size={18}
                         className={i < Math.floor(product.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
                       />
                     ))}
                   </div>
-                  <span className="text-lg font-bold text-gray-900">{product.rating.toFixed(1)}</span>
+                  <span className="text-base font-bold text-gray-900">{product.rating.toFixed(1)}</span>
                 </div>
                 {product.reviewCount > 0 && (
                   <span className="text-sm text-gray-600">
@@ -255,15 +255,15 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 pb-6 border-b border-gray-200">
-              <span className="text-4xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900">
                 RS {product.price.toFixed(2)}
               </span>
               {onSale && (
                 <>
-                  <span className="text-2xl text-gray-500 line-through">
+                  <span className="text-lg text-gray-500 line-through">
                     RS {product.compareAtPrice.toFixed(2)}
                   </span>
-                  <span className="text-lg font-bold text-green-600 bg-green-50 px-2 py-1 rounded-soft">
+                  <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-soft">
                     Save {discount}%
                   </span>
                 </>
@@ -273,8 +273,8 @@ const ProductDetail = () => {
             {/* Stock Status */}
             <div>
               {inStock ? (
-                <div className="flex items-center gap-2 text-green-600">
-                  <Check size={20} />
+                <div className="flex items-center gap-2 text-green-600 text-sm">
+                  <Check size={18} />
                   <span className="font-semibold">In Stock</span>
                   {product.trackInventory && product.stock < 10 && (
                     <span className="text-brand-orange ml-2 font-semibold">
@@ -283,7 +283,7 @@ const ProductDetail = () => {
                   )}
                 </div>
               ) : (
-                <div className="text-red-600 font-semibold flex items-center gap-2">
+                <div className="text-red-600 text-sm font-semibold flex items-center gap-2">
                   <span className="w-2 h-2 bg-red-600 rounded-full"></span>
                   Out of Stock
                 </div>
@@ -308,7 +308,7 @@ const ProductDetail = () => {
                     >
                       <Minus size={20} />
                     </button>
-                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-lg border-x border-gray-300">
+                    <span className="px-6 py-3 min-w-[4rem] text-center font-bold text-base border-x border-gray-300">
                       {quantity}
                     </span>
                     <button
@@ -336,7 +336,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding || justAdded}
-                  className="w-full bg-brand-orange text-white py-4 px-6 font-bold text-lg rounded-soft
+                  className="w-full bg-brand-orange text-white py-3.5 px-6 font-bold text-base rounded-soft
                            hover:bg-brand-orange-dark 
                            active:scale-95
                            transition-all duration-fast 
@@ -346,12 +346,12 @@ const ProductDetail = () => {
                 >
                   {justAdded ? (
                     <>
-                      <Check size={24} />
+                      <Check size={20} />
                       <span>Added to Cart!</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingCart size={24} />
+                      <ShoppingCart size={20} />
                       <span>{isAdding ? 'Adding...' : 'Add to Cart'}</span>
                     </>
                   )}
@@ -360,7 +360,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={isAdding}
-                  className="w-full bg-gray-900 text-white py-4 px-6 font-bold text-lg rounded-soft
+                  className="w-full bg-gray-900 text-white py-3.5 px-6 font-bold text-base rounded-soft
                            hover:bg-gray-800 
                            active:scale-95
                            transition-all duration-fast 
@@ -411,8 +411,8 @@ const ProductDetail = () => {
           <div className="bg-brand-red-secondary rounded-soft overflow-hidden mb-8 shadow-medium">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="p-8 md:p-12 flex flex-col justify-center text-white">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">3-in-1 Solar Power</h2>
-                <p className="text-lg mb-6 leading-relaxed text-white/90">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">3-in-1 Solar Power</h2>
+                <p className="text-base mb-6 leading-relaxed text-white/90">
                   Solar powered LED lantern charges phones and small devices. Perfect for camping, 
                   emergency preparedness, and outdoor adventures.
                 </p>
@@ -452,10 +452,10 @@ const ProductDetail = () => {
                 />
               </div>
               <div className="p-8 md:p-12 flex flex-col justify-center order-1 md:order-2">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-gray-900">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-gray-900">
                   Waterproof & Durable
                 </h2>
-                <p className="text-lg mb-6 text-gray-700 leading-relaxed">
+                <p className="text-base mb-6 text-gray-700 leading-relaxed">
                   Built to withstand the elements. IP67 waterproof rating means it can handle rain, 
                   snow, and even being submerged in water.
                 </p>
@@ -482,10 +482,10 @@ const ProductDetail = () => {
                         rounded-soft overflow-hidden shadow-medium">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="p-8 md:p-12 flex flex-col justify-center">
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-gray-900">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-gray-900">
                   Ultra Portable
                 </h2>
-                <p className="text-lg mb-6 text-gray-700 leading-relaxed">
+                <p className="text-base mb-6 text-gray-700 leading-relaxed">
                   Lightweight and collapsible design packs down flat for easy storage and transport. 
                   Perfect for backpacking and travel.
                 </p>
@@ -535,8 +535,8 @@ const ProductDetail = () => {
                             shadow-glow-md mb-4">
                 <Play size={32} className="text-gray-900 ml-1" fill="currentColor" />
               </div>
-              <h3 className="text-white text-2xl md:text-3xl font-heading font-bold mb-2">See It In Action</h3>
-              <p className="text-white/80 text-lg">Watch how {product.name} works</p>
+              <h3 className="text-white text-xl md:text-2xl font-heading font-bold mb-2">See It In Action</h3>
+              <p className="text-white/80 text-base">Watch how {product.name} works</p>
             </div>
           </div>
         </div>
@@ -545,7 +545,7 @@ const ProductDetail = () => {
       {/* Comparison Table */}
       <div className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-heading font-bold text-center mb-12">
             Compare Power Lanterns
           </h2>
           
@@ -609,11 +609,11 @@ const ProductDetail = () => {
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="p-4 md:p-6 font-semibold text-gray-900">Price</td>
-                  <td className="p-4 md:p-6 text-center bg-brand-orange/10 font-bold text-lg text-gray-900">
+                  <td className="p-4 md:p-6 text-center bg-brand-orange/10 font-bold text-base text-gray-900">
                     RS 88
                   </td>
-                  <td className="p-4 md:p-6 text-center font-bold text-lg text-gray-900">RS 115</td>
-                  <td className="p-4 md:p-6 text-center font-bold text-lg text-gray-900">RS 60</td>
+                  <td className="p-4 md:p-6 text-center font-bold text-base text-gray-900">RS 115</td>
+                  <td className="p-4 md:p-6 text-center font-bold text-base text-gray-900">RS 60</td>
                 </tr>
               </tbody>
             </table>
@@ -634,7 +634,7 @@ const ProductDetail = () => {
                          hover:bg-gray-50 transition-colors duration-fast
                          focus-ring"
               >
-                <span className="text-lg font-bold text-gray-900">Description</span>
+                <span className="text-base font-bold text-gray-900">Description</span>
                 <ChevronDown
                   size={24}
                   className={`transition-transform duration-normal ${
@@ -658,7 +658,7 @@ const ProductDetail = () => {
                            hover:bg-gray-50 transition-colors duration-fast
                            focus-ring"
                 >
-                  <span className="text-lg font-bold text-gray-900">Features</span>
+                  <span className="text-base font-bold text-gray-900">Features</span>
                   <ChevronDown
                     size={24}
                     className={`transition-transform duration-normal ${
@@ -690,7 +690,7 @@ const ProductDetail = () => {
                            hover:bg-gray-50 transition-colors duration-fast
                            focus-ring"
                 >
-                  <span className="text-lg font-bold text-gray-900">Specifications</span>
+                  <span className="text-base font-bold text-gray-900">Specifications</span>
                   <ChevronDown
                     size={24}
                     className={`transition-transform duration-normal ${
@@ -727,7 +727,7 @@ const ProductDetail = () => {
                          hover:bg-gray-50 transition-colors duration-fast
                          focus-ring"
               >
-                <span className="text-lg font-bold text-gray-900">Shipping & Returns</span>
+                <span className="text-base font-bold text-gray-900">Shipping & Returns</span>
                 <ChevronDown
                   size={24}
                   className={`transition-transform duration-normal ${
@@ -766,7 +766,7 @@ const ProductDetail = () => {
       {relatedProducts.length > 0 && (
         <div className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-heading font-bold text-center mb-12">
               You May Also Like
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">

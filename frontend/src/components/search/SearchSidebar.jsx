@@ -132,7 +132,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
   };
 
   const handleProductClick = (slug) => {
-    navigate(`/product/${slug}`);
+    navigate(`/products/${slug}`);
     handleClose();
   };
 
@@ -201,11 +201,11 @@ const SearchSidebar = ({ isOpen, onClose }) => {
           isAnimating && !isClosing ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
         }`}>
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-50 rounded-lg">
-              <Search className="text-primary-red" size={20} />
+            <div className="p-2 bg-brand-orange/10 rounded-lg">
+              <Search className="text-brand-orange" size={20} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Search Products</h2>
+              <h2 className="text-lg font-bold text-gray-900">Search Products</h2>
               <p className="text-xs text-gray-500">Find your perfect LuminAID</p>
             </div>
           </div>
@@ -223,14 +223,14 @@ const SearchSidebar = ({ isOpen, onClose }) => {
           isAnimating && !isClosing ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
         }`}>
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary-red" size={20} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-brand-orange" size={20} />
             <input
               ref={inputRef}
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search for products..."
-              className="w-full pl-12 pr-20 py-3.5 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:outline-none focus:ring-2 focus:ring-red-100 transition-all duration-200"
+              className="w-full pl-12 pr-20 py-3.5 border-2 border-gray-200 rounded-xl focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/20 transition-all duration-200"
               autoComplete="off"
             />
             
@@ -249,7 +249,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   showFilters || hasActiveFilters
-                    ? 'bg-primary-red text-white shadow-lg scale-105'
+                    ? 'bg-brand-orange text-white shadow-lg scale-105'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-105'
                 }`}
                 aria-label="Toggle filters"
@@ -263,12 +263,12 @@ const SearchSidebar = ({ isOpen, onClose }) => {
           {hasActiveFilters && (
             <div className="mt-3 flex items-center justify-between animate-slideDown">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary-red rounded-full animate-pulse"></span>
+                <span className="w-2 h-2 bg-brand-orange rounded-full animate-pulse"></span>
                 <span className="text-sm font-medium text-gray-700">Filters active</span>
               </div>
               <button
                 onClick={clearFilters}
-                className="text-sm text-primary-red hover:underline font-medium transition-all duration-200 hover:scale-105"
+                className="text-sm text-brand-orange hover:underline font-medium transition-all duration-200 hover:scale-105"
               >
                 Clear all
               </button>
@@ -289,7 +289,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                  className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-red focus:ring-2 focus:ring-red-100 transition-all duration-200 bg-white"
+                  className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all duration-200 bg-white"
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (
@@ -311,14 +311,14 @@ const SearchSidebar = ({ isOpen, onClose }) => {
                     placeholder="Min"
                     value={filters.minPrice}
                     onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                    className="w-1/2 px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-red focus:ring-2 focus:ring-red-100 transition-all duration-200"
+                    className="w-1/2 px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all duration-200"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.maxPrice}
                     onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                    className="w-1/2 px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-red focus:ring-2 focus:ring-red-100 transition-all duration-200"
+                    className="w-1/2 px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -331,7 +331,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
                 <select
                   value={filters.sort}
                   onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
-                  className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-red focus:ring-2 focus:ring-red-100 transition-all duration-200 bg-white"
+                  className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all duration-200 bg-white"
                 >
                   <option value="-createdAt">Newest First</option>
                   <option value="price">Price: Low to High</option>
@@ -348,7 +348,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
           {/* Loading State */}
           {isLoading && (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="animate-spin text-primary-red" size={32} />
+              <Loader2 className="animate-spin text-brand-orange" size={32} />
             </div>
           )}
 
@@ -358,17 +358,17 @@ const SearchSidebar = ({ isOpen, onClose }) => {
               isAnimating && !isClosing ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-yellow-50 rounded-lg">
-                  <TrendingUp className="text-yellow-600" size={18} />
+                <div className="p-1.5 bg-yellow-50 rounded-lg">
+                  <TrendingUp className="text-yellow-600" size={16} />
                 </div>
-                <h3 className="font-semibold text-gray-900">Popular Searches</h3>
+                <h3 className="text-base font-semibold text-gray-900">Popular Searches</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {popularSearches.map((term, index) => (
                   <button
                     key={term}
                     onClick={() => handlePopularSearchClick(term)}
-                    className="px-4 py-2.5 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary-red hover:to-red-600 hover:text-white text-gray-700 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-md font-medium animate-slideDown"
+                    className="px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-brand-orange hover:to-brand-red hover:text-white text-gray-700 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-md font-medium animate-slideDown"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {term}
@@ -383,17 +383,17 @@ const SearchSidebar = ({ isOpen, onClose }) => {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4 animate-slideDown">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 bg-green-50 rounded-lg">
-                    <Package className="text-green-600" size={18} />
+                  <div className="p-1.5 bg-green-50 rounded-lg">
+                    <Package className="text-green-600" size={16} />
                   </div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="text-base font-semibold text-gray-900">
                     {totalResults} {totalResults === 1 ? 'Result' : 'Results'}
                   </h3>
                 </div>
                 {totalResults > 8 && (
                   <button
                     onClick={handleViewAllResults}
-                    className="text-sm text-primary-red hover:underline"
+                    className="text-sm text-brand-orange hover:underline"
                   >
                     View all →
                   </button>
@@ -405,7 +405,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
                   <button
                     key={product._id}
                     onClick={() => handleProductClick(product.slug)}
-                    className="w-full flex items-start gap-4 p-4 hover:bg-gradient-to-r hover:from-red-50 hover:to-transparent rounded-xl transition-all duration-300 text-left group hover:shadow-md hover:scale-[1.02] animate-slideDown"
+                    className="w-full flex items-start gap-4 p-4 hover:bg-gradient-to-r hover:from-brand-orange/10 hover:to-transparent rounded-xl transition-all duration-300 text-left group hover:shadow-md hover:scale-[1.02] animate-slideDown"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {/* Product Image */}
@@ -425,23 +425,23 @@ const SearchSidebar = ({ isOpen, onClose }) => {
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 group-hover:text-primary-red transition-colors line-clamp-2">
+                      <h4 className="text-sm font-medium text-gray-900 group-hover:text-brand-orange transition-colors line-clamp-2">
                         {product.name}
                       </h4>
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1">
                         {product.category}
                       </p>
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="font-bold text-primary-red">
+                        <span className="text-sm font-bold text-brand-orange">
                           ${product.price.toFixed(2)}
                         </span>
                         {product.compareAtPrice && product.compareAtPrice > product.price && (
-                          <span className="text-sm text-gray-400 line-through">
+                          <span className="text-xs text-gray-400 line-through">
                             ${product.compareAtPrice.toFixed(2)}
                           </span>
                         )}
                         {product.rating > 0 && (
-                          <span className="text-sm text-gray-600 flex items-center gap-1">
+                          <span className="text-xs text-gray-600 flex items-center gap-1">
                             ⭐ {product.rating.toFixed(1)}
                           </span>
                         )}
@@ -455,7 +455,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
               {totalResults > products.length && (
                 <button
                   onClick={handleViewAllResults}
-                  className="w-full mt-6 py-3.5 bg-gradient-to-r from-primary-red to-red-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold hover:scale-[1.02] animate-slideDown"
+                  className="w-full mt-6 py-3.5 bg-gradient-to-r from-brand-orange to-brand-red text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold hover:scale-[1.02] animate-slideDown"
                 >
                   View All {totalResults} Results →
                 </button>
@@ -477,7 +477,7 @@ const SearchSidebar = ({ isOpen, onClose }) => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-2 bg-primary-red text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="px-6 py-2 bg-brand-orange text-white rounded-lg hover:bg-brand-red transition-colors"
                 >
                   Clear Filters
                 </button>

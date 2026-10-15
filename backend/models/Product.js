@@ -264,13 +264,26 @@ productSchema.virtual('isLowStock').get(function() {
 });
 
 // Pre-save middleware to generate slug from name
-productSchema.pre('save', function() {
+productSchema.pre('save', async function() {
+  // Only generate slug if name is modified and slug doesn't exist
   if (this.isModified('name') && !this.slug) {
-    this.slug = this.name
+    const baseSlug = this.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+    
+    // Check for uniqueness and add number suffix if needed
+    let slug = baseSlug;
+    let count = 1;
+    
+    // Use the model constructor to check for existing slugs
+    while (await this.constructor.exists({ slug, _id: { $ne: this._id } })) {
+      slug = `${baseSlug}-${count++}`;
+    }
+    
+    this.slug = slug;
   }
+  // Don't call next() in async functions - Mongoose handles it automatically
 });
 
 // Pre-save middleware to set primary image
@@ -281,6 +294,7 @@ productSchema.pre('save', function() {
       this.images[0].isPrimary = true;
     }
   }
+  // Don't call next() when not using async - Mongoose handles it automatically
 });
 
 // Static method to get featured products

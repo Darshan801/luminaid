@@ -72,7 +72,7 @@ const SearchBar = ({ onClose, autoFocus = false }) => {
   };
 
   const handleSuggestionClick = (slug) => {
-    navigate(`/product/${slug}`);
+    navigate(`/products/${slug}`);
     setShowSuggestions(false);
     setSearchTerm('');
     if (onClose) onClose();
