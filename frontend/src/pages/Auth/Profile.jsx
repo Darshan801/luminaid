@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/common/Button';
+import { ChevronRight, User, Lock, BarChart3, Eye, EyeOff } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -107,92 +108,112 @@ const Profile = () => {
   const getTierColor = (tier) => {
     switch (tier) {
       case 'platinum':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-100 text-purple-800 border-purple-200';
       case 'gold':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'silver':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-orange-100 text-orange-800 border-orange-200';
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white shadow rounded-lg mb-6">
-          <div className="px-6 py-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {user?.fullName}
-                </h1>
-                <p className="text-gray-600 mt-1">{user?.email}</p>
+    <div className="min-h-screen bg-warm-paper py-8 md:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Breadcrumb */}
+        <div className="mb-8">
+          <nav className="flex items-center gap-2 text-sm text-gray-600">
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">
+              Home
+            </Link>
+            <ChevronRight size={16} className="text-gray-400" />
+            <span className="text-gray-900 font-medium">My Profile</span>
+          </nav>
+        </div>
+
+        {/* Header Card */}
+        <div className="bg-white rounded-soft border border-gray-200 shadow-medium mb-6 overflow-hidden">
+          <div className="bg-gradient-to-r from-brand-orange to-brand-red p-8 md:p-10">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-soft flex-shrink-0">
+                  <User size={40} className="text-brand-orange" />
+                </div>
+                <div className="text-white">
+                  <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">
+                    {user?.fullName}
+                  </h1>
+                  <p className="text-white/90 text-lg">{user?.email}</p>
+                </div>
               </div>
-              <div className="text-right">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium uppercase ${getTierColor(
-                    user?.customerTier
-                  )}`}
-                >
+              <div className="flex flex-col items-start md:items-end gap-3">
+                <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold uppercase border-2 ${getTierColor(user?.customerTier)}`}>
                   {user?.customerTier} Member
                 </span>
-                <p className="text-sm text-gray-600 mt-2">
-                  {user?.loyaltyPoints || 0} Loyalty Points
-                </p>
+                <div className="text-white text-lg">
+                  <span className="font-bold text-2xl">{user?.loyaltyPoints || 0}</span> Loyalty Points
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white rounded-soft border border-gray-200 shadow-medium overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex">
+            <nav className="flex overflow-x-auto">
               <button
                 onClick={() => setActiveTab('profile')}
-                className={`${
+                className={`flex items-center gap-2 px-6 py-4 border-b-2 font-bold text-sm whitespace-nowrap
+                         transition-colors duration-fast ${
                   activeTab === 'profile'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
+                    ? 'border-brand-orange text-brand-orange'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                }`}
               >
+                <User size={18} />
                 Profile Information
               </button>
               <button
                 onClick={() => setActiveTab('password')}
-                className={`${
+                className={`flex items-center gap-2 px-6 py-4 border-b-2 font-bold text-sm whitespace-nowrap
+                         transition-colors duration-fast ${
                   activeTab === 'password'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
+                    ? 'border-brand-orange text-brand-orange'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                }`}
               >
+                <Lock size={18} />
                 Change Password
               </button>
               <button
                 onClick={() => setActiveTab('stats')}
-                className={`${
+                className={`flex items-center gap-2 px-6 py-4 border-b-2 font-bold text-sm whitespace-nowrap
+                         transition-colors duration-fast ${
                   activeTab === 'stats'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm`}
+                    ? 'border-brand-orange text-brand-orange'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                }`}
               >
+                <BarChart3 size={18} />
                 Account Stats
               </button>
             </nav>
           </div>
 
-          <div className="px-6 py-8">
+          <div className="p-6 md:p-8">
             {/* Message */}
             {message.text && (
               <div
-                className={`mb-6 rounded-md p-4 ${
-                  message.type === 'success' ? 'bg-green-50' : 'bg-red-50'
+                className={`mb-6 rounded-soft p-4 border ${
+                  message.type === 'success' 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-red-50 border-red-200'
                 }`}
               >
-                <p
-                  className={`text-sm font-medium ${
+                <p className={`text-sm font-medium ${
                     message.type === 'success' ? 'text-green-800' : 'text-red-800'
                   }`}
                 >
@@ -206,7 +227,7 @@ const Profile = () => {
               <form onSubmit={handleProfileSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="firstName" className="block text-sm font-bold text-gray-900 mb-2">
                       First name
                     </label>
                     <input
@@ -215,12 +236,14 @@ const Profile = () => {
                       id="firstName"
                       value={profileData.firstName}
                       onChange={handleProfileChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4
+                               focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                               transition-all duration-fast"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="lastName" className="block text-sm font-bold text-gray-900 mb-2">
                       Last name
                     </label>
                     <input
@@ -229,12 +252,14 @@ const Profile = () => {
                       id="lastName"
                       value={profileData.lastName}
                       onChange={handleProfileChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4
+                               focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                               transition-all duration-fast"
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="phone" className="block text-sm font-bold text-gray-900 mb-2">
                       Phone number
                     </label>
                     <input
@@ -244,15 +269,24 @@ const Profile = () => {
                       value={profileData.phone}
                       onChange={handleProfileChange}
                       placeholder="+1 (555) 123-4567"
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4
+                               focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                               transition-all duration-fast"
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button type="submit" variant="primary" disabled={loading}>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-8 py-3 bg-brand-orange text-white rounded-soft font-bold
+                             hover:bg-brand-orange-dark active:scale-95
+                             disabled:opacity-50 disabled:cursor-not-allowed
+                             transition-all duration-fast shadow-glow-sm hover:shadow-glow-md"
+                  >
                     {loading ? 'Saving...' : 'Save Changes'}
-                  </Button>
+                  </button>
                 </div>
               </form>
             )}
@@ -262,10 +296,10 @@ const Profile = () => {
               <form onSubmit={handlePasswordSubmit} className="space-y-6">
                 <div className="space-y-6">
                   <div>
-                    <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="currentPassword" className="block text-sm font-bold text-gray-900 mb-2">
                       Current password
                     </label>
-                    <div className="relative mt-1">
+                    <div className="relative">
                       <input
                         type={showPasswords.current ? 'text' : 'password'}
                         name="currentPassword"
@@ -273,32 +307,26 @@ const Profile = () => {
                         value={passwordData.currentPassword}
                         onChange={handlePasswordChange}
                         required
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4 pr-12
+                                 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                                 transition-all duration-fast"
                       />
                       <button
                         type="button"
                         onClick={() => togglePasswordVisibility('current')}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500
+                                 hover:text-gray-700 transition-colors duration-fast"
                       >
-                        {showPasswords.current ? (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                          </svg>
-                        ) : (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
+                        {showPasswords.current ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="newPassword" className="block text-sm font-bold text-gray-900 mb-2">
                       New password
                     </label>
-                    <div className="relative mt-1">
+                    <div className="relative">
                       <input
                         type={showPasswords.new ? 'text' : 'password'}
                         name="newPassword"
@@ -306,35 +334,29 @@ const Profile = () => {
                         value={passwordData.newPassword}
                         onChange={handlePasswordChange}
                         required
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4 pr-12
+                                 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                                 transition-all duration-fast"
                       />
                       <button
                         type="button"
                         onClick={() => togglePasswordVisibility('new')}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500
+                                 hover:text-gray-700 transition-colors duration-fast"
                       >
-                        {showPasswords.new ? (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                          </svg>
-                        ) : (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
+                        {showPasswords.new ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-2 text-xs text-gray-600">
                       Must be 8+ characters with uppercase, lowercase, and number
                     </p>
                   </div>
 
                   <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-900 mb-2">
                       Confirm new password
                     </label>
-                    <div className="relative mt-1">
+                    <div className="relative">
                       <input
                         type={showPasswords.confirm ? 'text' : 'password'}
                         name="confirmPassword"
@@ -342,67 +364,68 @@ const Profile = () => {
                         value={passwordData.confirmPassword}
                         onChange={handlePasswordChange}
                         required
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="w-full border border-gray-300 rounded-soft shadow-sm py-3 px-4 pr-12
+                                 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-brand-orange
+                                 transition-all duration-fast"
                       />
                       <button
                         type="button"
                         onClick={() => togglePasswordVisibility('confirm')}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500
+                                 hover:text-gray-700 transition-colors duration-fast"
                       >
-                        {showPasswords.confirm ? (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                          </svg>
-                        ) : (
-                          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
+                        {showPasswords.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button type="submit" variant="primary" disabled={loading}>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-8 py-3 bg-brand-orange text-white rounded-soft font-bold
+                             hover:bg-brand-orange-dark active:scale-95
+                             disabled:opacity-50 disabled:cursor-not-allowed
+                             transition-all duration-fast shadow-glow-sm hover:shadow-glow-md"
+                  >
                     {loading ? 'Updating...' : 'Update Password'}
-                  </Button>
+                  </button>
                 </div>
               </form>
             )}
 
             {/* Stats Tab */}
             {activeTab === 'stats' && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                    <p className="mt-2 text-3xl font-semibold text-gray-900">
-                      ${user?.totalSpent || 0}
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-soft p-6 border border-orange-200">
+                    <p className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Total Spent</p>
+                    <p className="text-3xl md:text-4xl font-heading font-bold text-gray-900">
+                      RS {user?.totalSpent || 0}
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-sm font-medium text-gray-600">Orders</p>
-                    <p className="mt-2 text-3xl font-semibold text-gray-900">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-soft p-6 border border-blue-200">
+                    <p className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Orders</p>
+                    <p className="text-3xl md:text-4xl font-heading font-bold text-gray-900">
                       {user?.orderCount || 0}
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <p className="text-sm font-medium text-gray-600">Loyalty Points</p>
-                    <p className="mt-2 text-3xl font-semibold text-gray-900">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-soft p-6 border border-purple-200">
+                    <p className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Loyalty Points</p>
+                    <p className="text-3xl md:text-4xl font-heading font-bold text-gray-900">
                       {user?.loyaltyPoints || 0}
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <h3 className="text-lg font-medium text-blue-900 mb-2">
+                <div className="bg-gradient-to-br from-brand-orange/10 to-brand-red/10 border-2 border-brand-orange rounded-soft p-6">
+                  <h3 className="text-lg font-heading font-bold text-gray-900 mb-3">
                     Customer Tier: {user?.customerTier?.toUpperCase()}
                   </h3>
-                  <p className="text-sm text-blue-700">
+                  <p className="text-sm text-gray-700">
                     {user?.customerTier === 'bronze' && 'Spend RS 100 to reach Silver tier'}
                     {user?.customerTier === 'silver' && 'Spend RS 250 to reach Gold tier'}
                     {user?.customerTier === 'gold' && 'Spend RS 500 to reach Platinum tier'}
@@ -411,25 +434,37 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Account Information</h3>
-                  <dl className="divide-y divide-gray-200">
-                    <div className="py-3 flex justify-between">
-                      <dt className="text-sm font-medium text-gray-500">Email</dt>
+                  <h3 className="text-lg font-heading font-bold text-gray-900 mb-4">Account Information</h3>
+                  <dl className="divide-y divide-gray-200 bg-gray-50 rounded-soft border border-gray-200">
+                    <div className="py-4 px-6 flex justify-between">
+                      <dt className="text-sm font-bold text-gray-700">Email</dt>
                       <dd className="text-sm text-gray-900">{user?.email}</dd>
                     </div>
-                    <div className="py-3 flex justify-between">
-                      <dt className="text-sm font-medium text-gray-500">Member since</dt>
+                    <div className="py-4 px-6 flex justify-between">
+                      <dt className="text-sm font-bold text-gray-700">Member since</dt>
                       <dd className="text-sm text-gray-900">
                         {new Date(user?.createdAt).toLocaleDateString()}
                       </dd>
                     </div>
-                    <div className="py-3 flex justify-between">
-                      <dt className="text-sm font-medium text-gray-500">Email verified</dt>
+                    <div className="py-4 px-6 flex justify-between">
+                      <dt className="text-sm font-bold text-gray-700">Email verified</dt>
                       <dd className="text-sm text-gray-900">
-                        {user?.isEmailVerified ? 'Yes' : 'Not yet'}
+                        {user?.isEmailVerified ? '✓ Yes' : 'Not yet'}
                       </dd>
                     </div>
                   </dl>
+                </div>
+
+                <div className="pt-6">
+                  <Link
+                    to="/orders/my-orders"
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-brand-orange text-white rounded-soft font-bold
+                             hover:bg-brand-orange-dark active:scale-95
+                             transition-all duration-fast shadow-glow-sm hover:shadow-glow-md"
+                  >
+                    View My Orders
+                    <ChevronRight size={18} />
+                  </Link>
                 </div>
               </div>
             )}

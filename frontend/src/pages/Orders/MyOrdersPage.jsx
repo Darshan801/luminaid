@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useOrder } from '../../hooks/useOrder';
 import { formatCurrency } from '../../utils/format';
+import { ChevronRight, Package, Calendar, CreditCard } from 'lucide-react';
 
 const MyOrdersPage = () => {
   const { orders, loading, error, pagination, fetchUserOrders } = useOrder();
@@ -14,14 +15,14 @@ const MyOrdersPage = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: 'text-yellow-600 bg-yellow-50',
-      processing: 'text-blue-600 bg-blue-50',
-      shipped: 'text-purple-600 bg-purple-50',
-      delivered: 'text-green-600 bg-green-50',
-      cancelled: 'text-red-600 bg-red-50',
-      refunded: 'text-gray-600 bg-gray-50'
+      pending: 'text-yellow-700 bg-yellow-50 border-yellow-200',
+      processing: 'text-blue-700 bg-blue-50 border-blue-200',
+      shipped: 'text-purple-700 bg-purple-50 border-purple-200',
+      delivered: 'text-green-700 bg-green-50 border-green-200',
+      cancelled: 'text-red-700 bg-red-50 border-red-200',
+      refunded: 'text-gray-700 bg-gray-50 border-gray-200'
     };
-    return colors[status] || 'text-gray-600 bg-gray-50';
+    return colors[status] || 'text-gray-700 bg-gray-50 border-gray-200';
   };
 
   const formatDate = (date) => {
@@ -49,12 +50,12 @@ const MyOrdersPage = () => {
 
   if (loading && !orders.length) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+      <div className="min-h-screen bg-warm-paper py-12">
         <div className="container mx-auto px-4">
           <div className="flex justify-center items-center min-h-[500px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg">Loading your orders...</p>
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-brand-orange border-t-transparent mx-auto mb-4"></div>
+              <p className="text-gray-600 text-lg font-medium">Loading your orders...</p>
             </div>
           </div>
         </div>
@@ -64,15 +65,15 @@ const MyOrdersPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+      <div className="min-h-screen bg-warm-paper py-12">
         <div className="container mx-auto px-4 max-w-2xl">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 text-red-800">
+          <div className="bg-white rounded-soft border border-gray-200 shadow-medium p-8">
+            <div className="bg-red-50 border border-red-200 rounded-soft p-6 text-red-800">
               <div className="flex items-center gap-3 mb-2">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="font-semibold">Error Loading Orders</span>
+                <span className="font-bold">Error Loading Orders</span>
               </div>
               <p>{error}</p>
             </div>
@@ -86,78 +87,85 @@ const MyOrdersPage = () => {
   const statusCounts = getStatusCounts();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div className="min-h-screen bg-warm-paper py-8 md:py-12">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Page Header */}
+        
+        {/* Breadcrumb */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Order History</h1>
+          <nav className="flex items-center gap-2 text-sm text-gray-600 mb-6">
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">
+              Home
+            </Link>
+            <ChevronRight size={16} className="text-gray-400" />
+            <span className="text-gray-900 font-medium">My Orders</span>
+          </nav>
+          <h1 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-2">Order History</h1>
           <p className="text-gray-600">Track and manage all your orders</p>
         </div>
 
         {orders.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <div className="bg-white rounded-soft border border-gray-200 shadow-medium p-12 text-center">
             <div className="max-w-md mx-auto">
-              <div className="mx-auto w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6">
-                <svg className="w-12 h-12 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
+              <div className="mx-auto w-24 h-24 bg-gradient-to-br from-orange-50 to-orange-100 rounded-full 
+                            flex items-center justify-center mb-6 border-2 border-orange-200">
+                <Package size={48} className="text-brand-orange" />
               </div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">No Orders Yet</h2>
-              <p className="text-gray-600 mb-8 text-lg">
+              <h2 className="text-3xl font-heading font-bold text-gray-900 mb-4">No Orders Yet</h2>
+              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Start your journey with us! Browse our collection and place your first order.
               </p>
               <Link
                 to="/products"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold text-lg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-brand-orange text-white rounded-soft
+                         font-bold hover:bg-brand-orange-dark active:scale-95
+                         transition-all duration-fast shadow-glow-sm hover:shadow-glow-md"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
+                <Package size={20} />
                 Browse Products
               </Link>
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-soft border border-gray-200 shadow-medium overflow-hidden">
             {/* Filters/Tabs */}
-            <div className="border-b border-gray-200 px-6 py-4">
+            <div className="border-b border-gray-200 px-6 py-4 bg-gray-50">
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => setActiveFilter('all')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-soft font-bold text-sm transition-all duration-fast ${
                     activeFilter === 'all'
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-brand-orange text-white shadow-glow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:border-brand-orange hover:text-brand-orange'
                   }`}
                 >
                   All Orders ({statusCounts.all})
                 </button>
                 <button
                   onClick={() => setActiveFilter('pending')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-soft font-bold text-sm transition-all duration-fast ${
                     activeFilter === 'pending'
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-brand-orange text-white shadow-glow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:border-brand-orange hover:text-brand-orange'
                   }`}
                 >
                   Pending ({statusCounts.pending})
                 </button>
                 <button
                   onClick={() => setActiveFilter('delivered')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-soft font-bold text-sm transition-all duration-fast ${
                     activeFilter === 'delivered'
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-brand-orange text-white shadow-glow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:border-brand-orange hover:text-brand-orange'
                   }`}
                 >
                   Delivered ({statusCounts.delivered})
                 </button>
                 <button
                   onClick={() => setActiveFilter('cancelled')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-soft font-bold text-sm transition-all duration-fast ${
                     activeFilter === 'cancelled'
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-brand-orange text-white shadow-glow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:border-brand-orange hover:text-brand-orange'
                   }`}
                 >
                   Cancelled ({statusCounts.cancelled})
@@ -208,13 +216,13 @@ const MyOrdersPage = () => {
                       
                       {/* Order Details */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-800 truncate">
+                        <h3 className="font-bold text-gray-900 truncate text-base">
                           {order.items[0]?.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 mt-1">
                           Order #{order.orderNumber}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-400 mt-0.5">
                           {order.items.length > 1 && `+${order.items.length - 1} more item${order.items.length - 1 > 1 ? 's' : ''}`}
                         </p>
                       </div>
@@ -228,14 +236,14 @@ const MyOrdersPage = () => {
 
                   {/* Status */}
                   <div className="col-span-6 md:col-span-2 flex items-center">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                    <span className={`inline-flex items-center px-3 py-1.5 rounded-soft text-xs font-bold uppercase border ${getStatusColor(order.status)}`}>
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </span>
                   </div>
 
                   {/* Total */}
                   <div className="col-span-6 md:col-span-2 flex items-center md:justify-end">
-                    <span className="text-lg font-bold text-gray-800">
+                    <span className="text-base md:text-lg font-bold text-gray-900">
                       {formatCurrency(order.total)}
                     </span>
                   </div>
@@ -244,9 +252,14 @@ const MyOrdersPage = () => {
                   <div className="col-span-12 md:col-span-1 flex items-center md:justify-end">
                     <Link
                       to={`/orders/${order._id}`}
-                      className="w-full md:w-auto px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-center rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm"
+                      className="w-full md:w-auto inline-flex items-center justify-center gap-1 
+                               px-6 py-2.5 bg-brand-orange text-white rounded-soft
+                               text-sm font-bold
+                               hover:bg-brand-orange-dark active:scale-95
+                               transition-all duration-fast shadow-soft hover:shadow-medium"
                     >
-                      View Details
+                      View
+                      <ChevronRight size={16} />
                     </Link>
                   </div>
 
@@ -261,20 +274,24 @@ const MyOrdersPage = () => {
             {/* No results */}
             {filteredOrders.length === 0 && (
               <div className="px-6 py-16 text-center">
-                <svg className="mx-auto w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
-                <p className="text-gray-500 text-lg">No {activeFilter !== 'all' ? activeFilter : ''} orders found</p>
+                <Package size={64} className="mx-auto text-gray-400 mb-4" />
+                <p className="text-gray-600 text-lg font-medium">
+                  No {activeFilter !== 'all' ? activeFilter : ''} orders found
+                </p>
               </div>
             )}
 
             {/* Pagination */}
             {pagination.pages > 1 && (
-              <div className="flex justify-center items-center gap-3 px-6 py-6 border-t border-gray-200">
+              <div className="flex justify-center items-center gap-3 px-6 py-6 border-t border-gray-200 bg-gray-50">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="px-6 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 transition-all duration-200 font-medium"
+                  className="px-6 py-2.5 bg-white text-gray-700 rounded-soft border border-gray-300
+                           hover:bg-gray-50 hover:border-brand-orange hover:text-brand-orange
+                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white
+                           disabled:hover:border-gray-300 disabled:hover:text-gray-700
+                           transition-all duration-fast font-bold text-sm"
                 >
                   Previous
                 </button>
@@ -285,10 +302,10 @@ const MyOrdersPage = () => {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
+                        className={`w-10 h-10 rounded-soft font-bold text-sm transition-all duration-fast ${
                           currentPage === pageNum
-                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg'
-                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                            ? 'bg-brand-orange text-white shadow-glow-sm'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:border-brand-orange hover:text-brand-orange'
                         }`}
                       >
                         {pageNum}
@@ -299,7 +316,11 @@ const MyOrdersPage = () => {
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(pagination.pages, prev + 1))}
                   disabled={currentPage === pagination.pages}
-                  className="px-6 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300 transition-all duration-200 font-medium"
+                  className="px-6 py-2.5 bg-white text-gray-700 rounded-soft border border-gray-300
+                           hover:bg-gray-50 hover:border-brand-orange hover:text-brand-orange
+                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white
+                           disabled:hover:border-gray-300 disabled:hover:text-gray-700
+                           transition-all duration-fast font-bold text-sm"
                 >
                   Next
                 </button>

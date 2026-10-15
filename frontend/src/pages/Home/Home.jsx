@@ -278,14 +278,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-
-        {/* Accessibility Button */}
-        <button 
-          aria-label="Accessibility options" 
-          className="accessibility-button fixed bottom-16 right-5 z-40 w-9 h-9 rounded-full bg-[#1e6fd9] text-white border-2 border-white ring-2 ring-[#1e6fd9] flex items-center justify-center hover:bg-[#1557b0] transition-colors"
-        >
-          <Accessibility size={20} />
-        </button>
       </section>
 
       {/* ============================================================================ */}
