@@ -17,6 +17,7 @@ const authRoutes = require('./routes/authRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const supportRoutes = require('./routes/supportRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -50,7 +51,9 @@ app.use('/api/', apiLimiter);
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true, // Allow cookies
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 };
 
 app.use(cors(corsOptions));
@@ -133,6 +136,7 @@ app.use('/api/auth', authLimiter, authRoutes); // Apply stricter rate limit to a
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // 404 handler
 app.use((req, res) => {

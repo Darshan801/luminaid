@@ -347,8 +347,12 @@ productSchema.statics.searchProducts = function(query, filters = {}) {
 
 // Instance method to increment view count
 productSchema.methods.incrementViewCount = function() {
-  this.viewCount += 1;
-  return this.save();
+  // Use atomic increment to avoid version conflicts
+  return this.constructor.findByIdAndUpdate(
+    this._id,
+    { $inc: { viewCount: 1 } },
+    { returnDocument: 'before' } // Use new option name
+  );
 };
 
 // Instance method to update rating

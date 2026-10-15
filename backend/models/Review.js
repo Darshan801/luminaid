@@ -75,6 +75,7 @@ const reviewSchema = new mongoose.Schema(
       index: true
     },
     rejectionReason: String,
+    publishedAt: Date, // Set when review is approved
     
     // Helpfulness
     helpful: {
@@ -141,7 +142,7 @@ reviewSchema.index({ product: 1, status: 1 });
 reviewSchema.index({ user: 1, product: 1 }, { unique: true, sparse: true }); // One review per user per product
 reviewSchema.index({ rating: -1 });
 reviewSchema.index({ createdAt: -1 });
-reviewSchema.index({ isVerifiedPurchase: 1 });
+// isVerifiedPurchase index already defined in schema with index: true
 
 // Virtual for helpfulness ratio
 reviewSchema.virtual('helpfulnessRatio').get(function() {
@@ -156,7 +157,7 @@ reviewSchema.virtual('netHelpfulness').get(function() {
 });
 
 // Pre-save middleware to check if user purchased product
-reviewSchema.pre('save', async function(next) {
+reviewSchema.pre('save', async function() {
   if (this.isNew && this.user) {
     const Order = mongoose.model('Order');
     
@@ -170,7 +171,7 @@ reviewSchema.pre('save', async function(next) {
     
     this.isVerifiedPurchase = !!hasPurchased;
   }
-  next();
+  // Don't call next() in async functions - Mongoose handles it automatically
 });
 
 // Post-save hook to update product rating
@@ -198,6 +199,9 @@ reviewSchema.post('remove', async function(doc) {
 // Instance method to approve review
 reviewSchema.methods.approve = function() {
   this.status = 'approved';
+  if (!this.publishedAt) {
+    this.publishedAt = new Date();
+  }
   return this.save();
 };
 
@@ -327,7 +331,7 @@ reviewSchema.statics.getProductReviewStats = async function(productId) {
   const stats = await this.aggregate([
     { 
       $match: { 
-        product: mongoose.Types.ObjectId(productId), 
+        product: new mongoose.Types.ObjectId(productId), 
         status: 'approved' 
       } 
     },

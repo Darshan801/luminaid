@@ -64,7 +64,17 @@ export const apiRequest = async (endpoint, options = {}) => {
  * GET request
  */
 export const get = (endpoint, options = {}) => {
-  return apiRequest(endpoint, {
+  // Handle query parameters
+  let url = endpoint;
+  if (options.params) {
+    const queryString = new URLSearchParams(options.params).toString();
+    url = `${endpoint}?${queryString}`;
+    // Remove params from options to avoid passing it to fetch
+    const { params, ...restOptions } = options;
+    options = restOptions;
+  }
+  
+  return apiRequest(url, {
     method: 'GET',
     ...options,
   });

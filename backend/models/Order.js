@@ -442,9 +442,11 @@ orderSchema.post('save', async function(doc) {
     const Product = mongoose.model('Product');
     
     for (const item of doc.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { purchaseCount: item.quantity }
-      });
+      await Product.findByIdAndUpdate(
+        item.product, 
+        { $inc: { purchaseCount: item.quantity } },
+        { returnDocument: 'before' }
+      );
     }
     
     // Update user stats

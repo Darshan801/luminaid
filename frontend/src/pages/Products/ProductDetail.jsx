@@ -17,6 +17,7 @@ import {
 import { getProduct, getFeaturedProducts } from '../../services/productService';
 import { CartContext } from '../../context/CartContext';
 import ProductCard from '../../components/products/ProductCard';
+import ReviewSection from '../../components/reviews/ReviewSection';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -761,6 +762,9 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Reviews Section */}
+      <ReviewSection productId={product._id} />
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (

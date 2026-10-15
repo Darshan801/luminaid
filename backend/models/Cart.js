@@ -368,7 +368,8 @@ cartSchema.statics.markAbandonedCarts = function(daysSinceUpdate = 3) {
       updatedAt: { $lt: cutoffDate },
       items: { $ne: [] }
     },
-    { status: 'abandoned' }
+    { $set: { status: 'abandoned' } },
+    { returnDocument: 'after' }
   );
 };
 
