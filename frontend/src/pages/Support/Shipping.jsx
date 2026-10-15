@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Package, Truck, Globe, Shield } from 'lucide-react';
+import { Package, Truck, Globe, Shield, Clock, DollarSign, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -28,10 +28,11 @@ const Shipping = () => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center">
+      <div className="w-full min-h-screen flex items-center justify-center bg-warm-paper">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading shipping information...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 
+                        border-4 border-brand-orange border-t-transparent mb-4"></div>
+          <p className="text-body-md text-muted-neutral">Loading shipping information...</p>
         </div>
       </div>
     );
@@ -40,25 +41,25 @@ const Shipping = () => {
   return (
     <div className="shipping-page w-full bg-white">
       {/* Breadcrumb */}
-      <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
-        <div className="max-w-[1280px] mx-auto">
-          <nav className="text-sm text-gray-600">
-            <Link to="/" className="hover:text-black">Home</Link>
+      <section className="breadcrumb py-4 px-6 md:px-8 bg-white border-b border-gray-100">
+        <div className="container max-w-content mx-auto">
+          <nav className="text-body-sm text-muted-neutral">
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">Home</Link>
             <span className="mx-2">/</span>
-            <Link to="/support/guides" className="hover:text-black">Support</Link>
+            <Link to="/support/guides" className="hover:text-brand-orange transition-colors duration-fast">Support</Link>
             <span className="mx-2">/</span>
-            <span className="text-black">Shipping</span>
+            <span className="text-charcoal font-medium">Shipping</span>
           </nav>
         </div>
       </section>
 
       {/* Page Title */}
-      <section className="page-title py-16 px-8 text-center">
-        <div className="max-w-[1280px] mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold text-black tracking-tight mb-4">
+      <section className="section-py bg-gradient-to-b from-warm-paper to-white text-center">
+        <div className="container max-w-4xl mx-auto">
+          <h1 className="text-heading-lg md:text-heading-xl font-display font-bold text-charcoal mb-4">
             Shipping Information
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-body-lg text-muted-neutral max-w-2xl mx-auto">
             Fast, reliable shipping to get your LuminAID products to you quickly and safely.
           </p>
         </div>
@@ -66,59 +67,73 @@ const Shipping = () => {
 
       {/* Shipping Methods */}
       {shippingInfo && (
-        <section className="shipping-methods py-12 px-8">
-          <div className="max-w-[1200px] mx-auto">
+        <section className="section-py-lg bg-white">
+          <div className="container max-w-content mx-auto">
             
             {/* Domestic Shipping */}
-            <div className="mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <Truck size={32} className="text-primary-red" />
-                <h2 className="text-3xl font-bold text-black">Domestic Shipping (US)</h2>
+            <div className="mb-16 md:mb-20">
+              <div className="flex items-center gap-3 mb-8 md:mb-12">
+                <div className="w-12 h-12 rounded-full bg-brand-orange/10 flex items-center justify-center">
+                  <Truck size={24} className="text-brand-orange" />
+                </div>
+                <h2 className="text-heading-md md:text-heading-lg font-display font-bold text-charcoal">
+                  Domestic Shipping (US)
+                </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="border border-gray-200 p-8 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-xl font-bold text-black">
-                      {shippingInfo.domestic.standard.name}
-                    </h3>
-                    <Package className="text-gray-400" size={24} />
-                  </div>
-                  <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {/* Standard Shipping */}
+                <div className="bg-warm-paper border border-gray-100 rounded-soft p-6 md:p-8 
+                              hover:border-brand-orange hover:shadow-medium 
+                              transition-all duration-normal group">
+                  <div className="flex items-start justify-between mb-6">
                     <div>
-                      <p className="text-sm text-gray-500 font-semibold">Cost</p>
-                      <p className="text-lg font-bold text-primary-red">
-                        {shippingInfo.domestic.standard.cost}
-                      </p>
+                      <h3 className="text-title-lg font-bold text-charcoal mb-2 
+                                   group-hover:text-brand-orange transition-colors duration-fast">
+                        {shippingInfo.domestic.standard.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-body-sm text-muted-neutral">
+                        <Clock size={16} />
+                        <span>{shippingInfo.domestic.standard.deliveryTime}</span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Delivery Time</p>
-                      <p className="text-base text-black">
-                        {shippingInfo.domestic.standard.deliveryTime}
-                      </p>
+                    <Package className="text-muted-neutral group-hover:text-brand-orange 
+                                      transition-colors duration-fast" size={28} />
+                  </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-baseline gap-2">
+                      <DollarSign size={18} className="text-brand-orange mt-1" />
+                      <span className="text-heading-sm font-bold text-charcoal">
+                        {shippingInfo.domestic.standard.cost}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="border border-gray-200 p-8 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-xl font-bold text-black">
-                      {shippingInfo.domestic.express.name}
-                    </h3>
-                    <Package className="text-gray-400" size={24} />
-                  </div>
-                  <div className="space-y-3">
+                {/* Express Shipping */}
+                <div className="bg-warm-paper border border-gray-100 rounded-soft p-6 md:p-8 
+                              hover:border-brand-orange hover:shadow-medium 
+                              transition-all duration-normal group">
+                  <div className="flex items-start justify-between mb-6">
                     <div>
-                      <p className="text-sm text-gray-500 font-semibold">Cost</p>
-                      <p className="text-lg font-bold text-black">
-                        {shippingInfo.domestic.express.cost}
-                      </p>
+                      <h3 className="text-title-lg font-bold text-charcoal mb-2 
+                                   group-hover:text-brand-orange transition-colors duration-fast">
+                        {shippingInfo.domestic.express.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-body-sm text-muted-neutral">
+                        <Clock size={16} />
+                        <span>{shippingInfo.domestic.express.deliveryTime}</span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Delivery Time</p>
-                      <p className="text-base text-black">
-                        {shippingInfo.domestic.express.deliveryTime}
-                      </p>
+                    <Package className="text-muted-neutral group-hover:text-brand-orange 
+                                      transition-colors duration-fast" size={28} />
+                  </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-baseline gap-2">
+                      <DollarSign size={18} className="text-brand-orange mt-1" />
+                      <span className="text-heading-sm font-bold text-charcoal">
+                        {shippingInfo.domestic.express.cost}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -126,67 +141,75 @@ const Shipping = () => {
             </div>
 
             {/* International Shipping */}
-            <div className="mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <Globe size={32} className="text-primary-red" />
-                <h2 className="text-3xl font-bold text-black">International Shipping</h2>
+            <div className="mb-16 md:mb-20">
+              <div className="flex items-center gap-3 mb-8 md:mb-12">
+                <div className="w-12 h-12 rounded-full bg-brand-orange/10 flex items-center justify-center">
+                  <Globe size={24} className="text-brand-orange" />
+                </div>
+                <h2 className="text-heading-md md:text-heading-lg font-display font-bold text-charcoal">
+                  International Shipping
+                </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="border border-gray-200 p-8 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-xl font-bold text-black">
-                      {shippingInfo.international.standard.name}
-                    </h3>
-                    <Globe className="text-gray-400" size={24} />
-                  </div>
-                  <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {/* International Standard */}
+                <div className="bg-warm-paper border border-gray-100 rounded-soft p-6 md:p-8 
+                              hover:border-brand-orange hover:shadow-medium 
+                              transition-all duration-normal group">
+                  <div className="flex items-start justify-between mb-6">
                     <div>
-                      <p className="text-sm text-gray-500 font-semibold">Cost</p>
-                      <p className="text-lg font-bold text-black">
-                        {shippingInfo.international.standard.cost}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Delivery Time</p>
-                      <p className="text-base text-black">
-                        {shippingInfo.international.standard.deliveryTime}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Regions</p>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="text-title-lg font-bold text-charcoal mb-2 
+                                   group-hover:text-brand-orange transition-colors duration-fast">
+                        {shippingInfo.international.standard.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-body-sm text-muted-neutral mb-3">
+                        <Clock size={16} />
+                        <span>{shippingInfo.international.standard.deliveryTime}</span>
+                      </div>
+                      <p className="text-body-sm text-muted-neutral">
                         {shippingInfo.international.standard.regions.join(', ')}
                       </p>
+                    </div>
+                    <Globe className="text-muted-neutral group-hover:text-brand-orange 
+                                   transition-colors duration-fast" size={28} />
+                  </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-baseline gap-2">
+                      <DollarSign size={18} className="text-brand-orange mt-1" />
+                      <span className="text-heading-sm font-bold text-charcoal">
+                        {shippingInfo.international.standard.cost}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="border border-gray-200 p-8 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-xl font-bold text-black">
-                      {shippingInfo.international.express.name}
-                    </h3>
-                    <Globe className="text-gray-400" size={24} />
-                  </div>
-                  <div className="space-y-3">
+                {/* International Express */}
+                <div className="bg-warm-paper border border-gray-100 rounded-soft p-6 md:p-8 
+                              hover:border-brand-orange hover:shadow-medium 
+                              transition-all duration-normal group">
+                  <div className="flex items-start justify-between mb-6">
                     <div>
-                      <p className="text-sm text-gray-500 font-semibold">Cost</p>
-                      <p className="text-lg font-bold text-black">
-                        {shippingInfo.international.express.cost}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Delivery Time</p>
-                      <p className="text-base text-black">
-                        {shippingInfo.international.express.deliveryTime}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-semibold">Regions</p>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="text-title-lg font-bold text-charcoal mb-2 
+                                   group-hover:text-brand-orange transition-colors duration-fast">
+                        {shippingInfo.international.express.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-body-sm text-muted-neutral mb-3">
+                        <Clock size={16} />
+                        <span>{shippingInfo.international.express.deliveryTime}</span>
+                      </div>
+                      <p className="text-body-sm text-muted-neutral">
                         {shippingInfo.international.express.regions.join(', ')}
                       </p>
+                    </div>
+                    <Globe className="text-muted-neutral group-hover:text-brand-orange 
+                                   transition-colors duration-fast" size={28} />
+                  </div>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-baseline gap-2">
+                      <DollarSign size={18} className="text-brand-orange mt-1" />
+                      <span className="text-heading-sm font-bold text-charcoal">
+                        {shippingInfo.international.express.cost}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -194,16 +217,21 @@ const Shipping = () => {
             </div>
 
             {/* Shipping Policies */}
-            <div className="bg-gray-50 p-8 rounded-sm">
+            <div className="bg-gradient-to-br from-warm-paper to-white border border-gray-100 
+                          rounded-soft p-8 md:p-10">
               <div className="flex items-center gap-3 mb-6">
-                <Shield size={28} className="text-primary-red" />
-                <h2 className="text-2xl font-bold text-black">Shipping Policies</h2>
+                <div className="w-10 h-10 rounded-full bg-brand-orange/10 flex items-center justify-center">
+                  <Shield size={20} className="text-brand-orange" />
+                </div>
+                <h2 className="text-heading-sm md:text-heading-md font-display font-bold text-charcoal">
+                  Shipping Policies
+                </h2>
               </div>
               <ul className="space-y-3">
                 {shippingInfo.policies.map((policy, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-primary-red mt-1">✓</span>
-                    <span className="text-gray-700">{policy}</span>
+                    <span className="text-brand-orange mt-1 flex-shrink-0">✓</span>
+                    <span className="text-body-md text-charcoal leading-relaxed">{policy}</span>
                   </li>
                 ))}
               </ul>
@@ -213,67 +241,81 @@ const Shipping = () => {
         </section>
       )}
 
-      {/* Additional Info */}
-      <section className="additional-info py-12 px-8 bg-white">
-        <div className="max-w-[900px] mx-auto">
-          <h2 className="text-2xl font-bold text-black mb-6">Frequently Asked Questions</h2>
+      {/* FAQ Section */}
+      <section className="section-py-lg bg-warm-paper">
+        <div className="container max-w-3xl mx-auto">
+          <h2 className="text-heading-md md:text-heading-lg font-display font-bold text-charcoal 
+                       text-center mb-12">
+            Frequently Asked Questions
+          </h2>
           
-          <div className="space-y-6">
-            <details className="group border-b border-gray-200 pb-4">
-              <summary className="flex items-center justify-between cursor-pointer font-bold text-black text-lg">
-                When will my order ship?
-                <span className="text-primary-red group-open:rotate-90 transition-transform">›</span>
-              </summary>
-              <p className="text-gray-600 mt-3 leading-relaxed">
-                Orders typically ship within 1-2 business days. You'll receive a tracking number via email once your order ships.
-              </p>
-            </details>
-
-            <details className="group border-b border-gray-200 pb-4">
-              <summary className="flex items-center justify-between cursor-pointer font-bold text-black text-lg">
-                Do you ship internationally?
-                <span className="text-primary-red group-open:rotate-90 transition-transform">›</span>
-              </summary>
-              <p className="text-gray-600 mt-3 leading-relaxed">
-                Yes! We ship to most countries worldwide. International orders may be subject to customs fees and import duties.
-              </p>
-            </details>
-
-            <details className="group border-b border-gray-200 pb-4">
-              <summary className="flex items-center justify-between cursor-pointer font-bold text-black text-lg">
-                Can I track my order?
-                <span className="text-primary-red group-open:rotate-90 transition-transform">›</span>
-              </summary>
-              <p className="text-gray-600 mt-3 leading-relaxed">
-                Yes! Once your order ships, you'll receive a tracking number via email. You can also track your order from your account dashboard.
-              </p>
-            </details>
-
-            <details className="group border-b border-gray-200 pb-4">
-              <summary className="flex items-center justify-between cursor-pointer font-bold text-black text-lg">
-                What if my package is lost or damaged?
-                <span className="text-primary-red group-open:rotate-90 transition-transform">›</span>
-              </summary>
-              <p className="text-gray-600 mt-3 leading-relaxed">
-                Please contact our support team immediately. We'll work with the carrier to resolve the issue and ensure you receive your order.
-              </p>
-            </details>
+          <div className="space-y-4">
+            {[
+              {
+                question: 'When will my order ship?',
+                answer: 'Orders typically ship within 1-2 business days. You\'ll receive a tracking number via email once your order ships.'
+              },
+              {
+                question: 'Do you ship internationally?',
+                answer: 'Yes! We ship to most countries worldwide. International orders may be subject to customs fees and import duties.'
+              },
+              {
+                question: 'Can I track my order?',
+                answer: 'Yes! Once your order ships, you\'ll receive a tracking number via email. You can also track your order from your account dashboard.'
+              },
+              {
+                question: 'What if my package is lost or damaged?',
+                answer: 'Please contact our support team immediately. We\'ll work with the carrier to resolve the issue and ensure you receive your order.'
+              }
+            ].map((faq, index) => (
+              <details 
+                key={index} 
+                className="group bg-white border border-gray-100 rounded-soft overflow-hidden
+                         hover:border-brand-orange transition-colors duration-fast"
+              >
+                <summary className="flex items-center justify-between cursor-pointer 
+                                  px-6 py-5 font-bold text-charcoal text-body-md 
+                                  hover:text-brand-orange transition-colors duration-fast
+                                  list-none">
+                  <span>{faq.question}</span>
+                  <ChevronRight 
+                    size={20} 
+                    className="flex-shrink-0 text-brand-orange transition-transform duration-fast 
+                             group-open:rotate-90" 
+                  />
+                </summary>
+                <div className="px-6 pb-5">
+                  <p className="text-body-md text-muted-neutral leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Contact CTA */}
-      <section className="contact-cta py-16 px-8 bg-gray-50 text-center">
-        <div className="max-w-[700px] mx-auto">
-          <h2 className="text-3xl font-bold text-black mb-4">Still have questions?</h2>
-          <p className="text-gray-600 mb-8">
+      <section className="section-py bg-gradient-to-br from-brand-orange to-brand-red text-center">
+        <div className="container max-w-3xl mx-auto">
+          <h2 className="text-heading-md md:text-heading-lg font-display font-bold text-white mb-4">
+            Still have questions?
+          </h2>
+          <p className="text-body-lg text-white/90 mb-8">
             Our customer support team is here to help you with any shipping inquiries.
           </p>
           <Link
             to="/support/contact"
-            className="inline-block bg-primary-red text-white font-bold px-8 py-4 hover:bg-dark-red transition-colors"
+            className="inline-flex items-center justify-center gap-2
+                     bg-white text-brand-orange font-bold 
+                     px-10 py-4 text-body-md
+                     rounded-soft shadow-strong
+                     hover:bg-warm-paper hover:shadow-glow-lg
+                     active:scale-[0.98]
+                     transition-all duration-normal"
           >
             Contact Support
+            <ChevronRight size={20} />
           </Link>
         </div>
       </section>

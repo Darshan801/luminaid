@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
-import { Truck, ThumbsUp, Shield } from 'lucide-react'
+import { Book, ChevronRight } from 'lucide-react'
 import { get } from '../../services/api';
 
 // ============================================================================
@@ -47,29 +47,6 @@ const GUIDES = [
 ]
 
 // ============================================================================
-// TRUST BADGES COMPONENT
-// ============================================================================
-
-const TrustBadges = () => (
-  <section className="trust-badges py-12 px-8 bg-white border-t border-gray-200">
-    <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
-      <div className="trust-badge flex flex-col items-center gap-3">
-        <Truck size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">FREE US SHIPPING RS 99+</p>
-      </div>
-      <div className="trust-badge flex flex-col items-center gap-3">
-        <ThumbsUp size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">10,000+ REVIEWS</p>
-      </div>
-      <div className="trust-badge flex flex-col items-center gap-3">
-        <Shield size={36} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-[15px]">OFF-GRID GUARANTEE</p>
-      </div>
-    </div>
-  </section>
-)
-
-// ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 
@@ -98,10 +75,11 @@ const Guides = () => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center">
+      <div className="w-full min-h-screen flex items-center justify-center bg-warm-paper">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-red mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading guides...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 
+                        border-4 border-brand-orange border-t-transparent mb-4"></div>
+          <p className="text-body-md text-muted-neutral">Loading guides...</p>
         </div>
       </div>
     );
@@ -111,50 +89,63 @@ const Guides = () => {
     <div className="guides-page w-full bg-white">
 
       {/* Breadcrumb */}
-      <section className="breadcrumb py-4 px-8 bg-white border-b border-gray-200">
-        <div className="max-w-[1280px] mx-auto">
-          <nav className="breadcrumb__nav text-sm text-gray-600">
-            <Link to="/" className="hover:text-black">Home</Link>
+      <section className="breadcrumb py-4 px-6 md:px-8 bg-white border-b border-gray-100">
+        <div className="container max-w-content mx-auto">
+          <nav className="text-body-sm text-muted-neutral">
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">Home</Link>
             <span className="mx-2">/</span>
-            <Link to="/support/guides" className="hover:text-black">Support</Link>
+            <Link to="/support/guides" className="hover:text-brand-orange transition-colors duration-fast">Support</Link>
             <span className="mx-2">/</span>
-            <span className="text-black">getstarted</span>
+            <span className="text-charcoal font-medium">Product Guides</span>
           </nav>
         </div>
       </section>
 
       {/* Page Title */}
-      <section className="page-title py-16 px-8 text-center">
-        <div className="max-w-[1280px] mx-auto">
-          <h1 className="text-[48px] font-heading font-bold text-black tracking-tight">
-            Product Support
+      <section className="section-py bg-gradient-to-b from-warm-paper to-white text-center">
+        <div className="container max-w-4xl mx-auto">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center">
+              <Book size={32} className="text-brand-orange" />
+            </div>
+          </div>
+          <h1 className="text-heading-lg md:text-heading-xl font-display font-bold text-charcoal mb-4">
+            Product Support Guides
           </h1>
+          <p className="text-body-lg text-muted-neutral max-w-2xl mx-auto">
+            Everything you need to get the most out of your LuminAID products
+          </p>
         </div>
       </section>
 
       {/* Guides Grid */}
-      <section className="guides-grid py-12 px-8">
-        <div className="max-w-[1280px] mx-auto">
+      <section className="section-py-lg bg-white">
+        <div className="container max-w-content mx-auto">
           
           {/* First Row - 3 Guides */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
             {guides.slice(0, 3).map((guide) => (
               <a 
                 key={guide.id}
                 href={guide.link}
-                className="guide-card group block bg-white hover:shadow-lg transition-shadow"
+                className="guide-card group block bg-white border border-gray-100 rounded-soft 
+                         overflow-hidden hover:border-brand-orange hover:shadow-medium 
+                         transition-all duration-normal"
               >
-                <div className="guide-card__image-wrapper relative bg-gray-100 overflow-hidden mb-4">
+                <div className="guide-card__image-wrapper relative bg-gray-100 overflow-hidden aspect-[4/3]">
                   <img 
                     src={guide.image} 
                     alt={guide.title}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 
+                             transition-transform duration-slow"
                   />
                   {guide.featured && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white/95 px-8 py-6 text-center max-w-[80%]">
-                        <div className="text-primary-red text-[20px] font-bold mb-2">Ready to Shine?</div>
-                        <div className="text-[13px] text-gray-dark leading-snug">
+                    <div className="absolute inset-0 flex items-center justify-center bg-charcoal/80">
+                      <div className="bg-white/95 px-8 py-6 text-center max-w-[85%] rounded-soft">
+                        <div className="text-brand-orange text-title-lg font-bold mb-2">
+                          Ready to Shine?
+                        </div>
+                        <div className="text-body-sm text-charcoal leading-snug">
                           Print our Getting Started guide to include in their package
                         </div>
                       </div>
@@ -162,13 +153,19 @@ const Guides = () => {
                   )}
                 </div>
 
-                <div className="guide-card__content">
-                  <h3 className="guide-card__title text-[20px] font-bold text-black mb-3 group-hover:text-primary-red transition-colors">
+                <div className="guide-card__content p-6">
+                  <h3 className="text-title-lg font-bold text-charcoal mb-3 
+                               group-hover:text-brand-orange transition-colors duration-fast">
                     {guide.title}
                   </h3>
-                  <p className="guide-card__description text-[14px] text-gray-dark leading-relaxed line-clamp-4">
+                  <p className="text-body-sm text-muted-neutral leading-relaxed line-clamp-3 mb-4">
                     {guide.description}
                   </p>
+                  <div className="flex items-center gap-2 text-brand-orange text-body-sm font-bold 
+                                group-hover:gap-3 transition-all duration-fast">
+                    <span>Read Guide</span>
+                    <ChevronRight size={16} />
+                  </div>
                 </div>
               </a>
             ))}
@@ -176,38 +173,70 @@ const Guides = () => {
 
           {/* Second Row - Remaining Guides */}
           {guides.length > 3 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[880px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
               {guides.slice(3).map((guide) => (
-              <a 
-                key={guide.id}
-                href={guide.link}
-                className="guide-card group block bg-white hover:shadow-lg transition-shadow"
-              >
-                <div className="guide-card__image-wrapper relative bg-gray-100 overflow-hidden mb-4">
-                  <img 
-                    src={guide.image} 
-                    alt={guide.title}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+                <a 
+                  key={guide.id}
+                  href={guide.link}
+                  className="guide-card group block bg-white border border-gray-100 rounded-soft 
+                           overflow-hidden hover:border-brand-orange hover:shadow-medium 
+                           transition-all duration-normal"
+                >
+                  <div className="guide-card__image-wrapper relative bg-gray-100 overflow-hidden aspect-[4/3]">
+                    <img 
+                      src={guide.image} 
+                      alt={guide.title}
+                      className="w-full h-full object-cover group-hover:scale-105 
+                               transition-transform duration-slow"
+                    />
+                  </div>
 
-                <div className="guide-card__content">
-                  <h3 className="guide-card__title text-[20px] font-bold text-black mb-3 group-hover:text-primary-red transition-colors">
-                    {guide.title}
-                  </h3>
-                  <p className="guide-card__description text-[14px] text-gray-dark leading-relaxed line-clamp-4">
-                    {guide.description}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
+                  <div className="guide-card__content p-6">
+                    <h3 className="text-title-lg font-bold text-charcoal mb-3 
+                                 group-hover:text-brand-orange transition-colors duration-fast">
+                      {guide.title}
+                    </h3>
+                    <p className="text-body-sm text-muted-neutral leading-relaxed line-clamp-3 mb-4">
+                      {guide.description}
+                    </p>
+                    <div className="flex items-center gap-2 text-brand-orange text-body-sm font-bold 
+                                  group-hover:gap-3 transition-all duration-fast">
+                      <span>Read Guide</span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           )}
 
         </div>
       </section>
 
-      <TrustBadges />
+      {/* Help CTA */}
+      <section className="section-py bg-warm-paper text-center">
+        <div className="container max-w-3xl mx-auto">
+          <h2 className="text-heading-md font-display font-bold text-charcoal mb-4">
+            Need More Help?
+          </h2>
+          <p className="text-body-lg text-muted-neutral mb-8">
+            Can't find what you're looking for? Our support team is here to assist you.
+          </p>
+          <Link
+            to="/support/contact"
+            className="inline-flex items-center justify-center gap-2
+                     bg-brand-orange text-white font-bold 
+                     px-10 py-4 text-body-md
+                     rounded-soft shadow-medium
+                     hover:bg-brand-red hover:shadow-glow-md
+                     active:scale-[0.98]
+                     transition-all duration-normal"
+          >
+            Contact Support
+            <ChevronRight size={20} />
+          </Link>
+        </div>
+      </section>
 
     </div>
   );
