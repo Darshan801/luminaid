@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Truck, ThumbsUp, Shield, Minus, Plus, ChevronDown } from 'lucide-react'
+import { Truck, ThumbsUp, Shield, Minus, Plus, ChevronDown, ChevronRight } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { get } from '../../services/api'
-import giveLightBg from '../../assets/images/givelightbackground.jpg'
 
 // ============================================================================
 // CONSTANTS
@@ -87,19 +86,37 @@ const WORLD_MAP = createPlaceholderSVG('World Map', 800, 400)
 // ============================================================================
 
 const TrustBadges = () => (
-  <section className="trust-badges py-12 px-8 bg-gray-100">
-    <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
-      <div className="trust-badge flex flex-col items-center gap-4">
-        <Truck size={40} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-base uppercase tracking-wide">Free US Shipping RS 99+</p>
-      </div>
-      <div className="trust-badge flex flex-col items-center gap-4">
-        <ThumbsUp size={40} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-base uppercase tracking-wide">10,000+ Reviews</p>
-      </div>
-      <div className="trust-badge flex flex-col items-center gap-4">
-        <Shield size={40} className="text-black" />
-        <p className="trust-badge__text font-bold text-black text-base uppercase tracking-wide">Off-Grid Guarantee</p>
+  <section className="w-full bg-gradient-to-br from-orange-50 via-warm-paper to-red-50 py-12 md:py-16">
+    <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-soft">
+            <Truck size={32} className="text-brand-orange" />
+          </div>
+          <p className="font-bold text-gray-900 text-sm uppercase tracking-wider">
+            Free US Shipping RS 99+
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-soft">
+            <ThumbsUp size={32} className="text-brand-orange" />
+          </div>
+          <p className="font-bold text-gray-900 text-sm uppercase tracking-wider">
+            10,000+ Reviews
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-soft">
+            <Shield size={32} className="text-brand-orange" />
+          </div>
+          <p className="font-bold text-gray-900 text-sm uppercase tracking-wider">
+            Off-Grid Guarantee
+          </p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -182,240 +199,276 @@ const GiveLight = () => {
   };
 
   const optionBtn = (active) =>
-    `px-5 py-2.5 text-sm border transition-all duration-300 ease-in-out transform ${
-      active ? 'border-black border-2 text-black font-semibold scale-105 shadow-md' : 'border-gray-300 text-black hover:border-black hover:scale-102 hover:shadow-sm'
+    `px-5 py-2.5 text-sm rounded-soft border transition-all duration-fast ${
+      active 
+        ? 'border-brand-orange bg-brand-orange text-white font-bold shadow-glow-sm' 
+        : 'border-gray-300 text-gray-700 bg-white hover:border-brand-orange hover:text-brand-orange'
     }`
 
   return (
-    <div className="give-light-page w-full bg-white">
+    <div className="w-full bg-warm-paper">
 
-      {/* Breadcrumb + Page Title */}
-      <section className="page-title pt-8 pb-10 px-8 bg-white">
-        <div className="max-w-[1280px] mx-auto">
-          <nav className="text-sm text-gray-500 mb-8">
-            <Link to="/" className="hover:underline">Home</Link> / <span className="text-black">Give Light</span>
+      {/* Breadcrumb */}
+      <section className="w-full bg-white border-b border-gray-200">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-4">
+          <nav className="flex items-center gap-2 text-sm text-gray-600">
+            <Link to="/" className="hover:text-brand-orange transition-colors duration-fast">
+              Home
+            </Link>
+            <ChevronRight size={16} className="text-gray-400" />
+            <span className="text-gray-900 font-medium">Give Light</span>
           </nav>
-          <h1 className="text-5xl md:text-6xl font-heading font-bold text-black tracking-tight text-center">
-            Give Light
-          </h1>
         </div>
       </section>
 
-      {/* Hero Banner with Background */}
-      <section className="hero-banner relative w-full overflow-hidden" style={{ minHeight: '500px' }}>
-        <div className="hero-banner__background absolute inset-0">
+      {/* Hero Section */}
+      <section className="w-full relative overflow-hidden" style={{ minHeight: '500px' }}>
+        <div className="absolute inset-0">
           <img
             src="/images/givelightbackground.jpg"
             alt="Give Light Program"
             className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
         </div>
 
-        {/* Content */}
-        <div className="hero-banner__content relative max-w-[1280px] mx-auto h-full flex items-center justify-end px-8" style={{ minHeight: '500px' }}>
-          <div className="bg-white text-black py-12 px-12 text-center w-full max-w-[400px] mr-0 md:mr-[8%]">
-            <h2 className="text-2xl md:text-3xl font-heading font-bold mb-6 leading-tight uppercase">
-              How we give light<br />and why it matters
-            </h2>
+        <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 h-full flex items-center" style={{ minHeight: '500px' }}>
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6 leading-tight">
+              Give Light
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-xl">
+              Help us bring safe, sustainable light to communities around the world
+            </p>
             <a 
-              href="#programs"
-              className="bg-primary-red text-white font-bold px-8 py-3.5 hover:bg-dark-red transition-all duration-300 transform hover:scale-105 text-base inline-block"
+              href="#donate"
+              className="inline-flex items-center gap-2 bg-brand-orange text-white px-8 py-4 rounded-soft
+                       text-sm font-bold tracking-wide uppercase
+                       hover:bg-brand-orange-dark active:scale-95
+                       transition-all duration-fast
+                       shadow-glow-md hover:shadow-glow-lg"
             >
-              Get Involved
+              DONATE NOW
+              <ChevronRight size={18} />
             </a>
           </div>
         </div>
       </section>
 
-      {/* Give Light Section Title */}
-      <section className="section-title pt-16 pb-10 px-8 text-center bg-white">
-        <div className="max-w-[1280px] mx-auto">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-black">
-            Give Light
-          </h2>
-        </div>
-      </section>
+      {/* Give Light Donation Widget */}
+      <section id="donate" className="w-full bg-white py-16 md:py-20 scroll-mt-20">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
+              Make a Donation
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Your donation helps bring safe, solar-powered light to families in need around the world
+            </p>
+          </div>
 
-      {/* Give Light Product Widget */}
-      <section className="product-widget pb-20 px-8 bg-white">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-            {/* Left - Product Images */}
-            <div>
-              <div className="aspect-square bg-gray-200 flex items-center justify-center mb-6 overflow-hidden rounded-sm">
-                <img 
-                  src={donationImages[selectedImageIndex]} 
-                  alt="Give Light Donation" 
-                  className="w-full h-full object-cover transition-opacity duration-300"
-                />
-              </div>
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {donationImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-14 h-14 bg-gray-200 overflow-hidden rounded-sm transition-all ${
-                      selectedImageIndex === index ? 'ring-2 ring-black scale-105' : 'opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`Thumbnail ${index + 1}`} 
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Right - Product Details */}
-            <div>
-              <p className="text-xs font-bold uppercase text-gray-500 mb-4">Give Light Program</p>
-              <h3 className="text-3xl font-heading font-bold text-black mb-4">Give Light</h3>
-              <p className="text-xl text-black pb-6 mb-6 border-b border-gray-200">RS 20.00</p>
-
-              <div className="mb-6">
-                <p className="text-base mb-3 font-semibold">
-                  Cause: <span className="text-primary-red transition-all duration-300">{cause}</span>
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {CAUSES.map((c) => (
-                    <button 
-                      key={c} 
-                      onClick={() => setCause(c)} 
-                      className={optionBtn(cause === c)}
-                      type="button"
+          <div className="max-w-6xl mx-auto bg-white rounded-soft border border-gray-200 shadow-medium overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              
+              {/* Left - Product Images */}
+              <div className="bg-gray-50 p-8 md:p-12">
+                <div className="aspect-square bg-white rounded-soft overflow-hidden mb-6 shadow-soft">
+                  <img 
+                    src={donationImages[selectedImageIndex]} 
+                    alt="Give Light Donation" 
+                    className="w-full h-full object-cover transition-opacity duration-normal"
+                  />
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  {donationImages.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`flex-shrink-0 w-16 h-16 bg-white rounded-soft overflow-hidden
+                               border-2 transition-all duration-fast ${
+                        selectedImageIndex === index 
+                          ? 'border-brand-orange scale-105 shadow-soft' 
+                          : 'border-gray-200 opacity-60 hover:opacity-100 hover:border-gray-300'
+                      }`}
                     >
-                      {c}
+                      <img 
+                        src={image} 
+                        alt={`Thumbnail ${index + 1}`} 
+                        className="w-full h-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-6">
-                <p className="text-base mb-3 font-semibold">
-                  Amount: <span className="text-primary-red transition-all duration-300">{amount}</span>
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {AMOUNTS.map((a) => (
-                    <button 
-                      key={a} 
-                      onClick={() => setAmount(a)} 
-                      className={optionBtn(amount === a)}
-                      type="button"
-                    >
-                      {a}
-                    </button>
-                  ))}
+              {/* Right - Product Details */}
+              <div className="p-8 md:p-12">
+                <div className="mb-6">
+                  <span className="inline-block bg-brand-orange/10 text-brand-orange text-xs font-bold 
+                                 uppercase tracking-wider px-3 py-1 rounded-subtle mb-4">
+                    Give Light Program
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-4">
+                    Give Light
+                  </h3>
+                  <p className="text-2xl font-bold text-gray-900">RS 20.00</p>
                 </div>
-              </div>
 
-              <div className="mb-6">
-                <p className="text-base mb-3 font-semibold">Quantity:</p>
-                <div className="inline-flex items-center border border-gray-300">
-                  <button
+                <div className="space-y-6">
+                  
+                  {/* Cause Selection */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
+                      Cause: <span className="text-brand-orange">{cause}</span>
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {CAUSES.map((c) => (
+                        <button 
+                          key={c} 
+                          onClick={() => setCause(c)} 
+                          className={optionBtn(cause === c)}
+                          type="button"
+                        >
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Amount Selection */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
+                      Amount: <span className="text-brand-orange">{amount}</span>
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {AMOUNTS.map((a) => (
+                        <button 
+                          key={a} 
+                          onClick={() => setAmount(a)} 
+                          className={optionBtn(amount === a)}
+                          type="button"
+                        >
+                          {a}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Quantity */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
+                      Quantity:
+                    </label>
+                    <div className="inline-flex items-center bg-gray-50 rounded-soft border border-gray-300">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="px-4 py-3 hover:bg-gray-100 transition-colors duration-fast"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus size={18} className="text-gray-700" />
+                      </button>
+                      <span className="w-16 text-center text-base font-bold text-gray-900">{quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="px-4 py-3 hover:bg-gray-100 transition-colors duration-fast"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus size={18} className="text-gray-700" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Add to Cart Button */}
+                  <button 
                     type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-4 py-3 hover:bg-gray-50 transition-colors"
-                    aria-label="Decrease quantity"
+                    onClick={handleAddToCart}
+                    disabled={loading}
+                    className="w-full bg-brand-orange text-white font-bold py-4 rounded-soft
+                             text-base uppercase tracking-wide
+                             hover:bg-brand-orange-dark active:scale-95
+                             transition-all duration-fast
+                             shadow-glow-sm hover:shadow-glow-md
+                             disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                    <Minus size={16} />
+                    {loading ? 'Adding...' : `Add ${quantity} ${quantity === 1 ? 'Donation' : 'Donations'} to Cart`}
                   </button>
-                  <span className="w-14 text-center text-base font-semibold">{quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-4 py-3 hover:bg-gray-50 transition-colors"
-                    aria-label="Increase quantity"
-                  >
-                    <Plus size={16} />
-                  </button>
+
+                  {/* Success Message */}
+                  {showSuccess && (
+                    <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-soft text-center">
+                      <p className="font-semibold">✓ Added to cart!</p>
+                    </div>
+                  )}
+
+                  {/* Accordions */}
+                  <div className="border-t border-gray-200 pt-6">
+                    {ACCORDIONS.map((item, index) => (
+                      <details key={index} className="group border-b border-gray-200 last:border-b-0">
+                        <summary className="flex items-center justify-between py-4 cursor-pointer list-none
+                                          text-sm font-bold text-gray-900 hover:text-brand-orange
+                                          transition-colors duration-fast">
+                          {item.title}
+                          <ChevronDown size={18} className="transition-transform duration-fast group-open:rotate-180 text-brand-orange" />
+                        </summary>
+                        <p className="pb-4 text-sm text-gray-700 leading-relaxed">{item.body}</p>
+                      </details>
+                    ))}
+                  </div>
+
                 </div>
               </div>
 
-              <button 
-                type="button"
-                onClick={handleAddToCart}
-                disabled={loading}
-                className="w-full bg-primary-red text-white font-bold py-4 hover:bg-dark-red transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg mb-5 text-base disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Adding...' : `Add ${quantity} ${quantity === 1 ? 'Donation' : 'Donations'} to Cart`}
-              </button>
-
-              {showSuccess && (
-                <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded mb-5 text-center">
-                  <p className="font-semibold">Added to cart!</p>
-                </div>
-              )}
-
-              <p className="text-sm text-gray-500 mb-5 flex items-center justify-center gap-2">
-                <span>Share:</span>
-                <button 
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(window.location.href)}
-                  className="text-black hover:text-primary-red transition-colors underline"
-                >
-                  Copy Link
-                </button>
-              </p>
-
-              {/* Accordions */}
-              <div className="border-t border-gray-200">
-                {ACCORDIONS.map((item, index) => (
-                  <details key={index} className="group border-b border-gray-200">
-                    <summary className="flex items-center justify-between py-5 px-3 cursor-pointer list-none text-base font-bold text-black hover:text-primary-red transition-colors">
-                      {item.title}
-                      <ChevronDown size={18} className="transition-transform group-open:rotate-180 text-primary-red" />
-                    </summary>
-                    <p className="px-3 pb-5 text-sm text-gray-dark leading-relaxed">{item.body}</p>
-                  </details>
-                ))}
-              </div>
-
-              <p className="text-center text-sm font-bold text-black mt-8 bg-gray-50 py-3 px-4 rounded-sm">
-                ✨ FREE U.S. Shipping over RS 99!
-              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Our Programs */}
-      <section id="programs" className="programs py-20 px-8 bg-white scroll-mt-20">
-        <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-black text-center mb-16">
+      <section id="programs" className="w-full bg-gradient-to-br from-orange-50 via-warm-paper to-red-50 py-16 md:py-20 scroll-mt-20">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-900 text-center mb-16">
             Our Programs
           </h2>
 
-          <div className="space-y-24">
+          <div className="space-y-20">
             {PROGRAMS.map((program, index) => (
               <div 
                 key={program.id} 
-                className={`grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-16 items-center ${
-                  index % 2 === 1 ? 'md:grid-flow-dense' : ''
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center ${
+                  index % 2 === 1 ? 'lg:grid-flow-dense' : ''
                 }`}
               >
-                <div className={`overflow-hidden rounded-sm ${index % 2 === 1 ? 'md:order-2' : ''}`}>
+                <div className={`overflow-hidden rounded-soft shadow-medium ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <img
                     src={program.image}
                     alt={program.title}
-                    className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
+                    className="w-full h-auto object-cover transition-transform duration-slow hover:scale-105"
                   />
                 </div>
-                <div className={index % 2 === 1 ? 'md:order-1' : ''}>
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-black mb-5">
+                <div className={`max-w-xl ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-5">
                     {program.title}
                   </h3>
-                  {program.description.map((text, i) => (
-                    <p key={i} className="text-base text-gray-dark leading-relaxed mb-5">
-                      {text}
-                    </p>
-                  ))}
+                  <div className="space-y-4 mb-8">
+                    {program.description.map((text, i) => (
+                      <p key={i} className="text-base md:text-lg text-gray-700 leading-relaxed">
+                        {text}
+                      </p>
+                    ))}
+                  </div>
                   <Link
                     to={program.link}
-                    className="inline-block bg-primary-red text-white font-bold px-8 py-3.5 hover:bg-dark-red transition-all duration-300 transform hover:scale-105 text-base"
+                    className="inline-flex items-center gap-2 bg-brand-orange text-white px-8 py-3.5 rounded-soft
+                             text-sm font-bold tracking-wide uppercase
+                             hover:bg-brand-orange-dark active:scale-95
+                             transition-all duration-fast
+                             shadow-glow-sm hover:shadow-glow-md"
                   >
                     {program.cta}
+                    <ChevronRight size={18} />
                   </Link>
                 </div>
               </div>
@@ -425,28 +478,38 @@ const GiveLight = () => {
       </section>
 
       {/* Impact Section */}
-      <section className="impact pt-12 pb-20 px-8 bg-white">
-        <div className="max-w-[1200px] mx-auto text-center">
-          <img
-            src={WORLD_MAP}
-            alt="Map of countries reached"
-            className="mx-auto w-full max-w-[500px] h-auto mb-10"
-          />
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-black mb-14 leading-tight max-w-[900px] mx-auto">
-            LuminAID solar lights have been distributed in over 100 countries around the world.
-          </h2>
+      <section className="w-full bg-white py-16 md:py-20">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          
+          {/* World Map */}
+          <div className="text-center mb-12">
+            <img
+              src={WORLD_MAP}
+              alt="Map of countries reached"
+              className="mx-auto w-full max-w-3xl h-auto mb-10 rounded-soft"
+            />
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-gray-900 leading-tight max-w-4xl mx-auto mb-4">
+              LuminAID solar lights have been distributed in over 100 countries around the world.
+            </h2>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          {/* Impact Stories */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {IMPACT_STORIES.map((story) => (
-              <div key={story.title} className="impact-card">
-                <img
-                  src={story.image}
-                  alt={story.title}
-                  className="w-full h-[200px] object-cover mb-4"
-                />
-                <p className="text-lg font-bold text-black leading-snug">
+              <div key={story.title} className="group">
+                <div className="overflow-hidden rounded-soft shadow-soft mb-5 
+                              transition-shadow duration-normal group-hover:shadow-medium">
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="w-full h-64 object-cover transition-transform duration-slow 
+                             group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 leading-snug group-hover:text-brand-orange
+                             transition-colors duration-fast">
                   {story.title}
-                </p>
+                </h3>
               </div>
             ))}
           </div>
