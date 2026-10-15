@@ -4,7 +4,7 @@ import ProductCard from '../../components/products/ProductCard'
 
 const ProductsPage = () => {
   const [sortBy, setSortBy] = useState('featured')
-  const [products, setProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([]) // All products from API
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
@@ -14,42 +14,137 @@ const ProductsPage = () => {
     minPrice: '',
     maxPrice: ''
   })
+  
+  // Temporary price inputs (not applied to filters yet)
+  const [priceInputs, setPriceInputs] = useState({
+    minPrice: '',
+    maxPrice: ''
+  })
 
-  // Fetch products on mount and when filters change
+  // Fetch all products once on mount
   useEffect(() => {
     fetchProducts()
-  }, [sortBy, filters])
+  }, [])
+
+  // Scroll to top smoothly when filters or sort changes
+  useEffect(() => {
+    // Skip initial render
+    if (!allProducts.length) return
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [filters, sortBy])
 
   const fetchProducts = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      // Build query params
-      const params = {
-        status: 'active'
-      }
-
-      // Add sort
-      if (sortBy === 'low-high') params.sort = 'price'
-      else if (sortBy === 'high-low') params.sort = '-price'
-      else if (sortBy === 'a-z') params.sort = 'name'
-      else if (sortBy === 'z-a') params.sort = '-name'
-      else if (sortBy === 'best-selling') params.sort = '-reviewCount'
-      else params.sort = '-featured,-bestseller,-createdAt'
-
-      // Add price filters
-      if (filters.minPrice) params.minPrice = filters.minPrice
-      if (filters.maxPrice) params.maxPrice = filters.maxPrice
-
-      const response = await getAllProducts(params)
-      setProducts(response.data || [])
+      const response = await getAllProducts({ status: 'active' })
+      setAllProducts(response.data || [])
     } catch (err) {
       console.error('Failed to fetch products:', err)
       setError('Failed to load products. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  // Filter products client-side
+  const getFilteredProducts = () => {
+    let filtered = [...allProducts]
+
+    // Apply bestFor filter
+    if (filters.bestFor.length > 0) {
+      filtered = filtered.filter(product => 
+        filters.bestFor.some(filter => product.bestFor?.includes(filter))
+      )
+    }
+
+    // Apply features filter
+    if (filters.features.length > 0) {
+      filtered = filtered.filter(product => 
+        filters.features.some(filter => product.features?.includes(filter))
+      )
+    }
+
+    // Apply lightColor filter
+    if (filters.lightColor.length > 0) {
+      filtered = filtered.filter(product => 
+        filters.lightColor.some(filter => product.lightColor?.includes(filter))
+      )
+    }
+
+    // Apply price filters
+    if (filters.minPrice) {
+      const min = parseFloat(filters.minPrice)
+      filtered = filtered.filter(product => product.price >= min)
+    }
+    if (filters.maxPrice) {
+      const max = parseFloat(filters.maxPrice)
+      filtered = filtered.filter(product => product.price <= max)
+    }
+
+    // Apply sorting
+    if (sortBy === 'low-high') {
+      filtered.sort((a, b) => a.price - b.price)
+    } else if (sortBy === 'high-low') {
+      filtered.sort((a, b) => b.price - a.price)
+    } else if (sortBy === 'a-z') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name))
+    } else if (sortBy === 'z-a') {
+      filtered.sort((a, b) => b.name.localeCompare(a.name))
+    } else if (sortBy === 'best-selling') {
+      filtered.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
+    }
+
+    return filtered
+  }
+
+  const products = getFilteredProducts()
+
+  // Toggle filter checkbox
+  const toggleFilter = (category, value) => {
+    setFilters(prev => {
+      const current = prev[category]
+      const updated = current.includes(value)
+        ? current.filter(item => item !== value)
+        : [...current, value]
+      
+      return { ...prev, [category]: updated }
+    })
+  }
+
+  // Clear all filters
+  const clearFilters = () => {
+    setFilters({
+      bestFor: [],
+      features: [],
+      lightColor: [],
+      minPrice: '',
+      maxPrice: ''
+    })
+    setPriceInputs({
+      minPrice: '',
+      maxPrice: ''
+    })
+  }
+
+  // Apply price filter
+  const applyPriceFilter = () => {
+    setFilters(prev => ({
+      ...prev,
+      minPrice: priceInputs.minPrice,
+      maxPrice: priceInputs.maxPrice
+    }))
+  }
+
+  // Get active filter count
+  const getActiveFilterCount = () => {
+    return filters.bestFor.length + 
+           filters.features.length + 
+           filters.lightColor.length +
+           (filters.minPrice ? 1 : 0) +
+           (filters.maxPrice ? 1 : 0)
   }
 
   const bestFor = [
@@ -75,7 +170,7 @@ const ProductsPage = () => {
   ]
 
   const getFilterCount = (key, value) => {
-    return products.filter((product) =>
+    return allProducts.filter((product) =>
       product[key]?.includes(value)
     ).length
   }
@@ -107,11 +202,23 @@ const ProductsPage = () => {
             {/* Filters Sidebar */}
             <aside className="hidden lg:block">
 
-              <div className="sticky top-24 bg-white rounded-soft border border-gray-200 p-6">
+              <div className="sticky top-24 bg-white rounded-soft border border-gray-200 p-6 
+                            max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-custom">
 
-                <h2 className="text-sm font-bold uppercase text-gray-900 mb-6 tracking-wide">
-                  Filters
-                </h2>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-sm font-bold uppercase text-gray-900 tracking-wide">
+                    Filters
+                  </h2>
+                  {getActiveFilterCount() > 0 && (
+                    <button
+                      onClick={clearFilters}
+                      className="text-xs font-bold text-brand-orange hover:text-brand-orange-dark
+                               transition-colors duration-fast"
+                    >
+                      Clear ({getActiveFilterCount()})
+                    </button>
+                  )}
+                </div>
 
 
                 {/* Best For */}
@@ -134,6 +241,8 @@ const ProductsPage = () => {
 
                           <input
                             type="checkbox"
+                            checked={filters.bestFor.includes(item)}
+                            onChange={() => toggleFilter('bestFor', item)}
                             className="w-4 h-4 rounded border-gray-300 text-brand-orange 
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
@@ -176,6 +285,8 @@ const ProductsPage = () => {
 
                           <input
                             type="checkbox"
+                            checked={filters.features.includes(item)}
+                            onChange={() => toggleFilter('features', item)}
                             className="w-4 h-4 rounded border-gray-300 text-brand-orange 
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
@@ -218,6 +329,8 @@ const ProductsPage = () => {
 
                           <input
                             type="checkbox"
+                            checked={filters.lightColor.includes(item)}
+                            onChange={() => toggleFilter('lightColor', item)}
                             className="w-4 h-4 rounded border-gray-300 text-brand-orange 
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
@@ -247,18 +360,21 @@ const ProductsPage = () => {
                     Price Range
                   </h3>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2">
+                  <div className="space-y-3">
+                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2 
+                                  focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-orange/20
+                                  transition-all duration-fast">
                       <span className="text-sm text-gray-500 font-medium mr-2">
                         RS
                       </span>
                       <input
                         type="number"
                         placeholder="Min"
-                        value={filters.minPrice}
-                        onChange={(e) => setFilters({...filters, minPrice: e.target.value})}
+                        value={priceInputs.minPrice}
+                        onChange={(e) => setPriceInputs({...priceInputs, minPrice: e.target.value})}
+                        onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
                         className="w-full text-sm outline-none bg-transparent
-                                 focus:bg-white transition-colors duration-fast"
+                                 placeholder:text-gray-400"
                       />
                     </div>
 
@@ -266,19 +382,47 @@ const ProductsPage = () => {
                       to
                     </div>
 
-                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2">
+                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2
+                                  focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-orange/20
+                                  transition-all duration-fast">
                       <span className="text-sm text-gray-500 font-medium mr-2">
                         RS
                       </span>
                       <input
                         type="number"
                         placeholder="Max"
-                        value={filters.maxPrice}
-                        onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
+                        value={priceInputs.maxPrice}
+                        onChange={(e) => setPriceInputs({...priceInputs, maxPrice: e.target.value})}
+                        onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
                         className="w-full text-sm outline-none bg-transparent
-                                 focus:bg-white transition-colors duration-fast"
+                                 placeholder:text-gray-400"
                       />
                     </div>
+
+                    <button
+                      onClick={applyPriceFilter}
+                      className="w-full bg-brand-orange text-white px-4 py-2.5 rounded-soft
+                               text-sm font-bold tracking-wide
+                               hover:bg-brand-orange-dark active:scale-95
+                               transition-all duration-fast
+                               disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={!priceInputs.minPrice && !priceInputs.maxPrice}
+                    >
+                      Apply Price
+                    </button>
+
+                    {(filters.minPrice || filters.maxPrice) && (
+                      <button
+                        onClick={() => {
+                          setFilters(prev => ({...prev, minPrice: '', maxPrice: ''}))
+                          setPriceInputs({minPrice: '', maxPrice: ''})
+                        }}
+                        className="w-full text-xs font-bold text-gray-600 hover:text-brand-orange
+                                 transition-colors duration-fast py-1"
+                      >
+                        Clear Price Filter
+                      </button>
+                    )}
                   </div>
 
                 </div>

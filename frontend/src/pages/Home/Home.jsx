@@ -571,10 +571,10 @@ const Home = () => {
                 <select
                   value={cause}
                   onChange={(e) => setCause(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-soft px-4 py-3 
+                  className="w-full border border-gray-300 rounded-soft px-4 py-3 
                            text-body-md text-charcoal
-                           hover:border-gray-300 focus:border-brand-orange focus:outline-none 
-                           transition-colors duration-fast cursor-pointer"
+                           hover:border-gray-400 focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/20
+                           transition-colors duration-fast cursor-pointer bg-white"
                 >
                   {CAUSES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -588,10 +588,10 @@ const Home = () => {
                 <select
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
-                  className="w-full border-2 border-gray-200 rounded-soft px-4 py-3 
+                  className="w-full border border-gray-300 rounded-soft px-4 py-3 
                            text-body-md text-charcoal
-                           hover:border-gray-300 focus:border-brand-orange focus:outline-none 
-                           transition-colors duration-fast cursor-pointer"
+                           hover:border-gray-400 focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/20
+                           transition-colors duration-fast cursor-pointer bg-white"
                 >
                   {AMOUNTS.map((a) => <option key={a} value={a}>RS {a}</option>)}
                 </select>
