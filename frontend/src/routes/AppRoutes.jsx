@@ -48,11 +48,13 @@ import OrderPendingPage from '../pages/Checkout/OrderPendingPage'
 import MyOrdersPage from '../pages/Orders/MyOrdersPage'
 import OrderDetailPage from '../pages/Orders/OrderDetailPage'
 
+
 // Admin
 import AdminRoute from '../components/common/AdminRoute'
 import AdminLayout from '../layouts/AdminLayout'
 import AdminDashboard from '../pages/Admin/AdminDashboard'
 import AdminProducts from '../pages/Admin/AdminProducts'
+import AdminOrders from '../pages/Admin/AdminOrders'
 
 const AppRoutes = () => {
     return (
@@ -156,6 +158,7 @@ const AppRoutes = () => {
                 <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminDashboard />} />
                     <Route path="products" element={<AdminProducts />} />
+                    <Route path="orders" element={<AdminOrders />} />
                 </Route>
             </Route>
         </Routes>
