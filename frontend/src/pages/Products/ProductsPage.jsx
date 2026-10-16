@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getAllProducts } from '../../services/productService'
 import ProductCard from '../../components/products/ProductCard'
+import Pagination from '../../components/common/Pagination'
+
+const ITEMS_PER_PAGE = 12
 
 const ProductsPage = () => {
   const [sortBy, setSortBy] = useState('featured')
-  const [allProducts, setAllProducts] = useState([]) // All products from API
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
@@ -15,92 +18,107 @@ const ProductsPage = () => {
     maxPrice: ''
   })
   
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0
+  })
+  
   // Temporary price inputs (not applied to filters yet)
   const [priceInputs, setPriceInputs] = useState({
     minPrice: '',
     maxPrice: ''
   })
 
-  // Fetch all products once on mount
-  useEffect(() => {
-    fetchProducts()
-  }, [])
-
-  // Scroll to top smoothly when filters or sort changes
-  useEffect(() => {
-    // Skip initial render
-    if (!allProducts.length) return
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [filters, sortBy])
-
-  const fetchProducts = async () => {
+  // Fetch products with filters and pagination
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await getAllProducts({ status: 'active' })
-      setAllProducts(response.data || [])
+      // Build query params
+      const params = {
+        page: pagination.page,
+        limit: ITEMS_PER_PAGE,
+        status: 'active'
+      }
+
+      // Add sorting
+      if (sortBy === 'low-high') {
+        params.sort = 'price'
+      } else if (sortBy === 'high-low') {
+        params.sort = '-price'
+      } else if (sortBy === 'a-z') {
+        params.sort = 'name'
+      } else if (sortBy === 'z-a') {
+        params.sort = '-name'
+      } else if (sortBy === 'best-selling') {
+        params.sort = '-reviewCount'
+      } else if (sortBy === 'new-old') {
+        params.sort = '-createdAt'
+      } else if (sortBy === 'old-new') {
+        params.sort = 'createdAt'
+      } else {
+        params.sort = '-featured,-createdAt'
+      }
+
+      // Add filters
+      if (filters.bestFor.length > 0) {
+        params.tags = filters.bestFor.join(',')
+      }
+      
+      if (filters.features.length > 0) {
+        params.tags = params.tags 
+          ? `${params.tags},${filters.features.join(',')}` 
+          : filters.features.join(',')
+      }
+      
+      if (filters.lightColor.length > 0) {
+        params.tags = params.tags 
+          ? `${params.tags},${filters.lightColor.join(',')}` 
+          : filters.lightColor.join(',')
+      }
+
+      if (filters.minPrice) {
+        params.minPrice = filters.minPrice
+      }
+
+      if (filters.maxPrice) {
+        params.maxPrice = filters.maxPrice
+      }
+
+      const response = await getAllProducts(params)
+      
+      setProducts(response.data || [])
+      setPagination({
+        page: response.page || 1,
+        totalPages: response.pages || 1,
+        total: response.total || 0
+      })
     } catch (err) {
       console.error('Failed to fetch products:', err)
       setError('Failed to load products. Please try again.')
+      setProducts([])
     } finally {
       setLoading(false)
     }
+  }, [pagination.page, sortBy, filters])
+
+  // Fetch products when dependencies change
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pagination.page])
+
+  // Reset to page 1 when filters or sort change
+  const resetToFirstPage = () => {
+    setPagination(prev => ({ ...prev, page: 1 }))
   }
-
-  // Filter products client-side
-  const getFilteredProducts = () => {
-    let filtered = [...allProducts]
-
-    // Apply bestFor filter
-    if (filters.bestFor.length > 0) {
-      filtered = filtered.filter(product => 
-        filters.bestFor.some(filter => product.bestFor?.includes(filter))
-      )
-    }
-
-    // Apply features filter
-    if (filters.features.length > 0) {
-      filtered = filtered.filter(product => 
-        filters.features.some(filter => product.features?.includes(filter))
-      )
-    }
-
-    // Apply lightColor filter
-    if (filters.lightColor.length > 0) {
-      filtered = filtered.filter(product => 
-        filters.lightColor.some(filter => product.lightColor?.includes(filter))
-      )
-    }
-
-    // Apply price filters
-    if (filters.minPrice) {
-      const min = parseFloat(filters.minPrice)
-      filtered = filtered.filter(product => product.price >= min)
-    }
-    if (filters.maxPrice) {
-      const max = parseFloat(filters.maxPrice)
-      filtered = filtered.filter(product => product.price <= max)
-    }
-
-    // Apply sorting
-    if (sortBy === 'low-high') {
-      filtered.sort((a, b) => a.price - b.price)
-    } else if (sortBy === 'high-low') {
-      filtered.sort((a, b) => b.price - a.price)
-    } else if (sortBy === 'a-z') {
-      filtered.sort((a, b) => a.name.localeCompare(b.name))
-    } else if (sortBy === 'z-a') {
-      filtered.sort((a, b) => b.name.localeCompare(a.name))
-    } else if (sortBy === 'best-selling') {
-      filtered.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
-    }
-
-    return filtered
-  }
-
-  const products = getFilteredProducts()
 
   // Toggle filter checkbox
   const toggleFilter = (category, value) => {
@@ -112,6 +130,7 @@ const ProductsPage = () => {
       
       return { ...prev, [category]: updated }
     })
+    resetToFirstPage()
   }
 
   // Clear all filters
@@ -127,6 +146,7 @@ const ProductsPage = () => {
       minPrice: '',
       maxPrice: ''
     })
+    resetToFirstPage()
   }
 
   // Apply price filter
@@ -136,6 +156,18 @@ const ProductsPage = () => {
       minPrice: priceInputs.minPrice,
       maxPrice: priceInputs.maxPrice
     }))
+    resetToFirstPage()
+  }
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, page: newPage }))
+  }
+
+  // Handle sort change
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value)
+    resetToFirstPage()
   }
 
   // Get active filter count
@@ -169,10 +201,11 @@ const ProductsPage = () => {
     'Multi-Color',
   ]
 
-  const getFilterCount = (key, value) => {
-    return allProducts.filter((product) =>
-      product[key]?.includes(value)
-    ).length
+  // Note: Filter counts are no longer accurate with server-side pagination
+  // We'd need a separate API call to get accurate counts
+  // For now, we'll hide the counts or show approximate
+  const getFilterCount = () => {
+    return '' // Could be enhanced with a dedicated count API
   }
 
   return (
@@ -253,9 +286,7 @@ const ProductsPage = () => {
 
                         </div>
 
-                        <span className="text-xs text-gray-400 font-medium">
-                          ({getFilterCount('bestFor', item)})
-                        </span>
+                        {/* Filter counts removed for server-side pagination */}
 
                       </label>
                     ))}
@@ -297,9 +328,7 @@ const ProductsPage = () => {
 
                         </div>
 
-                        <span className="text-xs text-gray-400 font-medium">
-                          ({getFilterCount('features', item)})
-                        </span>
+                        {/* Filter counts removed for server-side pagination */}
 
                       </label>
                     ))}
@@ -341,9 +370,7 @@ const ProductsPage = () => {
 
                         </div>
 
-                        <span className="text-xs text-gray-400 font-medium">
-                          ({getFilterCount('lightColor', item)})
-                        </span>
+                        {/* Filter counts removed for server-side pagination */}
 
                       </label>
                     ))}
@@ -439,7 +466,12 @@ const ProductsPage = () => {
               <div className="flex items-center justify-between bg-white rounded-soft border border-gray-200 px-6 py-4 mb-8">
 
                 <p className="text-sm font-medium text-gray-700">
-                  <span className="font-bold text-gray-900">{products.length}</span> products
+                  <span className="font-bold text-gray-900">{pagination.total}</span> products
+                  {products.length > 0 && (
+                    <span className="ml-2 text-gray-500">
+                      (Showing {products.length} on this page)
+                    </span>
+                  )}
                 </p>
 
 
@@ -455,7 +487,7 @@ const ProductsPage = () => {
                   <select
                     id="sort"
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
+                    onChange={handleSortChange}
                     className="bg-gray-50 rounded-soft px-3 py-2 text-sm font-medium 
                              focus:outline-none focus:bg-white
                              transition-colors duration-fast cursor-pointer"
@@ -477,7 +509,7 @@ const ProductsPage = () => {
 
 
               {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
 
                 {loading ? (
                   <div className="col-span-full text-center py-20">
@@ -508,6 +540,19 @@ const ProductsPage = () => {
                 )}
 
               </div>
+
+              {/* Pagination */}
+              {!loading && !error && products.length > 0 && (
+                <div className="bg-white rounded-soft border border-gray-200 px-6 py-4">
+                  <Pagination
+                    currentPage={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.total}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
 
             </div>
 

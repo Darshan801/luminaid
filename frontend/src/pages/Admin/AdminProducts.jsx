@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import { Pencil, Trash2, Package } from 'lucide-react'
 
 import AddProductModal from '../../components/admin/AddProductModal'
+import Pagination from '../../components/common/Pagination'
 
 import {
-  getAdminProducts,
+  getAllProducts,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -17,36 +18,71 @@ const getPrimaryImage = (product) =>
   product.images?.find((image) => image.isPrimary)?.url ||
   product.images?.[0]?.url
 
+const ITEMS_PER_PAGE = 20
+
 const AdminProducts = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0
+  })
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all')
 
-  useEffect(() => {
-    fetchProducts()
-  }, [])
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const data = await getAdminProducts()
-      setProducts(data || [])
+      const params = {
+        page: pagination.page,
+        limit: ITEMS_PER_PAGE,
+        sort: '-createdAt'
+      }
+
+      if (statusFilter !== 'all') {
+        params.status = statusFilter
+      }
+
+      if (categoryFilter !== 'all') {
+        params.category = categoryFilter
+      }
+
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim()
+      }
+
+      const response = await getAllProducts(params)
+      setProducts(response.data || [])
+      setPagination({
+        page: response.page || 1,
+        totalPages: response.pages || 1,
+        total: response.total || 0
+      })
     } catch (err) {
       console.error('Failed to fetch products:', err)
       setError('Failed to load products. Please try again.')
+      setProducts([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [pagination.page, searchQuery, categoryFilter, statusFilter])
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
 
   const handleAddProduct = async (productData) => {
     const created = await createProduct(productData)
 
-    setProducts((prevProducts) => [created, ...prevProducts])
+    // Refresh the list to show the new product
+    fetchProducts()
     handleCloseModal()
   }
 
@@ -56,14 +92,10 @@ const AdminProducts = () => {
   }
 
   const handleUpdateProduct = async (productData) => {
-    const updated = await updateProduct(editingProduct._id, productData)
+    await updateProduct(editingProduct._id, productData)
 
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product._id === updated._id ? updated : product,
-      ),
-    )
-
+    // Refresh the list to show updated product
+    fetchProducts()
     handleCloseModal()
   }
 
@@ -76,10 +108,9 @@ const AdminProducts = () => {
 
     try {
       await deleteProduct(productId)
-
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== productId),
-      )
+      
+      // Refresh the list
+      fetchProducts()
     } catch (err) {
       window.alert(err.message || 'Failed to delete product.')
     }
@@ -93,6 +124,25 @@ const AdminProducts = () => {
   const handleOpenAddModal = () => {
     setEditingProduct(null)
     setIsAddProductModalOpen(true)
+  }
+
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, page: newPage }))
+  }
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    setPagination(prev => ({ ...prev, page: 1 }))
+  }
+
+  const handleCategoryChange = (e) => {
+    setCategoryFilter(e.target.value)
+    setPagination(prev => ({ ...prev, page: 1 }))
+  }
+
+  const handleStatusChange = (e) => {
+    setStatusFilter(e.target.value)
+    setPagination(prev => ({ ...prev, page: 1 }))
   }
 
   return (
@@ -119,6 +169,56 @@ const AdminProducts = () => {
           <span className="sm:hidden">Add Product</span>
         </button>
       </div>
+
+      {/* Search and Filters */}
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+        <form onSubmit={handleSearchSubmit} className="flex flex-col gap-3 md:flex-row">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Search products by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                       focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red"
+            />
+          </div>
+
+          <select
+            value={categoryFilter}
+            onChange={handleCategoryChange}
+            className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                     focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red"
+          >
+            <option value="all">All Categories</option>
+            <option value="Solar Lanterns">Solar Lanterns</option>
+            <option value="String Lights">String Lights</option>
+            <option value="Power Banks">Power Banks</option>
+            <option value="Bundles">Bundles</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm
+                     focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="archived">Archived</option>
+          </select>
+
+          <button
+            type="submit"
+            className="rounded-lg bg-primary-red px-5 py-2.5 text-sm font-semibold text-white
+                     transition-colors hover:bg-dark-red"
+          >
+            Search
+          </button>
+        </form>
+      </section>
 
       {/* Loading State */}
       {loading && (
@@ -157,7 +257,7 @@ const AdminProducts = () => {
       {/* Products - Table View (Desktop) */}
       {!loading && !error && products.length > 0 && (
         <>
-          <section className="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm lg:block">
+          <section className="mb-6 hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm lg:block">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="border-b border-gray-200 bg-gray-50">
@@ -263,7 +363,7 @@ const AdminProducts = () => {
           </section>
 
           {/* Products - Card View (Mobile & Tablet) */}
-          <section className="space-y-4 lg:hidden">
+          <section className="mb-6 space-y-4 lg:hidden">
             {products.map((product) => (
               <div
                 key={product._id}
@@ -324,6 +424,17 @@ const AdminProducts = () => {
                 </div>
               </div>
             ))}
+          </section>
+
+          {/* Pagination */}
+          <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              totalItems={pagination.total}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={handlePageChange}
+            />
           </section>
         </>
       )}
