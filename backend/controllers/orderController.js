@@ -395,7 +395,7 @@ exports.verifyPayment = async (req, res) => {
  */
 exports.updateOrderStatus = async (req, res) => {
   try {
-    const { status, trackingNumber, carrier, notes } = req.body;
+    const { status, cancellationReason, trackingNumber, carrier, notes } = req.body;
     const order = await Order.findById(req.params.orderId);
 
     if (!order) {
@@ -405,37 +405,91 @@ exports.updateOrderStatus = async (req, res) => {
       });
     }
 
-    if (status === 'shipped') {
-      if (!trackingNumber || !carrier) {
-        return res.status(400).json({
-          success: false,
-          message: 'Tracking number and carrier are required'
-        });
+    const currentStatus = order.status;
+    const allowedTransitions = {
+      pending: ['confirmed', 'cancelled'],
+      confirmed: ['processing', 'cancelled'],
+      processing: ['shipped', 'cancelled'],
+      shipped: ['delivered'],
+      delivered: [],
+      cancelled: []
+    };
+
+    // Treat saving the current status as a harmless no-op.
+    if (status === currentStatus) {
+      return res.status(200).json({
+        success: true,
+        message: 'Order status is unchanged',
+        order
+      });
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(allowedTransitions, status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid order status'
+      });
+    }
+
+    if (!allowedTransitions[currentStatus]?.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot change order status from ${currentStatus} to ${status}`
+      });
+    }
+
+    if (status === 'cancelled' && !String(cancellationReason || '').trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'A cancellation reason is required'
+      });
+    }
+
+    if (status === 'cancelled') {
+      await order.cancelOrder(String(cancellationReason).trim());
+
+      // Inventory was reserved when the order was created, so restore it once
+      // when the order is cancelled.
+      for (const item of order.items) {
+        const product = await Product.findById(item.product);
+        if (product && product.trackInventory) {
+          product.stock += item.quantity;
+          await product.save();
+        }
       }
-      await order.markAsShipped(trackingNumber, carrier);
-    } else if (status === 'delivered') {
-      await order.markAsDelivered();
-    } else if (status === 'processing') {
-      order.status = 'processing';
+    } else {
+      order.status = status;
+
+      if (status === 'shipped') {
+        order.shippedAt = new Date();
+        if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
+        if (carrier !== undefined) order.carrier = carrier;
+      }
+
+      if (status === 'delivered') {
+        order.deliveredAt = new Date();
+      }
+
       await order.save();
     }
 
-    if (notes) {
+    if (notes !== undefined) {
       order.internalNotes = notes;
       await order.save();
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Order status updated successfully',
       order
     });
   } catch (error) {
-    logger.error('', error);
-    res.status(500).json({
+    logger.error('Failed to update order status:', error);
+    return res.status(400).json({
       success: false,
-      message: 'Failed to update order status'
+      message: error.message || 'Failed to update order status'
     });
   }
 };
+
 
