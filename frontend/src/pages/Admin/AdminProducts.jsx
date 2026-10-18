@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 
-import { Pencil, Trash2, Package } from 'lucide-react'
+import { Pencil, Trash2, Package, X } from 'lucide-react'
 
 import AddProductModal from '../../components/admin/AddProductModal'
 import Pagination from '../../components/common/Pagination'
@@ -31,7 +31,8 @@ const AdminProducts = () => {
     totalPages: 1,
     total: 0
   })
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [appliedSearch, setAppliedSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
 
@@ -54,8 +55,8 @@ const AdminProducts = () => {
         params.category = categoryFilter
       }
 
-      if (searchQuery.trim()) {
-        params.search = searchQuery.trim()
+      if (appliedSearch.trim()) {
+        params.search = appliedSearch.trim()
       }
 
       const response = await getAllProducts(params)
@@ -72,7 +73,7 @@ const AdminProducts = () => {
     } finally {
       setLoading(false)
     }
-  }, [pagination.page, searchQuery, categoryFilter, statusFilter])
+  }, [pagination.page, appliedSearch, categoryFilter, statusFilter])
 
   useEffect(() => {
     fetchProducts()
@@ -121,17 +122,18 @@ const AdminProducts = () => {
     setEditingProduct(null)
   }
 
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, page: newPage }))
+  }
+
   const handleOpenAddModal = () => {
     setEditingProduct(null)
     setIsAddProductModalOpen(true)
   }
 
-  const handlePageChange = (newPage) => {
-    setPagination(prev => ({ ...prev, page: newPage }))
-  }
-
   const handleSearchSubmit = (e) => {
     e.preventDefault()
+    setAppliedSearch(searchInput.trim())
     setPagination(prev => ({ ...prev, page: 1 }))
   }
 
@@ -177,11 +179,24 @@ const AdminProducts = () => {
             <input
               type="text"
               placeholder="Search products by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm
                        focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red"
             />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput('')
+                  setAppliedSearch('')
+                  setPagination(prev => ({ ...prev, page: 1 }))
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
 
           <select
@@ -213,7 +228,7 @@ const AdminProducts = () => {
           <button
             type="submit"
             className="rounded-lg bg-primary-red px-5 py-2.5 text-sm font-semibold text-white
-                     transition-colors hover:bg-dark-red"
+                     transition-colors hover:bg-dark-red whitespace-nowrap"
           >
             Search
           </button>

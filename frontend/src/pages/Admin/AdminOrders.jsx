@@ -477,8 +477,21 @@ const AdminOrders = () => {
               onChange={(event) => setSearchInput(event.target.value)}
               placeholder="Search by order number or customer email"
               aria-label="Search orders"
-              className="w-full rounded-lg border border-gray-200 py-3 pl-10 pr-4 text-sm text-black outline-none transition focus:border-primary-red focus:ring-2 focus:ring-primary-red/10"
+              className="w-full rounded-lg border border-gray-200 py-3 pl-10 pr-10 text-sm text-black outline-none transition focus:border-primary-red focus:ring-2 focus:ring-primary-red/10"
             />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput('')
+                  setAppliedSearch('')
+                  setPagination(prev => ({ ...prev, page: 1 }))
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
 
           <select
