@@ -17,20 +17,6 @@ const getRoleBadgeColor = (role) => {
   }
 }
 
-const getTierBadgeColor = (spent) => {
-  if (spent >= 500) return 'bg-purple-100 text-purple-800'
-  if (spent >= 250) return 'bg-yellow-100 text-yellow-800'
-  if (spent >= 100) return 'bg-gray-300 text-gray-800'
-  return 'bg-gray-100 text-gray-600'
-}
-
-const getTier = (spent) => {
-  if (spent >= 500) return 'Platinum'
-  if (spent >= 250) return 'Gold'
-  if (spent >= 100) return 'Silver'
-  return 'Bronze'
-}
-
 const AdminUsers = () => {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -232,6 +218,12 @@ const AdminUsers = () => {
             Search
           </button>
         </form>
+
+        {!loading && (
+          <div className="mt-4 text-sm text-gray-dark">
+            {pagination.total} user(s) found
+          </div>
+        )}
       </section>
 
       {/* Loading State */}
@@ -287,9 +279,6 @@ const AdminUsers = () => {
                     </th>
                     <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-dark lg:px-6">
                       Status
-                    </th>
-                    <th className="hidden px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-dark xl:table-cell lg:px-6">
-                      Customer Tier
                     </th>
                     <th className="hidden px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-dark xl:table-cell lg:px-6">
                       Joined
@@ -366,17 +355,6 @@ const AdminUsers = () => {
                             </>
                           )}
                         </span>
-                      </td>
-
-                      {/* Customer Tier */}
-                      <td className="hidden px-4 py-4 xl:table-cell lg:px-6">
-                        {user.role === 'customer' ? (
-                          <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getTierBadgeColor(user.totalSpent)}`}>
-                            {getTier(user.totalSpent)}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-gray-400">N/A</span>
-                        )}
                       </td>
 
                       {/* Joined */}
@@ -459,13 +437,8 @@ const AdminUsers = () => {
                   </div>
 
                   {/* Additional Info */}
-                  <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                  <div className="mt-3 text-xs text-gray-500">
                     <span>Joined {formatDate(user.createdAt)}</span>
-                    {user.role === 'customer' && (
-                      <span className={`rounded-full px-2 py-0.5 font-medium ${getTierBadgeColor(user.totalSpent)}`}>
-                        {getTier(user.totalSpent)}
-                      </span>
-                    )}
                   </div>
                 </div>
 

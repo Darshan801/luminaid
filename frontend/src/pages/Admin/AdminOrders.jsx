@@ -500,7 +500,7 @@ const AdminOrders = () => {
             aria-label="Filter orders by status"
             className="rounded-lg border border-gray-200 bg-white px-3 py-3 text-sm text-black outline-none focus:border-primary-red"
           >
-            <option value="all">All statuses</option>
+            <option value="all">All Status</option>
             {STATUS_OPTIONS.map((status) => (
               <option key={status} value={status}>
                 {getStatusLabel(status)}

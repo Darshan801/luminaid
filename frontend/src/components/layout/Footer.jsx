@@ -88,7 +88,6 @@ const Footer = () => {
   ];
 
   const quickLinks = [
-    { text: 'Lumen Rewards', href: '/rewards' },
     { text: 'Getting Started', href: '/support/guides' },
     { text: 'Reviews', href: '/reviews' },
     { text: 'Press Kit', href: '/press' },

@@ -247,26 +247,6 @@ exports.getUserStats = async (req, res) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const newUsers = await User.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
 
-    // Customer tier breakdown
-    const customerTiers = await User.aggregate([
-      { $match: { role: 'customer' } },
-      {
-        $project: {
-          tier: {
-            $switch: {
-              branches: [
-                { case: { $gte: ['$totalSpent', 500] }, then: 'platinum' },
-                { case: { $gte: ['$totalSpent', 250] }, then: 'gold' },
-                { case: { $gte: ['$totalSpent', 100] }, then: 'silver' }
-              ],
-              default: 'bronze'
-            }
-          }
-        }
-      },
-      { $group: { _id: '$tier', count: { $sum: 1 } } }
-    ]);
-
     res.status(200).json({
       success: true,
       data: {
@@ -274,11 +254,7 @@ exports.getUserStats = async (req, res) => {
         active: activeUsers,
         verified: verifiedUsers,
         admins: adminUsers,
-        newThisMonth: newUsers,
-        customerTiers: customerTiers.reduce((acc, tier) => {
-          acc[tier._id] = tier.count;
-          return acc;
-        }, {})
+        newThisMonth: newUsers
       }
     });
   } catch (error) {

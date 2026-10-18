@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import Button from '../../components/common/Button';
-import { ChevronRight, User, Lock, BarChart3, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, User, Lock, BarChart3, Eye, EyeOff, CheckCircle } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -104,20 +103,6 @@ const Profile = () => {
     }
   };
 
-  // Get tier badge color
-  const getTierColor = (tier) => {
-    switch (tier) {
-      case 'platinum':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'gold':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'silver':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-      default:
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-warm-paper py-8 md:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,25 +120,27 @@ const Profile = () => {
 
         {/* Header Card */}
         <div className="bg-white rounded-soft border border-gray-200 shadow-medium mb-6 overflow-hidden">
-          <div className="bg-gradient-to-r from-brand-orange to-brand-red p-8 md:p-10">
+          <div className="bg-gradient-to-r from-orange-50 via-red-50 to-orange-50 border-b-2 border-brand-orange/20 p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-soft flex-shrink-0">
-                  <User size={40} className="text-brand-orange" />
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-soft flex-shrink-0 ring-4 ring-brand-orange/20">
+                    <User size={40} className="text-brand-orange" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2 text-gray-900">
+                      {user?.fullName}
+                    </h1>
+                    <p className="text-gray-600 text-lg">{user?.email}</p>
+                  </div>
                 </div>
-                <div className="text-white">
-                  <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">
-                    {user?.fullName}
-                  </h1>
-                  <p className="text-white/90 text-lg">{user?.email}</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-start md:items-end gap-3">
-                <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold uppercase border-2 ${getTierColor(user?.customerTier)}`}>
-                  {user?.customerTier} Member
-                </span>
-                <div className="text-white text-lg">
-                  <span className="font-bold text-2xl">{user?.loyaltyPoints || 0}</span> Loyalty Points
+                <div className="flex items-center gap-3">
+                  {user?.isEmailVerified && (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-green-50 text-green-700 border border-green-200">
+                      <CheckCircle size={16} />
+                      Verified Account
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -412,25 +399,6 @@ const Profile = () => {
                       {user?.orderCount || 0}
                     </p>
                   </div>
-
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-soft p-6 border border-purple-200">
-                    <p className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Loyalty Points</p>
-                    <p className="text-3xl md:text-4xl font-heading font-bold text-gray-900">
-                      {user?.loyaltyPoints || 0}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-brand-orange/10 to-brand-red/10 border-2 border-brand-orange rounded-soft p-6">
-                  <h3 className="text-lg font-heading font-bold text-gray-900 mb-3">
-                    Customer Tier: {user?.customerTier?.toUpperCase()}
-                  </h3>
-                  <p className="text-sm text-gray-700">
-                    {user?.customerTier === 'bronze' && 'Spend RS 100 to reach Silver tier'}
-                    {user?.customerTier === 'silver' && 'Spend RS 250 to reach Gold tier'}
-                    {user?.customerTier === 'gold' && 'Spend RS 500 to reach Platinum tier'}
-                    {user?.customerTier === 'platinum' && 'You are at the highest tier! Enjoy exclusive benefits.'}
-                  </p>
                 </div>
 
                 <div>
@@ -443,7 +411,11 @@ const Profile = () => {
                     <div className="py-4 px-6 flex justify-between">
                       <dt className="text-sm font-bold text-gray-700">Member since</dt>
                       <dd className="text-sm text-gray-900">
-                        {new Date(user?.createdAt).toLocaleDateString()}
+                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        }) : 'N/A'}
                       </dd>
                     </div>
                     <div className="py-4 px-6 flex justify-between">

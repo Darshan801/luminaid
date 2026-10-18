@@ -378,11 +378,6 @@ orderSchema.methods.updateUserStats = async function() {
   if (user) {
     user.totalSpent += this.total;
     user.orderCount += 1;
-    
-    // Award loyalty points (1 point per dollar)
-    const points = Math.floor(this.total);
-    user.loyaltyPoints += points;
-    
     await user.save();
   }
 };

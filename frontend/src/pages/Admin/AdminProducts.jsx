@@ -233,6 +233,13 @@ const AdminProducts = () => {
             Search
           </button>
         </form>
+
+        {/* Statistics Display */}
+        {!loading && (
+          <div className="mt-4 text-sm text-gray-dark">
+            {pagination.total} product(s) found
+          </div>
+        )}
       </section>
 
       {/* Loading State */}

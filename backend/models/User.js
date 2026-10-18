@@ -148,13 +148,6 @@ const userSchema = new mongoose.Schema(
       min: 0
     },
 
-    // Loyalty Points (for Lumen Rewards)
-    loyaltyPoints: {
-      type: Number,
-      default: 0,
-      min: 0
-    },
-
     // Notes (admin only)
     notes: {
       type: String,
@@ -177,14 +170,6 @@ userSchema.index({ createdAt: -1 });
 // Virtual for full name
 userSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`;
-});
-
-// Virtual for customer tier (based on total spent)
-userSchema.virtual('customerTier').get(function() {
-  if (this.totalSpent >= 500) return 'platinum';
-  if (this.totalSpent >= 250) return 'gold';
-  if (this.totalSpent >= 100) return 'silver';
-  return 'bronze';
 });
 
 // Hash password before saving
@@ -325,12 +310,6 @@ userSchema.methods.removeFromWishlist = function(productId) {
 userSchema.methods.updateLoginInfo = function() {
   this.lastLogin = new Date();
   this.loginCount += 1;
-  return this.save();
-};
-
-// Method to add loyalty points
-userSchema.methods.addLoyaltyPoints = function(points) {
-  this.loyaltyPoints += points;
   return this.save();
 };
 

@@ -38,9 +38,7 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
         lastName: user.lastName,
         fullName: user.fullName,
         role: user.role,
-        isEmailVerified: user.isEmailVerified,
-        loyaltyPoints: user.loyaltyPoints,
-        customerTier: user.customerTier
+        isEmailVerified: user.isEmailVerified
       }
     });
 };
