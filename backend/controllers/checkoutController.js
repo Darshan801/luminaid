@@ -260,12 +260,16 @@ exports.createOrder = async (req, res) => {
 
     // Clear the cart after order is created
     if (cart) {
+      logger.info(`Clearing cart for user: ${userId}, cart ID: ${cart._id}`);
       cart.items = [];
       cart.subtotal = 0;
       cart.discount = 0;
       cart.discountCode = null;
       cart.status = 'converted';
       await cart.save();
+      logger.info(`Cart cleared successfully for user: ${userId}`);
+    } else {
+      logger.warn(`No cart found to clear for user: ${userId}`);
     }
 
     // Send order confirmation email (non-blocking)

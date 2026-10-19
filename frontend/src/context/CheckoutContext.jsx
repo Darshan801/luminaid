@@ -5,7 +5,7 @@ import { useCart } from '../hooks/useCart';
 export const CheckoutContext = createContext();
 
 export const CheckoutProvider = ({ children }) => {
-  const { cart, clearCart } = useCart();
+  const { cart, refreshCart } = useCart();
   
   const [currentStep, setCurrentStep] = useState(0); // 0: shipping, 1: payment QR, 2: upload proof
   const [shippingAddress, setShippingAddress] = useState(null);
@@ -162,8 +162,8 @@ export const CheckoutProvider = ({ children }) => {
       const result = await checkoutService.uploadPaymentProof(orderId, file);
       setPaymentScreenshot(result.order.paymentScreenshot);
       
-      // Clear cart after successful upload
-      // clearCart(); // Uncomment when cart clearing is needed
+      // Refresh cart to sync with backend (cart is cleared after order)
+      await refreshCart();
       
       return result.order;
     } catch (err) {
@@ -172,7 +172,7 @@ export const CheckoutProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId, refreshCart]);
 
   // Navigation
   const nextStep = useCallback(() => {
