@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
+const emailService = require('../services/emailService');
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -86,6 +87,19 @@ exports.register = async (req, res, next) => {
 
     // Update login info
     await user.updateLoginInfo();
+
+    // Send welcome email (non-blocking)
+    emailService.sendWelcomeEmail(user).catch(err => 
+      logger.error('Failed to send welcome email:', err)
+    );
+
+    // Generate and send email verification link
+    const verificationToken = user.createEmailVerificationToken();
+    await user.save({ validateBeforeSave: false });
+    
+    emailService.sendEmailVerification(user, verificationToken).catch(err => 
+      logger.error('Failed to send verification email:', err)
+    );
 
     // Send token response
     sendTokenResponse(user, 201, res, 'Registration successful');
@@ -293,6 +307,11 @@ exports.updatePassword = async (req, res, next) => {
     user.password = newPassword;
     await user.save();
 
+    // Send password changed notification email (non-blocking)
+    emailService.sendPasswordChangedEmail(user).catch(err =>
+      logger.error('Failed to send password changed email:', err)
+    );
+
     // Send token response (logs user in with new password)
     sendTokenResponse(user, 200, res, 'Password updated successfully');
   } catch (error) {
@@ -327,15 +346,22 @@ exports.forgotPassword = async (req, res, next) => {
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
-    // In production, you would send an email here
-    // For now, we'll just return the token (REMOVE IN PRODUCTION)
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    // Send password reset email
+    const emailResult = await emailService.sendPasswordResetEmail(user, resetToken);
 
-    res.status(200).json({
-      success: true,
-      message: 'Password reset email sent',
-      ...(process.env.NODE_ENV !== 'production' && { resetToken, resetUrl })
-    });
+    if (emailResult.success) {
+      return res.status(200).json({
+        success: true,
+        message: 'Password reset email sent'
+      });
+    } else {
+      // If email fails, still return success (don't reveal if email exists)
+      logger.error('Password reset email failed:', emailResult.error);
+      return res.status(200).json({
+        success: true,
+        message: 'If that email exists, a password reset link has been sent'
+      });
+    }
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({
@@ -386,6 +412,11 @@ exports.resetPassword = async (req, res, next) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
+
+    // Send password changed confirmation email (non-blocking)
+    emailService.sendPasswordChangedEmail(user).catch(err =>
+      logger.error('Failed to send password changed email:', err)
+    );
 
     // Send token response (logs user in)
     sendTokenResponse(user, 200, res, 'Password reset successful');
