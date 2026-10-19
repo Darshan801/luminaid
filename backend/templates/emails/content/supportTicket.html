@@ -1,0 +1,43 @@
+<!-- Support Ticket Content -->
+
+<div class="status-box status-success">
+  <strong>We've received your message!</strong>
+</div>
+
+<p class="email-message">
+  Thank you for contacting LuminAID Support. We've received your inquiry and our team will respond within <strong>{{responseTime}}</strong>.
+</p>
+
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 6px; text-align: center; margin: 24px 0;">
+  <div style="font-size: 12px; font-weight: 600; color: #78350f; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Your Ticket ID</div>
+  <div style="font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.5px;">{{ticketId}}</div>
+  <div style="font-size: 12px; color: #92400e; margin-top: 8px;">Please reference this ID in any follow-up correspondence</div>
+</div>
+
+<h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin: 24px 0 12px 0;">Your Message</h3>
+
+<div class="email-details">
+  <div class="detail-row">
+    <span class="detail-label">Subject:</span>
+    <span class="detail-value">{{subject}}</span>
+  </div>
+  <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+    <strong style="color: #1a1a1a;">Message:</strong>
+    <div style="margin-top: 8px; color: #4b5563; white-space: pre-wrap;">{{message}}</div>
+  </div>
+</div>
+
+<h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin: 24px 0 12px 0;">What Happens Next?</h3>
+
+<ol style="color: #4b5563; line-height: 1.8; padding-left: 20px; margin: 12px 0;">
+  <li>Our support team will review your message</li>
+  <li>We'll investigate and gather any necessary information</li>
+  <li>You'll receive a response via email within {{responseTime}}</li>
+  <li>We'll work with you until your issue is resolved</li>
+</ol>
+
+<div class="divider"></div>
+
+<p class="supporting-text">
+  <strong>Need urgent assistance?</strong> Email us directly at <a href="mailto:{{supportEmail}}" style="color: #F47721;">{{supportEmail}}</a>
+</p>

@@ -1,0 +1,49 @@
+<!-- Payment Rejected Content -->
+
+<div class="status-box status-error">
+  <strong>Payment Verification Issue</strong>
+</div>
+
+<p class="email-message">
+  We were unable to verify your payment for order <strong>{{orderNumber}}</strong>.
+</p>
+
+<div class="email-details">
+  <div class="detail-row">
+    <span class="detail-label">Order Number:</span>
+    <span class="detail-value">{{orderNumber}}</span>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">Order Amount:</span>
+    <span class="detail-value" style="font-weight: 700;">RS {{total}}</span>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">Status:</span>
+    <span class="detail-value" style="color: #ef4444; font-weight: 600;">Payment Failed</span>
+  </div>
+</div>
+
+<div class="status-box status-warning">
+  <strong>Reason:</strong><br>
+  {{reason}}
+</div>
+
+<h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin: 24px 0 12px 0;">Next Steps</h3>
+
+<p class="email-message">
+  Please contact our support team to resolve this issue. We're here to help and want to make sure you get your order!
+</p>
+
+<ul style="color: #4b5563; line-height: 1.8; padding-left: 20px; margin: 12px 0;">
+  <li>Email us at <a href="mailto:{{supportEmail}}" style="color: #F47721;">{{supportEmail}}</a></li>
+  <li>Include your order number: <strong>{{orderNumber}}</strong></li>
+  <li>We'll work with you to complete your payment</li>
+</ul>
+
+<div class="button-wrapper">
+  <a href="mailto:{{supportEmail}}" class="button-primary">Contact Support</a>
+</div>
+
+<p class="supporting-text">
+  We apologize for the inconvenience and appreciate your understanding.
+</p>
