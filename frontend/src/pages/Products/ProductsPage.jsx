@@ -1,9 +1,29 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { getAllProducts } from '../../services/productService'
 import ProductCard from '../../components/products/ProductCard'
 import Pagination from '../../components/common/Pagination'
 
 const ITEMS_PER_PAGE = 12
+const PRICE_DEBOUNCE_MS = 600
+
+// Custom debounce hook
+const useDebouncedValue = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+const MAX_PRICE = 10000
 
 const ProductsPage = () => {
   const [sortBy, setSortBy] = useState('featured')
@@ -25,13 +45,24 @@ const ProductsPage = () => {
     total: 0
   })
   
-  // Temporary price inputs (not applied to filters yet)
-  const [priceInputs, setPriceInputs] = useState({
-    minPrice: '',
-    maxPrice: ''
-  })
+  // Price range slider state (immediate update for UI)
+  const [priceRange, setPriceRange] = useState([0, MAX_PRICE])
+  
+  // Debounced price range for API calls
+  const debouncedPriceRange = useDebouncedValue(priceRange, PRICE_DEBOUNCE_MS)
+  
+  // Update filters when debounced price range changes
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      minPrice: debouncedPriceRange[0] > 0 ? debouncedPriceRange[0].toString() : '',
+      maxPrice: debouncedPriceRange[1] < MAX_PRICE ? debouncedPriceRange[1].toString() : ''
+    }))
+    // Reset to first page when price changes
+    setPagination(prev => prev.page === 1 ? prev : { ...prev, page: 1 })
+  }, [debouncedPriceRange])
 
-  // Fetch products with filters and pagination
+  // Fetch products with filters and pagination - memoized to prevent unnecessary recreations
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
@@ -45,41 +76,29 @@ const ProductsPage = () => {
       }
 
       // Add sorting
-      if (sortBy === 'low-high') {
-        params.sort = 'price'
-      } else if (sortBy === 'high-low') {
-        params.sort = '-price'
-      } else if (sortBy === 'a-z') {
-        params.sort = 'name'
-      } else if (sortBy === 'z-a') {
-        params.sort = '-name'
-      } else if (sortBy === 'best-selling') {
-        params.sort = '-reviewCount'
-      } else if (sortBy === 'new-old') {
-        params.sort = '-createdAt'
-      } else if (sortBy === 'old-new') {
-        params.sort = 'createdAt'
-      } else {
-        params.sort = '-featured,-createdAt'
+      const sortMap = {
+        'low-high': 'price',
+        'high-low': '-price',
+        'a-z': 'name',
+        'z-a': '-name',
+        'best-selling': '-reviewCount',
+        'new-old': '-createdAt',
+        'old-new': 'createdAt',
+        'featured': '-featured,-createdAt'
+      }
+      params.sort = sortMap[sortBy] || '-featured,-createdAt'
+
+      // Add tag filters efficiently
+      const allTags = [
+        ...filters.bestFor,
+        ...filters.features,
+        ...filters.lightColor
+      ]
+      if (allTags.length > 0) {
+        params.tags = allTags.join(',')
       }
 
-      // Add filters
-      if (filters.bestFor.length > 0) {
-        params.tags = filters.bestFor.join(',')
-      }
-      
-      if (filters.features.length > 0) {
-        params.tags = params.tags 
-          ? `${params.tags},${filters.features.join(',')}` 
-          : filters.features.join(',')
-      }
-      
-      if (filters.lightColor.length > 0) {
-        params.tags = params.tags 
-          ? `${params.tags},${filters.lightColor.join(',')}` 
-          : filters.lightColor.join(',')
-      }
-
+      // Add price filters
       if (filters.minPrice) {
         params.minPrice = filters.minPrice
       }
@@ -134,7 +153,7 @@ const ProductsPage = () => {
   }
 
   // Clear all filters
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setFilters({
       bestFor: [],
       features: [],
@@ -142,22 +161,28 @@ const ProductsPage = () => {
       minPrice: '',
       maxPrice: ''
     })
-    setPriceInputs({
-      minPrice: '',
-      maxPrice: ''
-    })
-    resetToFirstPage()
-  }
+    setPriceRange([0, MAX_PRICE])
+    setPagination(prev => ({ ...prev, page: 1 }))
+  }, [])
 
-  // Apply price filter
-  const applyPriceFilter = () => {
-    setFilters(prev => ({
-      ...prev,
-      minPrice: priceInputs.minPrice,
-      maxPrice: priceInputs.maxPrice
-    }))
-    resetToFirstPage()
-  }
+  // Handle price range change - only updates UI state, debounce handles API calls
+  const handlePriceChange = useCallback((index, value) => {
+    setPriceRange(prevRange => {
+      const newRange = [...prevRange]
+      newRange[index] = Math.max(0, Math.min(Number(value), MAX_PRICE))
+      
+      // Ensure min doesn't exceed max
+      if (index === 0 && newRange[0] > newRange[1]) {
+        newRange[0] = newRange[1]
+      }
+      // Ensure max doesn't go below min
+      if (index === 1 && newRange[1] < newRange[0]) {
+        newRange[1] = newRange[0]
+      }
+      
+      return newRange
+    })
+  }, [])
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -170,43 +195,37 @@ const ProductsPage = () => {
     resetToFirstPage()
   }
 
-  // Get active filter count
-  const getActiveFilterCount = () => {
+  // Get active filter count - memoized
+  const activeFilterCount = useMemo(() => {
     return filters.bestFor.length + 
            filters.features.length + 
            filters.lightColor.length +
            (filters.minPrice ? 1 : 0) +
            (filters.maxPrice ? 1 : 0)
-  }
+  }, [filters])
 
-  const bestFor = [
-    'Gifting',
-    'Camping',
-    'Emergency Preparedness',
-    'Travel',
-    'Home/Garden',
-    'Kids',
-  ]
-
-  const features = [
-    'Charges Phones',
-    'Twist-to-Inflate',
-    'Magnets',
-  ]
-
-  const lightColors = [
-    'White',
-    'Warm White',
-    'Red (Night Vision)',
-    'Multi-Color',
-  ]
-
-  // Note: Filter counts are no longer accurate with server-side pagination
-  // We'd need a separate API call to get accurate counts
-  // For now, we'll hide the counts or show approximate
-  const getFilterCount = () => {
-    return '' // Could be enhanced with a dedicated count API
-  }
+  // Memoize filter options
+  const filterOptions = useMemo(() => ({
+    bestFor: [
+      'Gifting',
+      'Camping',
+      'Emergency Preparedness',
+      'Travel',
+      'Home/Garden',
+      'Kids',
+    ],
+    features: [
+      'Charges Phones',
+      'Twist-to-Inflate',
+      'Magnets',
+    ],
+    lightColors: [
+      'White',
+      'Warm White',
+      'Red (Night Vision)',
+      'Multi-Color',
+    ]
+  }), [])
 
   return (
     <div className="w-full bg-gray-50">
@@ -242,13 +261,13 @@ const ProductsPage = () => {
                   <h2 className="text-sm font-bold uppercase text-gray-900 tracking-wide">
                     Filters
                   </h2>
-                  {getActiveFilterCount() > 0 && (
+                  {activeFilterCount > 0 && (
                     <button
                       onClick={clearFilters}
                       className="text-xs font-bold text-brand-orange hover:text-brand-orange-dark
                                transition-colors duration-fast"
                     >
-                      Clear ({getActiveFilterCount()})
+                      Clear ({activeFilterCount})
                     </button>
                   )}
                 </div>
@@ -263,7 +282,7 @@ const ProductsPage = () => {
 
                   <div className="space-y-3">
 
-                    {bestFor.map((item) => (
+                    {filterOptions.bestFor.map((item) => (
                       <label
                         key={item}
                         className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
@@ -276,7 +295,7 @@ const ProductsPage = () => {
                             type="checkbox"
                             checked={filters.bestFor.includes(item)}
                             onChange={() => toggleFilter('bestFor', item)}
-                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                            className="w-4 h-4 rounded border-gray-300 bg-white accent-brand-orange
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
@@ -305,7 +324,7 @@ const ProductsPage = () => {
 
                   <div className="space-y-3">
 
-                    {features.map((item) => (
+                    {filterOptions.features.map((item) => (
                       <label
                         key={item}
                         className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
@@ -318,7 +337,7 @@ const ProductsPage = () => {
                             type="checkbox"
                             checked={filters.features.includes(item)}
                             onChange={() => toggleFilter('features', item)}
-                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                            className="w-4 h-4 rounded border-gray-300 bg-white accent-brand-orange
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
@@ -347,7 +366,7 @@ const ProductsPage = () => {
 
                   <div className="space-y-3">
 
-                    {lightColors.map((item) => (
+                    {filterOptions.lightColors.map((item) => (
                       <label
                         key={item}
                         className="flex items-center justify-between text-sm text-gray-700 cursor-pointer 
@@ -360,7 +379,7 @@ const ProductsPage = () => {
                             type="checkbox"
                             checked={filters.lightColor.includes(item)}
                             onChange={() => toggleFilter('lightColor', item)}
-                            className="w-4 h-4 rounded border-gray-300 text-brand-orange 
+                            className="w-4 h-4 rounded border-gray-300 bg-white accent-brand-orange
                                      focus:ring-brand-orange focus:ring-1 cursor-pointer"
                           />
 
@@ -387,67 +406,117 @@ const ProductsPage = () => {
                     Price Range
                   </h3>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2 
-                                  focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-orange/20
-                                  transition-all duration-fast">
-                      <span className="text-sm text-gray-500 font-medium mr-2">
-                        RS
-                      </span>
+                  <div className="space-y-6">
+                    {/* Glowing Price Slider */}
+                    <div className="relative px-1">
+                      {/* Track */}
+                      <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                        {/* Active glowing track */}
+                        <div
+                          className="absolute h-full rounded-full transition-all duration-300"
+                          style={{
+                            left: `${(priceRange[0] / MAX_PRICE) * 100}%`,
+                            right: `${100 - (priceRange[1] / MAX_PRICE) * 100}%`,
+                            background: `linear-gradient(to right, 
+                              rgba(249, 115, 22, ${0.3 + (priceRange[0] / MAX_PRICE) * 0.4}), 
+                              rgba(249, 115, 22, ${0.4 + (priceRange[1] / MAX_PRICE) * 0.6}))`,
+                            boxShadow: `0 0 ${8 + (priceRange[1] / MAX_PRICE) * 20}px rgba(249, 115, 22, ${0.3 + (priceRange[1] / MAX_PRICE) * 0.5}),
+                                       inset 0 1px 2px rgba(255, 255, 255, 0.5)`
+                          }}
+                        />
+                      </div>
+
+                      {/* Min Thumb */}
                       <input
-                        type="number"
-                        placeholder="Min"
-                        value={priceInputs.minPrice}
-                        onChange={(e) => setPriceInputs({...priceInputs, minPrice: e.target.value})}
-                        onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
-                        className="w-full text-sm outline-none bg-transparent
-                                 placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-center text-xs text-gray-500 font-medium">
-                      to
-                    </div>
-
-                    <div className="flex items-center bg-gray-50 rounded-soft px-3 py-2
-                                  focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-orange/20
-                                  transition-all duration-fast">
-                      <span className="text-sm text-gray-500 font-medium mr-2">
-                        RS
-                      </span>
-                      <input
-                        type="number"
-                        placeholder="Max"
-                        value={priceInputs.maxPrice}
-                        onChange={(e) => setPriceInputs({...priceInputs, maxPrice: e.target.value})}
-                        onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
-                        className="w-full text-sm outline-none bg-transparent
-                                 placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <button
-                      onClick={applyPriceFilter}
-                      className="w-full bg-brand-orange text-white px-4 py-2.5 rounded-soft
-                               text-sm font-bold tracking-wide
-                               hover:bg-brand-orange-dark active:scale-95
-                               transition-all duration-fast
-                               disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={!priceInputs.minPrice && !priceInputs.maxPrice}
-                    >
-                      Apply Price
-                    </button>
-
-                    {(filters.minPrice || filters.maxPrice) && (
-                      <button
-                        onClick={() => {
-                          setFilters(prev => ({...prev, minPrice: '', maxPrice: ''}))
-                          setPriceInputs({minPrice: '', maxPrice: ''})
+                        type="range"
+                        min="0"
+                        max={MAX_PRICE}
+                        value={priceRange[0]}
+                        onChange={(e) => handlePriceChange(0, e.target.value)}
+                        className="price-slider-thumb"
+                        style={{
+                          '--glow-intensity': `${0.3 + (priceRange[0] / MAX_PRICE) * 0.5}`,
+                          '--glow-size': `${8 + (priceRange[0] / MAX_PRICE) * 12}px`
                         }}
+                      />
+
+                      {/* Max Thumb */}
+                      <input
+                        type="range"
+                        min="0"
+                        max={MAX_PRICE}
+                        value={priceRange[1]}
+                        onChange={(e) => handlePriceChange(1, e.target.value)}
+                        className="price-slider-thumb"
+                        style={{
+                          '--glow-intensity': `${0.4 + (priceRange[1] / MAX_PRICE) * 0.6}`,
+                          '--glow-size': `${10 + (priceRange[1] / MAX_PRICE) * 15}px`
+                        }}
+                      />
+                    </div>
+
+                    {/* Price Display */}
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-end">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-2">
+                            Min Price
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-medium pointer-events-none z-10">
+                              ₨
+                            </span>
+                            <input
+                              type="number"
+                              min="0"
+                              max={priceRange[1]}
+                              value={priceRange[0]}
+                              onChange={(e) => handlePriceChange(0, e.target.value)}
+                              placeholder="0"
+                              className="w-full bg-white rounded-lg pl-7 pr-3 py-3 text-sm font-medium 
+                                       text-gray-900 border border-gray-300
+                                       focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30
+                                       transition-all duration-fast placeholder:text-gray-400
+                                       [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                          </div>
+                        </div>
+
+                        <span className="text-xs text-gray-500 font-medium pb-3">to</span>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-2">
+                            Max Price
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-medium pointer-events-none z-10">
+                              ₨
+                            </span>
+                            <input
+                              type="number"
+                              min={priceRange[0]}
+                              max={MAX_PRICE}
+                              value={priceRange[1]}
+                              onChange={(e) => handlePriceChange(1, e.target.value)}
+                              placeholder={MAX_PRICE.toString()}
+                              className="w-full bg-white rounded-lg pl-7 pr-3 py-3 text-sm font-medium 
+                                       text-gray-900 border border-gray-300
+                                       focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30
+                                       transition-all duration-fast placeholder:text-gray-400
+                                       [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {(priceRange[0] > 0 || priceRange[1] < MAX_PRICE) && (
+                      <button
+                        onClick={clearFilters}
                         className="w-full text-xs font-bold text-gray-600 hover:text-brand-orange
                                  transition-colors duration-fast py-1"
                       >
-                        Clear Price Filter
+                        Reset Price Range
                       </button>
                     )}
                   </div>

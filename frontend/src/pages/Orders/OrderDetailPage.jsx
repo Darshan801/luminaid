@@ -276,23 +276,55 @@ const OrderDetailPage = () => {
               <div className="bg-gray-50 border border-gray-200 p-6 rounded-soft">
                 <p className="font-bold text-gray-900 text-base mb-3">{currentOrder.shippingAddress.fullName}</p>
                 <div className="space-y-1 text-gray-700 text-sm">
-                  <p>{currentOrder.shippingAddress.addressLine1}</p>
-                  {currentOrder.shippingAddress.addressLine2 && (
-                    <p>{currentOrder.shippingAddress.addressLine2}</p>
+                  {currentOrder.shippingAddress.email && (
+                    <p className="flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      {currentOrder.shippingAddress.email}
+                    </p>
                   )}
-                  <p>
-                    {currentOrder.shippingAddress.city}, {currentOrder.shippingAddress.state} {currentOrder.shippingAddress.zipCode}
-                  </p>
-                  <p className="font-medium">{currentOrder.shippingAddress.country}</p>
                   {currentOrder.shippingAddress.phone && (
-                    <p className="mt-3 flex items-center gap-2">
+                    <p className="flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
                       {currentOrder.shippingAddress.phone}
                     </p>
                   )}
+                  <p className="mt-3">{currentOrder.shippingAddress.addressLine1}</p>
+                  {currentOrder.shippingAddress.addressLine2 && (
+                    <p>{currentOrder.shippingAddress.addressLine2}</p>
+                  )}
+                  <p>
+                    {currentOrder.shippingAddress.city}
+                    {currentOrder.shippingAddress.state && `, ${currentOrder.shippingAddress.state}`}
+                    {currentOrder.shippingAddress.zipCode && ` ${currentOrder.shippingAddress.zipCode}`}
+                  </p>
+                  <p className="font-medium">{currentOrder.shippingAddress.country}</p>
                 </div>
+
+                {/* Payment Screenshot Section */}
+                {currentOrder.paymentScreenshot && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
+                      <CreditCard size={16} className="text-brand-orange" />
+                      Payment Proof
+                    </h3>
+                    <div className="bg-white rounded-soft border border-gray-300 p-3">
+                      <img
+                        src={currentOrder.paymentScreenshot}
+                        alt="Payment Proof"
+                        className="w-full h-auto rounded-soft shadow-soft cursor-pointer hover:shadow-medium transition-shadow duration-fast"
+                        onClick={() => window.open(currentOrder.paymentScreenshot, '_blank')}
+                        title="Click to view full size"
+                      />
+                      <p className="text-xs text-gray-500 mt-2 text-center">
+                        Click image to view full size
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

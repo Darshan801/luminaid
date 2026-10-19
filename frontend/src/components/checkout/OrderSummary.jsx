@@ -18,7 +18,7 @@ const OrderSummary = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+    <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4 self-start">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
 
       {/* Cart Items */}
@@ -57,31 +57,31 @@ const OrderSummary = () => {
       <div className="border-t border-gray-200 pt-4 space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Subtotal</span>
-          <span className="text-gray-900">${(safeTotals.subtotal || 0).toFixed(2)}</span>
+          <span className="text-gray-900">RS {(safeTotals.subtotal || 0).toFixed(2)}</span>
         </div>
 
         {safeTotals.discount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Discount</span>
-            <span className="text-green-600">-${(safeTotals.discount || 0).toFixed(2)}</span>
+            <span className="text-green-600">-RS {(safeTotals.discount || 0).toFixed(2)}</span>
           </div>
         )}
 
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Shipping</span>
           <span className="text-gray-900">
-            {safeTotals.shipping === 0 ? 'TBD' : `$${(safeTotals.shipping || 0).toFixed(2)}`}
+            {safeTotals.shipping === 0 ? 'TBD' : `RS ${(safeTotals.shipping || 0).toFixed(2)}`}
           </span>
         </div>
 
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Tax</span>
-          <span className="text-gray-900">${(safeTotals.tax || 0).toFixed(2)}</span>
+          <span className="text-gray-900">RS {(safeTotals.tax || 0).toFixed(2)}</span>
         </div>
 
         <div className="border-t border-gray-200 pt-2 flex justify-between text-base font-semibold">
           <span className="text-gray-900">Total</span>
-          <span className="text-blue-600">${(safeTotals.total || 0).toFixed(2)}</span>
+          <span className="text-blue-600">RS {(safeTotals.total || 0).toFixed(2)}</span>
         </div>
       </div>
 

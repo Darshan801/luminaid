@@ -154,25 +154,27 @@ const ProductCard = ({ product }) => {
           {/* Product Title - Fixed height with line clamp */}
           <h3 className="text-body-sm md:text-body-md font-semibold text-charcoal 
                        leading-tight group-hover:text-brand-orange 
-                       transition-colors duration-fast line-clamp-2 min-h-[2.5rem] mb-2">
+                       transition-colors duration-fast line-clamp-2 h-12 mb-2">
             {product.name}
           </h3>
 
-          {/* Rating */}
-          {product.rating > 0 && (
-            <div className="flex items-center gap-2 text-label-md text-muted-neutral mb-2">
-              <div className="flex items-center gap-1">
-                <span className="text-yellow-500">★</span>
-                <span className="font-medium text-charcoal">{product.rating.toFixed(1)}</span>
+          {/* Rating - Fixed minimum height */}
+          <div className="h-6 mb-2">
+            {product.rating > 0 && (
+              <div className="flex items-center gap-2 text-label-md text-muted-neutral">
+                <div className="flex items-center gap-1">
+                  <span className="text-yellow-500">★</span>
+                  <span className="font-medium text-charcoal">{product.rating.toFixed(1)}</span>
+                </div>
+                {product.reviewCount > 0 && (
+                  <span>({product.reviewCount} reviews)</span>
+                )}
               </div>
-              {product.reviewCount > 0 && (
-                <span>({product.reviewCount} reviews)</span>
-              )}
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Price */}
-          <div className="flex items-center gap-2 flex-wrap mb-2">
+          {/* Price - Fixed minimum height */}
+          <div className="flex items-center gap-2 flex-wrap mb-2 h-8">
             <span className="text-title-sm md:text-title-md font-bold text-charcoal">
               RS {product.price.toFixed(2)}
             </span>
@@ -183,12 +185,14 @@ const ProductCard = ({ product }) => {
             )}
           </div>
 
-          {/* Stock Status */}
-          {product.trackInventory && product.stock < 10 && product.stock > 0 && (
-            <p className="text-label-md text-orange-600 font-medium mb-2">
-              Only {product.stock} left in stock!
-            </p>
-          )}
+          {/* Stock Status - Fixed minimum height */}
+          <div className="h-6 mb-2">
+            {product.trackInventory && product.stock < 10 && product.stock > 0 && (
+              <p className="text-label-md text-orange-600 font-medium">
+                Only {product.stock} left in stock!
+              </p>
+            )}
+          </div>
 
           {/* Spacer to push button to bottom */}
           <div className="flex-grow"></div>

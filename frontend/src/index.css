@@ -995,3 +995,1064 @@ select {
     page-break-after: avoid;
   }
 }
+
+
+
+
+/* //////////// */
+
+/* ==========================================================
+   LUMIN AID — LIVING LIGHT CIRCUIT
+   Theme: Light in Motion
+   Palette: warm orange, soft white, deep midnight blue
+   ========================================================== */
+
+.living-light-section {
+  --light-orange: #f47721;
+  --light-red: #e74632;
+  --light-white: #fff4e8;
+  --light-panel: #202a39;
+  --light-muted: #aab6c7;
+  --light-cycle: 15s;
+
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(244, 119, 33, 0.055), transparent 55%),
+    linear-gradient(180deg, #f5f5f4 0%, #fafafa 100%);
+}
+
+/* Ambient background light */
+.living-light-ambient {
+  position: absolute;
+  z-index: -1;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  opacity: 0.16;
+}
+
+.living-light-ambient--one {
+  top: 12%;
+  left: -220px;
+  background: var(--light-orange);
+  animation: ambient-drift-one 15s ease-in-out infinite;
+}
+
+.living-light-ambient--two {
+  right: -220px;
+  bottom: 4%;
+  background: var(--light-red);
+  animation: ambient-drift-two 15s ease-in-out infinite;
+}
+
+/* Section label */
+.living-light-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #9b5429;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.living-light-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--light-orange);
+  box-shadow: 0 0 12px rgba(244, 119, 33, 0.55);
+  animation: status-breathe 2.5s ease-in-out infinite;
+}
+
+/* Layout */
+.living-light-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+/* Cards */
+.living-light-card {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 340px;
+  padding: 32px;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  color: #e8edf5;
+  background: linear-gradient(
+    145deg,
+    #2a3546 0%,
+    var(--light-panel) 65%,
+    #1b2431 100%
+  );
+
+  border: 1px solid rgba(148, 163, 184, 0.19);
+  border-radius: 12px;
+
+  box-shadow:
+    0 12px 28px rgba(22, 31, 44, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+  isolation: isolate;
+  transition:
+    border-color 500ms ease,
+    box-shadow 500ms ease,
+    transform 500ms cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+/* A subtle sheen passes across the active card */
+.living-light-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    112deg,
+    transparent 15%,
+    rgba(255, 244, 232, 0.045) 45%,
+    rgba(244, 119, 33, 0.10) 50%,
+    transparent 70%
+  );
+
+  transform: translateX(-110%);
+  animation: card-light-sweep var(--light-cycle) ease-in-out infinite;
+}
+
+.living-light-card--solar {
+  --stage-start: 0%;
+  --stage-end: 28%;
+}
+
+.living-light-card--battery {
+  --stage-start: 30%;
+  --stage-end: 60%;
+}
+
+.living-light-card--power {
+  --stage-start: 62%;
+  --stage-end: 92%;
+}
+
+/* Sequential card activation */
+.living-light-card--solar {
+  animation: solar-card-glow var(--light-cycle) linear infinite;
+}
+
+.living-light-card--battery {
+  animation: battery-card-glow var(--light-cycle) linear infinite;
+}
+
+.living-light-card--power {
+  animation: power-card-glow var(--light-cycle) linear infinite;
+}
+
+.living-light-card-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+/* Icon containers */
+.living-light-icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+
+  color: #aeb9c8;
+  background: linear-gradient(145deg, #414e61, #303b4b);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 50%;
+
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+}
+
+.living-light-step {
+  color: rgba(161, 174, 192, 0.19);
+  font-size: clamp(40px, 4vw, 56px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  transition: color 400ms ease;
+}
+
+.living-light-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.living-light-stage {
+  display: block;
+  margin-bottom: 8px;
+  color: #91a0b4;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.17em;
+  transition: color 400ms ease;
+}
+
+.living-light-copy h3 {
+  margin: 0 0 12px;
+  color: #f0f3f8;
+  font-size: clamp(19px, 1.55vw, 23px);
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+}
+
+.living-light-copy p {
+  margin: 0;
+  color: var(--light-muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+/* ==========================================================
+   STEP 1 — SOLAR CAPTURE
+   A soft dawn-like glow builds and fades.
+   ========================================================== */
+
+.living-light-card--solar .living-light-icon {
+  animation: solar-icon-glow var(--light-cycle) linear infinite;
+}
+
+.living-light-card--solar .living-light-stage {
+  animation: solar-stage-highlight var(--light-cycle) linear infinite;
+}
+
+.solar-rays {
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(244, 119, 33, 0.7);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.78);
+  animation: solar-orbit-pulse var(--light-cycle) linear infinite;
+}
+
+.solar-orbit {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 72px;
+  height: 72px;
+  pointer-events: none;
+  opacity: 0;
+  animation: solar-orbit-show var(--light-cycle) linear infinite;
+}
+
+.solar-orbit span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 10px;
+  border-radius: 4px;
+  background: var(--light-orange);
+  box-shadow: 0 0 10px rgba(244, 119, 33, 0.55);
+  transform-origin: 0 0;
+}
+
+.solar-orbit span:nth-child(1) {
+  transform: rotate(0deg) translate(0, -34px);
+}
+
+.solar-orbit span:nth-child(2) {
+  transform: rotate(90deg) translate(0, -34px);
+}
+
+.solar-orbit span:nth-child(3) {
+  transform: rotate(180deg) translate(0, -34px);
+}
+
+.solar-orbit span:nth-child(4) {
+  transform: rotate(270deg) translate(0, -34px);
+}
+
+/* ==========================================================
+   CONNECTORS — ENERGY TRANSFER
+   One traveling particle, with a subtle illuminated trail.
+   ========================================================== */
+
+.living-light-connector {
+  position: absolute;
+  z-index: 3;
+  top: 100px;
+  width: 32px;
+  height: 3px;
+  pointer-events: none;
+  background: rgba(91, 104, 120, 0.36);
+  border-radius: 20px;
+}
+
+.living-light-connector--one {
+  left: calc(33.333% - 16px);
+}
+
+.living-light-connector--two {
+  left: calc(66.666% - 16px);
+}
+
+.connector-track {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(244, 119, 33, 0.6),
+    transparent
+  );
+  opacity: 0;
+}
+
+.connector-energy {
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #fff0d6 18%,
+    #ff9b48 43%,
+    rgba(244, 119, 33, 0) 75%
+  );
+
+  box-shadow:
+    0 0 8px rgba(255, 244, 232, 0.9),
+    0 0 19px rgba(244, 119, 33, 0.85);
+
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+.living-light-connector--one .connector-track,
+.living-light-connector--one .connector-energy {
+  animation: transfer-one var(--light-cycle) linear infinite;
+}
+
+.living-light-connector--two .connector-track,
+.living-light-connector--two .connector-energy {
+  animation: transfer-two var(--light-cycle) linear infinite;
+}
+
+/* ==========================================================
+   STEP 2 — BATTERY CHARGING
+   The meter fills horizontally; no SVG fill ambiguity.
+   ========================================================== */
+
+.battery-meter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.battery-meter-track {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.19);
+  border-radius: 20px;
+}
+
+.battery-meter-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--light-orange), #ffd09b);
+  box-shadow: 0 0 12px rgba(244, 119, 33, 0.8);
+
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: battery-charge var(--light-cycle) linear infinite;
+}
+
+.battery-meter-cap {
+  width: 4px;
+  height: 9px;
+  border-radius: 0 2px 2px 0;
+  background: rgba(244, 119, 33, 0.6);
+  animation: battery-cap-glow var(--light-cycle) linear infinite;
+}
+
+.living-light-card--battery .living-light-icon {
+  animation: battery-icon-glow var(--light-cycle) linear infinite;
+}
+
+.battery-charge-flash {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(255, 184, 105, 0.7);
+  border-radius: 50%;
+  opacity: 0;
+  animation: battery-flash var(--light-cycle) linear infinite;
+}
+
+/* ==========================================================
+   STEP 3 — POWER ACTIVATION
+   Soft flash and outward ripples.
+   ========================================================== */
+
+.living-light-card--power .living-light-icon {
+  animation: power-icon-glow var(--light-cycle) linear infinite;
+}
+
+.power-ripple {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(244, 119, 33, 0.8);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.power-ripple--one {
+  animation: ripple-one var(--light-cycle) linear infinite;
+}
+
+.power-ripple--two {
+  animation: ripple-two var(--light-cycle) linear infinite;
+}
+
+.power-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 24px;
+
+  color: #96a4b7;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.power-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--light-orange);
+  box-shadow: 0 0 9px rgba(244, 119, 33, 0.8);
+  animation: power-ready var(--light-cycle) linear infinite;
+}
+
+.living-light-footnote {
+  margin: 32px 0 0;
+  text-align: center;
+  color: #8a95a3;
+  font-size: 12px;
+  letter-spacing: 0.025em;
+}
+
+/* ==========================================================
+   SEQUENCE — 15 SECOND LOOP
+   0–28%: Solar capture
+   30–60%: Battery charging
+   62–92%: Power activation
+   Remaining time: breathing room before the next cycle
+   ========================================================== */
+
+@keyframes solar-card-glow {
+  0% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+    opacity: 1;
+  }
+  2% {
+    border-color: rgba(244, 119, 33, 0.12);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  4% {
+    border-color: rgba(244, 119, 33, 0.18);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  10%, 20% {
+    border-color: rgba(244, 119, 33, 0.88);
+    box-shadow:
+      0 0 20px rgba(244, 119, 33, 0.19),
+      0 0 48px rgba(244, 119, 33, 0.15),
+      0 12px 28px rgba(22, 31, 44, 0.12);
+  }
+  26% {
+    border-color: rgba(244, 119, 33, 0.25);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  28%, 100% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+}
+
+@keyframes battery-card-glow {
+  0%, 29% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  38%, 51% {
+    border-color: rgba(244, 119, 33, 0.85);
+    box-shadow:
+      0 0 22px rgba(244, 119, 33, 0.20),
+      0 0 46px rgba(244, 119, 33, 0.13),
+      0 12px 28px rgba(22, 31, 44, 0.12);
+  }
+  60%, 100% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+}
+
+@keyframes power-card-glow {
+  0%, 61% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  65% {
+    border-color: rgba(244, 119, 33, 0.35);
+    box-shadow:
+      0 0 12px rgba(244, 119, 33, 0.12),
+      0 0 28px rgba(244, 119, 33, 0.08),
+      0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  70%, 81% {
+    border-color: rgba(244, 119, 33, 0.88);
+    box-shadow:
+      0 0 22px rgba(244, 119, 33, 0.22),
+      0 0 52px rgba(244, 119, 33, 0.16),
+      0 12px 28px rgba(22, 31, 44, 0.12);
+  }
+  88% {
+    border-color: rgba(244, 119, 33, 0.45);
+    box-shadow:
+      0 0 15px rgba(244, 119, 33, 0.14),
+      0 0 32px rgba(244, 119, 33, 0.1),
+      0 12px 28px rgba(22, 31, 44, 0.11);
+  }
+  92% {
+    border-color: rgba(244, 119, 33, 0.22);
+    box-shadow:
+      0 0 8px rgba(244, 119, 33, 0.08),
+      0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  96% {
+    border-color: rgba(244, 119, 33, 0.08);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+  100% {
+    border-color: rgba(148, 163, 184, 0.19);
+    box-shadow: 0 12px 28px rgba(22, 31, 44, 0.10);
+  }
+}
+
+@keyframes solar-icon-glow {
+  0% {
+    color: #aeb9c8;
+    background: linear-gradient(145deg, #414e61, #303b4b);
+    filter: none;
+  }
+  2% {
+    color: #b8c2cf;
+    background: linear-gradient(145deg, #4a5768, #354152);
+    filter: none;
+  }
+  4%, 28%, 100% {
+    color: #aeb9c8;
+    background: linear-gradient(145deg, #414e61, #303b4b);
+    filter: none;
+  }
+  10%, 20% {
+    color: #fff4e8;
+    background: linear-gradient(145deg, #f47721, #c95a29);
+    filter: drop-shadow(0 0 12px rgba(244, 119, 33, 0.32));
+  }
+}
+
+@keyframes solar-orbit-pulse {
+  0%, 4%, 28%, 100% {
+    opacity: 0;
+    transform: scale(0.78);
+  }
+  10%, 18% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+  23% {
+    opacity: 0.3;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes solar-orbit-show {
+  0%, 5%, 27%, 100% { opacity: 0; }
+  11%, 20% { opacity: 0.85; }
+}
+
+@keyframes solar-stage-highlight {
+  0%, 4%, 28%, 100% { color: #91a0b4; }
+  10%, 20% { color: #ffb56c; }
+}
+
+@keyframes transfer-one {
+  0%, 28%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-25%, -50%);
+  }
+  39% {
+    opacity: 1;
+    transform: translate(calc(32px + 25%), -50%);
+  }
+  41% {
+    opacity: 0;
+    transform: translate(calc(32px + 45%), -50%);
+  }
+}
+
+@keyframes transfer-two {
+  0%, 59%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+  62% {
+    opacity: 1;
+    transform: translate(-25%, -50%);
+  }
+  71% {
+    opacity: 1;
+    transform: translate(calc(32px + 25%), -50%);
+  }
+  73% {
+    opacity: 0;
+    transform: translate(calc(32px + 45%), -50%);
+  }
+}
+
+@keyframes battery-card-unused {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+@keyframes battery-charge {
+  0%, 31% {
+    transform: scaleX(0.03);
+    opacity: 0.35;
+  }
+  37% {
+    transform: scaleX(0.22);
+    opacity: 0.8;
+  }
+  45% {
+    transform: scaleX(0.66);
+    opacity: 1;
+  }
+  53% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  60%, 100% {
+    transform: scaleX(0.03);
+    opacity: 0.35;
+  }
+}
+
+@keyframes battery-icon-glow {
+  0%, 30%, 60%, 100% {
+    color: #aeb9c8;
+    background: linear-gradient(145deg, #414e61, #303b4b);
+    filter: none;
+  }
+  40%, 53% {
+    color: #fff4e8;
+    background: linear-gradient(145deg, #f47721, #c95a29);
+    filter: drop-shadow(0 0 12px rgba(244, 119, 33, 0.35));
+  }
+}
+
+@keyframes battery-cap-glow {
+  0%, 30%, 60%, 100% { background: rgba(148, 163, 184, 0.3); }
+  40%, 53% { background: #f47721; }
+}
+
+@keyframes battery-flash {
+  0%, 30%, 60%, 100% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  42% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+  53% {
+    opacity: 0.2;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes power-icon-glow {
+  0%, 61% {
+    color: #aeb9c8;
+    background: linear-gradient(145deg, #414e61, #303b4b);
+    filter: none;
+  }
+  65% {
+    color: #c8d1dc;
+    background: linear-gradient(145deg, #596a7d, #44515f);
+    filter: drop-shadow(0 0 4px rgba(244, 119, 33, 0.15));
+  }
+  70%, 81% {
+    color: #fff4e8;
+    background: linear-gradient(145deg, #f47721, #e74632);
+    filter: drop-shadow(0 0 14px rgba(244, 119, 33, 0.4));
+  }
+  88% {
+    color: #c8d1dc;
+    background: linear-gradient(145deg, #596a7d, #44515f);
+    filter: drop-shadow(0 0 6px rgba(244, 119, 33, 0.18));
+  }
+  92% {
+    color: #b8c2cf;
+    background: linear-gradient(145deg, #4a5768, #354152);
+    filter: none;
+  }
+  96%, 100% {
+    color: #aeb9c8;
+    background: linear-gradient(145deg, #414e61, #303b4b);
+    filter: none;
+  }
+}
+
+@keyframes ripple-one {
+  0%, 64% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  68% {
+    opacity: 0.35;
+    transform: scale(1.05);
+  }
+  73% {
+    opacity: 0.7;
+    transform: scale(1.45);
+  }
+  81% {
+    opacity: 0.25;
+    transform: scale(1.8);
+  }
+  84% {
+    opacity: 0;
+    transform: scale(1.95);
+  }
+  91%, 100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes ripple-two {
+  0%, 69% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  73% {
+    opacity: 0.25;
+    transform: scale(1.1);
+  }
+  78% {
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
+  86% {
+    opacity: 0.18;
+    transform: scale(2);
+  }
+  89% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+  94%, 100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes power-ready {
+  0%, 61% {
+    opacity: 0.5;
+    box-shadow: none;
+  }
+  65% {
+    opacity: 0.65;
+    box-shadow: 0 0 6px rgba(244, 119, 33, 0.45);
+  }
+  70%, 81% {
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(244, 119, 33, 0.9);
+  }
+  88% {
+    opacity: 0.75;
+    box-shadow: 0 0 8px rgba(244, 119, 33, 0.6);
+  }
+  92% {
+    opacity: 0.6;
+    box-shadow: 0 0 4px rgba(244, 119, 33, 0.3);
+  }
+  96%, 100% {
+    opacity: 0.5;
+    box-shadow: none;
+  }
+}
+
+@keyframes card-light-sweep {
+  0%, 8%, 100% { transform: translateX(-110%); }
+  22% { transform: translateX(110%); }
+}
+
+@keyframes ambient-drift-one {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(80px, 35px); }
+}
+
+@keyframes ambient-drift-two {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-65px, -35px); }
+}
+
+@keyframes status-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 16px rgba(244, 119, 33, 0.8);
+  }
+}
+
+/* Hover should enhance the experience, not compete with the sequence */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .living-light-card:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 1023px) {
+  .living-light-grid {
+    gap: 20px;
+  }
+
+  .living-light-card {
+    padding: 24px;
+    min-height: 355px;
+  }
+
+  .living-light-connector {
+    width: 20px;
+  }
+
+  .living-light-connector--one {
+    left: calc(33.333% - 10px);
+  }
+
+  .living-light-connector--two {
+    left: calc(66.666% - 10px);
+  }
+}
+
+@media (max-width: 767px) {
+  .living-light-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .living-light-card {
+    min-height: 0;
+    padding: 28px;
+  }
+
+  .living-light-card-top {
+    margin-bottom: 22px;
+  }
+
+  .living-light-connector {
+    display: none;
+  }
+
+  .living-light-copy h3 {
+    font-size: 22px;
+  }
+
+  .living-light-copy p {
+    font-size: 14px;
+  }
+
+  .solar-orbit {
+    top: 12px;
+    right: 16px;
+  }
+
+  .living-light-footnote {
+    margin-top: 24px;
+  }
+}
+
+/* Accessibility: preserve the visual design, remove continuous movement */
+@media (prefers-reduced-motion: reduce) {
+  .living-light-section *,
+  .living-light-section *::before,
+  .living-light-section *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .living-light-card--solar {
+    border-color: rgba(244, 119, 33, 0.7);
+  }
+
+  .living-light-card--solar .living-light-icon {
+    color: #fff4e8;
+    background: linear-gradient(145deg, #f47721, #c95a29);
+  }
+
+  .living-light-card--battery .battery-meter-fill {
+    transform: scaleX(1);
+  }
+
+  .living-light-card--power .living-light-icon {
+    color: #fff4e8;
+    background: linear-gradient(145deg, #f47721, #e74632);
+  }
+}
+
+/* ==========================================================
+   GLOWING PRICE SLIDER - Light Theme
+   The slider glows more intensely as the price increases
+   ========================================================== */
+
+.price-slider-thumb {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  top: 0;
+  left: 0;
+  
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+.price-slider-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: all;
+  cursor: pointer;
+  
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  background: linear-gradient(135deg, #f47721 0%, #e74632 100%);
+  
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 0 var(--glow-size, 10px) rgba(249, 115, 22, var(--glow-intensity, 0.4)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  
+  transition: all 0.2s ease;
+}
+
+.price-slider-thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 calc(var(--glow-size, 10px) + 5px) rgba(249, 115, 22, calc(var(--glow-intensity, 0.4) + 0.2)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.price-slider-thumb::-webkit-slider-thumb:active {
+  transform: scale(1.05);
+}
+
+.price-slider-thumb::-moz-range-thumb {
+  pointer-events: all;
+  cursor: pointer;
+  border: none;
+  
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  background: linear-gradient(135deg, #f47721 0%, #e74632 100%);
+  
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 0 var(--glow-size, 10px) rgba(249, 115, 22, var(--glow-intensity, 0.4)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  
+  transition: all 0.2s ease;
+}
+
+.price-slider-thumb::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 calc(var(--glow-size, 10px) + 5px) rgba(249, 115, 22, calc(var(--glow-intensity, 0.4) + 0.2)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.price-slider-thumb::-moz-range-thumb:active {
+  transform: scale(1.05);
+}
+
+/* Active state for the entire slider */
+.price-slider-thumb:focus {
+  outline: none;
+}
+
+.price-slider-thumb:focus::-webkit-slider-thumb {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 calc(var(--glow-size, 10px) + 8px) rgba(249, 115, 22, calc(var(--glow-intensity, 0.4) + 0.3)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(249, 115, 22, 0.1);
+}
+
+.price-slider-thumb:focus::-moz-range-thumb {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 calc(var(--glow-size, 10px) + 8px) rgba(249, 115, 22, calc(var(--glow-intensity, 0.4) + 0.3)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(249, 115, 22, 0.1);
+}

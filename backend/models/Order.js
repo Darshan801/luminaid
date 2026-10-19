@@ -94,6 +94,14 @@ const orderSchema = new mongoose.Schema(
         type: String,
         required: true
       },
+      email: {
+        type: String,
+        required: true
+      },
+      phone: {
+        type: String,
+        required: true
+      },
       addressLine1: {
         type: String,
         required: true
@@ -105,18 +113,17 @@ const orderSchema = new mongoose.Schema(
       },
       state: {
         type: String,
-        required: true
+        required: false
       },
       zipCode: {
         type: String,
-        required: true
+        required: false
       },
       country: {
         type: String,
         required: true,
-        default: 'United States'
-      },
-      phone: String
+        default: 'Nepal'
+      }
     },
     
     // Billing Address

@@ -583,6 +583,34 @@ exports.canUserReview = async (req, res) => {
   }
 };
 
+// @desc    Get latest reviews across all products
+// @route   GET /api/reviews/latest
+// @access  Public
+exports.getLatestReviews = async (req, res) => {
+  try {
+    const { limit = 6 } = req.query;
+
+    const reviews = await Review.find({ status: 'approved' })
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .populate('user', 'firstName lastName')
+      .populate('product', 'name slug images');
+
+    res.status(200).json({
+      success: true,
+      count: reviews.length,
+      data: reviews
+    });
+  } catch (error) {
+    console.error('Get Latest Reviews Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch latest reviews',
+      error: error.message
+    });
+  }
+};
+
 // ==================== ADMIN ROUTES ====================
 
 // @desc    Get all reviews (admin)

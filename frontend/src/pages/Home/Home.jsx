@@ -138,45 +138,37 @@ const Home = () => {
     fetchCategories()
   }, [])
 
-  // Fetch latest reviews (mock data for now - you can create a reviews endpoint later)
+  // Fetch latest reviews
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         setLoadingReviews(true)
-        // For now, use static data
-        // You can create an API endpoint later: await get('/reviews/latest')
-        const mockReviews = [
-          {
-            id: 1,
-            author: 'Sarah M.',
-            rating: 5,
-            text: 'These solar lanterns are amazing! Perfect for camping trips.',
-            product: 'PackLite Titan 2-in-1',
-            productImage: '/images/products/0196-150_Max_QI_product_image.jpg',
-            verified: true
-          },
-          {
-            id: 2,
-            author: 'John D.',
-            rating: 5,
-            text: 'Great quality and bright light. Charges my phone too!',
-            product: 'PackLite Max',
-            productImage: '/images/products/PLTNRProductImage_sizerelative_withphone_lightgraybackground.jpg',
-            verified: true
-          },
-          {
-            id: 3,
-            author: 'Emily R.',
-            rating: 5,
-            text: 'Love the string lights for our backyard. Creates perfect ambiance.',
-            product: 'Solar String Lights',
-            productImage: '/images/products/StringLightatSunset.jpg',
-            verified: true
-          }
-        ]
-        setLatestReviews(mockReviews)
+        const response = await get('/reviews/latest?limit=9')
+        if (response.success && response.data.length > 0) {
+          const formattedReviews = response.data.map(review => ({
+            id: review._id,
+            author: review.user 
+              ? `${review.user.firstName} ${review.user.lastName.charAt(0)}.` 
+              : review.authorName,
+            rating: review.rating,
+            text: review.comment,
+            title: review.title,
+            product: review.product?.name || 'Product',
+            productImage: review.product?.images?.[0]?.url || review.product?.images?.[0],
+            verified: review.isVerifiedPurchase,
+            date: new Date(review.createdAt).toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric', 
+              year: 'numeric' 
+            })
+          }))
+          setLatestReviews(formattedReviews)
+        } else {
+          setLatestReviews([])
+        }
       } catch (error) {
         console.error('Failed to fetch reviews:', error)
+        setLatestReviews([])
       } finally {
         setLoadingReviews(false)
       }
@@ -198,31 +190,57 @@ const Home = () => {
   // Reviews Carousel State
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState('next') // Track direction for slide animation
   const reviewsPerPage = 3
 
-  // Handlers
+  // Total pages for carousel
+  const totalReviewPages = Math.ceil(latestReviews.length / reviewsPerPage)
+
+  // Auto-scroll carousel every 6 seconds (standard e-commerce timing)
+  useEffect(() => {
+    if (latestReviews.length <= reviewsPerPage) return; // Don't auto-scroll if only one page
+
+    const intervalId = setInterval(() => {
+      handleNextReviews()
+    }, 6000) // 6 seconds - gives users time to read reviews
+
+    return () => clearInterval(intervalId) // Cleanup on unmount
+  }, [latestReviews.length, reviewsPerPage, totalReviewPages, currentReviewIndex])
+
+  // Handlers with transition
   const handleNextReviews = () => {
+    if (isTransitioning) return; // Prevent multiple clicks during transition
+    
+    setDirection('next')
     setIsTransitioning(true)
     setTimeout(() => {
-      setCurrentReviewIndex((prev) =>
-        prev + reviewsPerPage >= latestReviews.length ? 0 : prev + reviewsPerPage
-      )
+      setCurrentReviewIndex((prev) => {
+        const nextIndex = prev + 1
+        return nextIndex >= totalReviewPages ? 0 : nextIndex
+      })
       setIsTransitioning(false)
-    }, 300)
+    }, 600) // Slightly longer for smoother feel
   }
 
   const handlePrevReviews = () => {
+    if (isTransitioning) return; // Prevent multiple clicks during transition
+    
+    setDirection('prev')
     setIsTransitioning(true)
     setTimeout(() => {
-      setCurrentReviewIndex((prev) =>
-        prev - reviewsPerPage < 0 ? Math.max(0, latestReviews.length - reviewsPerPage) : prev - reviewsPerPage
-      )
+      setCurrentReviewIndex((prev) => {
+        const prevIndex = prev - 1
+        return prevIndex < 0 ? totalReviewPages - 1 : prevIndex
+      })
       setIsTransitioning(false)
-    }, 300)
+    }, 600)
   }
 
   // Computed Values
-  const visibleReviews = latestReviews.slice(currentReviewIndex, currentReviewIndex + reviewsPerPage)
+  const visibleReviews = latestReviews.slice(
+    currentReviewIndex * reviewsPerPage, 
+    (currentReviewIndex * reviewsPerPage) + reviewsPerPage
+  )
   const spotlightTestimonial = testimonials[0]
 
   return (
@@ -710,77 +728,113 @@ const Home = () => {
                   </div>
                   <span className="font-bold">5426 Reviews</span>
                 </span>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={handlePrevReviews}
-                    aria-label="Previous reviews" 
-                    className="p-2 border-2 border-gray-200 rounded-soft 
-                             hover:border-brand-orange hover:text-brand-orange
-                             active:scale-95
-                             transition-all duration-fast focus-ring"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button 
-                    onClick={handleNextReviews}
-                    aria-label="Next reviews" 
-                    className="p-2 border-2 border-gray-200 rounded-soft 
-                             hover:border-brand-orange hover:text-brand-orange
-                             active:scale-95
-                             transition-all duration-fast focus-ring"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
+                {!loadingReviews && latestReviews.length > reviewsPerPage && (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handlePrevReviews}
+                      aria-label="Previous reviews" 
+                      disabled={currentReviewIndex === 0}
+                      className="p-2 border-2 border-gray-200 rounded-soft 
+                               hover:border-brand-orange hover:text-brand-orange
+                               disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-inherit
+                               active:scale-95
+                               transition-all duration-fast focus-ring"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button 
+                      onClick={handleNextReviews}
+                      aria-label="Next reviews"
+                      disabled={currentReviewIndex >= totalReviewPages - 1}
+                      className="p-2 border-2 border-gray-200 rounded-soft 
+                               hover:border-brand-orange hover:text-brand-orange
+                               disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-inherit
+                               active:scale-95
+                               transition-all duration-fast focus-ring"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Review Cards */}
             <div className="relative overflow-hidden">
-              <div 
-                className={`grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300 ${
-                  isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'
-                }`}
-              >
-                {visibleReviews.map((review) => (
-                  <div key={review.id} className="bg-white border border-gray-100 rounded-soft p-6 
-                                                shadow-soft hover:shadow-medium transition-shadow duration-normal">
-                    {/* Rating & Date */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex gap-0.5">
-                        {[...Array(review.rating)].map((_, i) => (
-                          <Star key={i} size={14} fill="#E8C441" stroke="#E8C441" />
-                        ))}
+              {loadingReviews ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 
+                                border-4 border-brand-orange border-t-transparent mb-4"></div>
+                  <p className="text-body-md text-muted-neutral">Loading reviews...</p>
+                </div>
+              ) : visibleReviews.length > 0 ? (
+                <div 
+                  className={`grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-700 ease-out ${
+                    isTransitioning 
+                      ? direction === 'next' 
+                        ? 'opacity-0 transform translate-x-24 blur-[2px]' 
+                        : 'opacity-0 transform -translate-x-24 blur-[2px]'
+                      : 'opacity-100 transform translate-x-0 blur-0'
+                  }`}
+                  style={{
+                    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                >
+                  {visibleReviews.map((review, index) => (
+                    <div 
+                      key={review.id} 
+                      className="bg-white border border-gray-100 rounded-soft p-6 
+                                shadow-soft hover:shadow-medium transition-all duration-300"
+                      style={{
+                        transitionDelay: isTransitioning ? '0ms' : `${index * 50}ms`
+                      }}
+                    >
+                      {/* Rating & Date */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex gap-0.5">
+                          {[...Array(review.rating)].map((_, i) => (
+                            <Star key={i} size={14} fill="#E8C441" stroke="#E8C441" />
+                          ))}
+                        </div>
+                        {review.date && (
+                          <span className="review-card__date text-xs text-gray-400">
+                            {review.date}
+                          </span>
+                        )}
                       </div>
-                      <span className="review-card__date text-xs text-gray-400">
-                        {review.date}
-                      </span>
-                    </div>
-                    
-                    {/* Review Text */}
-                    <p className="review-card__text text-sm text-gray-700 leading-relaxed mb-4 min-h-[80px]">
-                      {review.text}
-                    </p>
-                    
-                    {/* Product & Author */}
-                    <div className="review-card__footer flex items-start gap-3 pt-3 border-t border-gray-100">
-                      <img 
-                        src={review.productImage} 
-                        alt={review.product} 
-                        className="review-card__product-image w-16 h-16 object-cover bg-gray-100 flex-shrink-0" 
-                      />
-                      <div className="review-card__meta">
-                        <p className="review-card__author text-sm font-bold text-black mb-0.5">
-                          {review.author}
-                        </p>
-                        <p className="review-card__product text-xs text-gray-500">
-                          {review.product}
-                        </p>
+                      
+                      {/* Review Text */}
+                      <p className="review-card__text text-sm text-gray-700 leading-relaxed mb-4 min-h-[80px] line-clamp-4">
+                        {review.text}
+                      </p>
+                      
+                      {/* Product & Author */}
+                      <div className="review-card__footer flex items-start gap-3 pt-3 border-t border-gray-100">
+                        <img 
+                          src={review.productImage} 
+                          alt={review.product} 
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                          className="review-card__product-image w-16 h-16 object-cover bg-gray-100 flex-shrink-0 rounded" 
+                        />
+                        <div className="review-card__meta flex-1 min-w-0">
+                          <p className="review-card__author text-sm font-bold text-black mb-0.5">
+                            {review.author}
+                          </p>
+                          <p className="review-card__product text-xs text-gray-500 truncate">
+                            {review.product}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-body-md text-muted-neutral">No reviews available yet.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -13,6 +13,7 @@ const {
   reportReview,
   getMyReviews,
   canUserReview,
+  getLatestReviews,
   getAdminReviews,
   approveReview,
   rejectReview,
@@ -21,6 +22,7 @@ const {
 const { protect, authorize, optionalAuth } = require('../middleware/auth');
 
 // Public routes (with optional auth for userVote)
+router.get('/latest', getLatestReviews);
 router.get('/product/:productId', optionalAuth, getProductReviews);
 router.get('/product/:productId/stats', getProductReviewStats);
 router.get('/:id', getReview);

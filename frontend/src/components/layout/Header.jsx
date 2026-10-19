@@ -50,7 +50,7 @@ const Header = () => {
         { text: 'Shop All Products', href: '/products' },
         { text: 'Shop Power Lanterns', href: '/products/power-lanterns' },
         { text: 'Shop Accessories', href: '/products/accessories' },
-        { text: 'Shop Gift Guide', href: '/products/gifts' },
+        // { text: 'Shop Gift Guide', href: '/products/gifts' },
       ]
     },
     {
