@@ -39,13 +39,13 @@ export const getProduct = async (identifier) => {
 };
 
 /**
- * Get featured products
+ * Get featured products (bestsellers and new arrivals)
  * @param {number} limit - Number of products to fetch
  * @returns {Promise} Featured products
  */
 export const getFeaturedProducts = async (limit = 4) => {
   try {
-    const response = await get(`/products?featured=true&limit=${limit}`);
+    const response = await get(`/products?status=active,out-of-stock&limit=${limit}&sort=-bestseller,-newArrival,-createdAt`);
     return response.data;
   } catch (error) {
     console.error('Get Featured Products Error:', error);
@@ -60,7 +60,7 @@ export const getFeaturedProducts = async (limit = 4) => {
  */
 export const getBestsellerProducts = async (limit = 4) => {
   try {
-    const response = await get(`/products?bestseller=true&limit=${limit}`);
+    const response = await get(`/products?bestseller=true&status=active,out-of-stock&limit=${limit}`);
     return response.data;
   } catch (error) {
     console.error('Get Bestseller Products Error:', error);
@@ -94,10 +94,15 @@ export const searchProducts = async (query, filters = {}) => {
  */
 export const getProductsByCategory = async (category, params = {}) => {
   try {
-    const queryString = new URLSearchParams(params).toString();
+    // Add status to show both active and out-of-stock products
+    const queryParams = {
+      status: 'active,out-of-stock',
+      ...params
+    };
+    const queryString = new URLSearchParams(queryParams).toString();
     const endpoint = queryString 
       ? `/products?category=${category}&${queryString}` 
-      : `/products?category=${category}`;
+      : `/products?category=${category}&status=active,out-of-stock`;
     const response = await get(endpoint);
     return response;
   } catch (error) {
@@ -144,6 +149,7 @@ const buildProductFormData = (productData) => {
   formData.append('description', productData.description);
   formData.append('price', productData.price);
   formData.append('stock', productData.stock);
+  formData.append('discount', productData.discount || 0);
   formData.append('isBestSeller', productData.isBestSeller);
   formData.append('isSoldOut', productData.isSoldOut);
   formData.append('isNew', productData.isNew);

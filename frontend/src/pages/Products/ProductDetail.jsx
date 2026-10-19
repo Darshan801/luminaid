@@ -126,8 +126,14 @@ const ProductDetail = () => {
   }
 
   const mainImage = product.images?.[selectedImage]?.url || product.images?.[0]?.url || '/images/placeholder-product.jpg';
-  const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
-  const discount = onSale ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0;
+  // Check if product has discount (must be a number and greater than 0)
+  const discountValue = Number(product.discount) || 0;
+  const hasDiscount = discountValue > 0;
+  const discountPercentage = hasDiscount ? discountValue : 0;
+  const originalPrice = product.price;
+  const discountedPrice = hasDiscount 
+    ? Math.round(originalPrice * (1 - discountPercentage / 100) * 100) / 100
+    : originalPrice;
   const inStock = product.status === 'active' && (!product.trackInventory || product.stock > 0);
 
   return (
@@ -168,13 +174,13 @@ const ProductDetail = () => {
                     Bestseller
                   </span>
                 )}
-                {onSale && (
+                {hasDiscount && (
                   <span className="bg-green-600 text-white px-3 py-1.5 text-xs font-bold uppercase 
                                rounded-soft shadow-soft">
-                    Save {discount}%
+                    Save {discountPercentage}%
                   </span>
                 )}
-                {(product.newArrival || product.tags?.includes('new')) && (
+                {product.newArrival && (
                   <span className="bg-blue-600 text-white px-3 py-1.5 text-xs font-bold uppercase 
                                rounded-soft shadow-soft">
                     New
@@ -256,18 +262,22 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 pb-6 border-b border-gray-200">
-              <span className="text-2xl font-bold text-gray-900">
-                RS {product.price.toFixed(2)}
-              </span>
-              {onSale && (
+              {hasDiscount ? (
                 <>
+                  <span className="text-2xl font-bold text-gray-900">
+                    RS {discountedPrice.toFixed(2)}
+                  </span>
                   <span className="text-lg text-gray-500 line-through">
-                    RS {product.compareAtPrice.toFixed(2)}
+                    RS {originalPrice.toFixed(2)}
                   </span>
                   <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-soft">
-                    Save {discount}%
+                    Save {discountPercentage}%
                   </span>
                 </>
+              ) : (
+                <span className="text-2xl font-bold text-gray-900">
+                  RS {originalPrice.toFixed(2)}
+                </span>
               )}
             </div>
 

@@ -57,6 +57,7 @@ const BackyardBundle = () => {
   // State Management
   const [bundleProduct, setBundleProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [bestsellerProducts, setBestsellerProducts] = useState([])
   const [selectedImage, setSelectedImage] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -69,27 +70,27 @@ const BackyardBundle = () => {
         setLoading(true)
         setError(null)
 
-        // Fetch Bundles category
-        const response = await getProductsByCategory('Bundles', { 
+        // Fetch products from "Backyard Bundle" category
+        const response = await getProductsByCategory('Backyard Bundle', { 
           limit: 20 
         })
         
         const products = response.data || []
 
-        // Find Backyard bundle product
-        const backyardProduct = products.find(p => 
-          p.name.toLowerCase().includes('backyard')
-        ) || products[0]
-
-        if (backyardProduct) {
-          setBundleProduct(backyardProduct)
-          setSelectedImage(backyardProduct.images?.[0]?.url || '/images/products/StringLightatSunset.jpg')
+        if (products.length > 0) {
+          // Set the first product as the main bundle product
+          setBundleProduct(products[0])
+          setSelectedImage(products[0].images?.[0]?.url || '/images/products/StringLightatSunset.jpg')
           
-          // Set related bundles
-          const related = products.filter(p => p._id !== backyardProduct._id).slice(0, 4)
+          // Set related products (remaining products from this category)
+          const related = products.slice(1, 5)
           setRelatedProducts(related)
+          
+          // Filter bestsellers from this category
+          const bestsellers = products.filter(p => p.bestseller === true).slice(0, 4)
+          setBestsellerProducts(bestsellers)
         } else {
-          setError('No Backyard products found in database')
+          setError('No Backyard Bundle products found')
         }
       } catch (err) {
         console.error('Error fetching Backyard bundle:', err)

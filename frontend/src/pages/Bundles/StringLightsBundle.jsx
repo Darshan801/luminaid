@@ -54,6 +54,7 @@ const StringLightsBundle = () => {
   // State Management
   const [bundleProduct, setBundleProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [bestsellerProducts, setBestsellerProducts] = useState([])
   const [selectedImage, setSelectedImage] = useState('')
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)
@@ -67,27 +68,27 @@ const StringLightsBundle = () => {
         setLoading(true)
         setError(null)
 
-        // Fetch String Lights category
-        const response = await getProductsByCategory('String Lights', { 
+        // Fetch products from "String Lights Bundle" category
+        const response = await getProductsByCategory('String Lights Bundle', { 
           limit: 20 
         })
         
         const products = response.data || []
 
-        // Find String Light bundle product
-        const stringLightProduct = products.find(p => 
-          p.name.toLowerCase().includes('string light')
-        ) || products[0]
-
-        if (stringLightProduct) {
-          setBundleProduct(stringLightProduct)
-          setSelectedImage(stringLightProduct.images?.[0]?.url || '/images/products/StringLightatSunset.jpg')
+        if (products.length > 0) {
+          // Set the first product as the main bundle product
+          setBundleProduct(products[0])
+          setSelectedImage(products[0].images?.[0]?.url || '/images/products/StringLightatSunset.jpg')
           
-          // Set related bundles
-          const related = products.filter(p => p._id !== stringLightProduct._id).slice(0, 3)
+          // Set related products (remaining products from this category)
+          const related = products.slice(1, 4)
           setRelatedProducts(related)
+          
+          // Filter bestsellers from this category
+          const bestsellers = products.filter(p => p.bestseller === true).slice(0, 4)
+          setBestsellerProducts(bestsellers)
         } else {
-          setError('No String Lights products found in database')
+          setError('No String Lights Bundle products found')
         }
       } catch (err) {
         console.error('Error fetching String Lights bundle:', err)

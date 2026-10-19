@@ -43,6 +43,7 @@ const parseProductBody = (body, currentStatus = 'active') => {
     description: body.description?.trim(),
     price: Number(body.price),
     stock,
+    discount: body.discount ? Number(body.discount) : 0,
     colors: parseJSON(body.colors, []),
     bestseller: body.isBestSeller === 'true',
     newArrival: body.isNew === 'true',
@@ -79,14 +80,25 @@ exports.getAllProducts = async (req, res) => {
       maxPrice,
       minRating,
       tags,
-      featured,
       bestseller,
       search,
       status = 'active'
     } = req.query;
 
     // Build query
-    const query = { status };
+    const query = {};
+    
+    // Handle status filtering - can be 'all', single status, or comma-separated statuses
+    if (status && status !== 'all') {
+      if (status.includes(',')) {
+        // Multiple statuses like 'active,out-of-stock'
+        const statuses = status.split(',').map(s => s.trim());
+        query.status = { $in: statuses };
+      } else {
+        // Single status
+        query.status = status;
+      }
+    }
 
     // Category filter
     if (category) {
@@ -109,11 +121,6 @@ exports.getAllProducts = async (req, res) => {
     if (tags) {
       const tagArray = tags.split(',').map(tag => tag.trim());
       query.tags = { $in: tagArray };
-    }
-
-    // Featured filter
-    if (featured === 'true') {
-      query.featured = true;
     }
 
     // Bestseller filter

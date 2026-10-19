@@ -50,19 +50,25 @@ const HELP_ITEMS = [
 // ============================================================================
 
 const TrustBadges = () => (
-  <section className="py-12 px-8 bg-gray-light">
-    <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
-      <div className="flex flex-col items-center gap-3">
-        <Truck size={36} className="text-black" />
-        <p className="font-bold text-black text-[15px]">Free US Shipping RS 99+</p>
+  <section className="py-10 md:py-12 bg-[#FFF8F0]">
+    <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 text-center px-6">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center">
+          <Truck size={28} className="text-orange-500" strokeWidth={2} />
+        </div>
+        <p className="font-bold text-gray-900 text-[13px] uppercase tracking-wider">FREE SHIPPING RS 99+</p>
       </div>
-      <div className="flex flex-col items-center gap-3">
-        <ThumbsUp size={36} className="text-black" />
-        <p className="font-bold text-black text-[15px]">10,000+ Reviews</p>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center">
+          <ThumbsUp size={28} className="text-orange-500" strokeWidth={2} />
+        </div>
+        <p className="font-bold text-gray-900 text-[13px] uppercase tracking-wider">10,000+ REVIEWS</p>
       </div>
-      <div className="flex flex-col items-center gap-3">
-        <Shield size={36} className="text-black" />
-        <p className="font-bold text-black text-[15px]">Off-Grid Guarantee</p>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center">
+          <Shield size={28} className="text-orange-500" strokeWidth={2} />
+        </div>
+        <p className="font-bold text-gray-900 text-[13px] uppercase tracking-wider">OFF-GRID GUARANTEE</p>
       </div>
     </div>
   </section>
@@ -327,35 +333,6 @@ const Home = () => {
                          transition-all duration-normal"
               />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================================ */}
-      {/* TRUST BADGES SECTION - Redesigned */}
-      {/* ============================================================================ */}
-      
-      <section className="py-12 md:py-16 bg-white">
-        <div className="container max-w-content mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-brand-orange/10 flex items-center justify-center">
-                <Truck size={28} className="text-brand-orange" />
-              </div>
-              <p className="font-bold text-charcoal text-body-md">Free US Shipping RS 99+</p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-brand-orange/10 flex items-center justify-center">
-                <ThumbsUp size={28} className="text-brand-orange" />
-              </div>
-              <p className="font-bold text-charcoal text-body-md">10,000+ Reviews</p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-brand-orange/10 flex items-center justify-center">
-                <Shield size={28} className="text-brand-orange" />
-              </div>
-              <p className="font-bold text-charcoal text-body-md">Off-Grid Guarantee</p>
-            </div>
           </div>
         </div>
       </section>

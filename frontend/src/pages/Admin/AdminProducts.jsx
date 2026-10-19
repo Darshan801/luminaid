@@ -7,6 +7,7 @@ import Pagination from '../../components/common/Pagination'
 
 import {
   getAllProducts,
+  getAdminProducts,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -41,31 +42,59 @@ const AdminProducts = () => {
       setLoading(true)
       setError(null)
 
-      const params = {
-        page: pagination.page,
-        limit: ITEMS_PER_PAGE,
-        sort: '-createdAt'
-      }
+      // For admin, we want to see ALL products, so we need to handle status differently
+      let response;
+      
+      // If no filters are applied, use getAdminProducts which returns all products
+      if (statusFilter === 'all' && categoryFilter === 'all' && !appliedSearch.trim()) {
+        response = await getAdminProducts()
+        
+        // Format response to match getAllProducts structure
+        const allProducts = response || []
+        const start = (pagination.page - 1) * ITEMS_PER_PAGE
+        const end = start + ITEMS_PER_PAGE
+        const paginatedProducts = allProducts.slice(start, end)
+        
+        setProducts(paginatedProducts)
+        setPagination({
+          page: pagination.page,
+          totalPages: Math.ceil(allProducts.length / ITEMS_PER_PAGE),
+          total: allProducts.length
+        })
+      } else {
+        // If filters are applied, use getAllProducts but pass status explicitly
+        const params = {
+          page: pagination.page,
+          limit: ITEMS_PER_PAGE,
+          sort: '-createdAt'
+        }
 
-      if (statusFilter !== 'all') {
-        params.status = statusFilter
-      }
+        // IMPORTANT: When statusFilter is 'all', don't filter by status at all
+        // We need to explicitly tell the backend to not filter by status
+        if (statusFilter !== 'all') {
+          params.status = statusFilter
+        } else {
+          // Send a special value to indicate "get all statuses"
+          // We'll need to update the backend to handle this
+          params.status = 'all'
+        }
 
-      if (categoryFilter !== 'all') {
-        params.category = categoryFilter
-      }
+        if (categoryFilter !== 'all') {
+          params.category = categoryFilter
+        }
 
-      if (appliedSearch.trim()) {
-        params.search = appliedSearch.trim()
-      }
+        if (appliedSearch.trim()) {
+          params.search = appliedSearch.trim()
+        }
 
-      const response = await getAllProducts(params)
-      setProducts(response.data || [])
-      setPagination({
-        page: response.page || 1,
-        totalPages: response.pages || 1,
-        total: response.total || 0
-      })
+        response = await getAllProducts(params)
+        setProducts(response.data || [])
+        setPagination({
+          page: response.page || 1,
+          totalPages: response.pages || 1,
+          total: response.total || 0
+        })
+      }
     } catch (err) {
       console.error('Failed to fetch products:', err)
       setError('Failed to load products. Please try again.')
@@ -93,11 +122,16 @@ const AdminProducts = () => {
   }
 
   const handleUpdateProduct = async (productData) => {
-    await updateProduct(editingProduct._id, productData)
+    try {
+      await updateProduct(editingProduct._id, productData)
 
-    // Refresh the list to show updated product
-    fetchProducts()
-    handleCloseModal()
+      // Refresh the list to show updated product
+      fetchProducts()
+      handleCloseModal()
+    } catch (err) {
+      console.error('Update product error:', err)
+      window.alert(err.message || 'Failed to update product.')
+    }
   }
 
   const handleDeleteProduct = async (productId) => {
@@ -206,11 +240,12 @@ const AdminProducts = () => {
                      focus:border-primary-red focus:outline-none focus:ring-1 focus:ring-primary-red"
           >
             <option value="all">All Categories</option>
-            <option value="Solar Lanterns">Solar Lanterns</option>
+            <option value="Power Lanterns">Power Lanterns</option>
             <option value="String Lights">String Lights</option>
-            <option value="Power Banks">Power Banks</option>
-            <option value="Bundles">Bundles</option>
             <option value="Accessories">Accessories</option>
+            <option value="Titan Bundle">Titan Bundle</option>
+            <option value="String Lights Bundle">String Lights Bundle</option>
+            <option value="Backyard Bundle">Backyard Bundle</option>
           </select>
 
           <select

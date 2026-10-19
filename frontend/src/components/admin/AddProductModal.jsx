@@ -6,7 +6,9 @@ const CATEGORIES = [
   'Power Lanterns',
   'String Lights',
   'Accessories',
-  'Bundles',
+  'Titan Bundle',
+  'String Lights Bundle',
+  'Backyard Bundle',
 ]
 
 const MAX_IMAGES = 4
@@ -40,6 +42,9 @@ const AddProductModal = ({
     isNew: initialProduct?.newArrival || false,
     price: initialProduct?.price?.toString() || '',
     stock: initialProduct?.stock?.toString() || '',
+    discount: (initialProduct?.discount !== undefined && initialProduct?.discount !== null) 
+      ? initialProduct.discount.toString() 
+      : '0',
   }))
 
   const [colors, setColors] = useState(
@@ -130,6 +135,32 @@ const AddProductModal = ({
     }))
 
     clearError('price')
+  }
+
+  // ---------- Discount ----------
+  const handleDiscountChange = (e) => {
+    let value = e.target.value.replace(/[^\d.]/g, '')
+
+    const firstDot = value.indexOf('.')
+
+    if (firstDot !== -1) {
+      value =
+        value.slice(0, firstDot + 1) +
+        value.slice(firstDot + 1).replace(/\./g, '')
+    }
+
+    // Limit to 100
+    const numValue = parseFloat(value)
+    if (numValue > 100) {
+      value = '100'
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      discount: value,
+    }))
+
+    clearError('discount')
   }
 
   // ---------- Colors ----------
@@ -244,6 +275,10 @@ const AddProductModal = ({
       newErrors.price = 'Enter a valid price.'
     }
 
+    if (form.discount !== '' && (Number(form.discount) < 0 || Number(form.discount) > 100)) {
+      newErrors.discount = 'Discount must be between 0 and 100.'
+    }
+
     if (form.stock === '') {
       newErrors.stock = 'Stock is required.'
     }
@@ -275,6 +310,7 @@ const AddProductModal = ({
         isNew: form.isNew,
         price: Number(form.price),
         stock: Number(form.stock),
+        discount: form.discount ? Number(form.discount) : 0,
         colors,
         images: images
           .map((img) => img.file)
@@ -455,6 +491,48 @@ const AddProductModal = ({
 
                 <FieldError message={errors.stock} />
               </div>
+            </div>
+
+            {/* Discount */}
+            <div>
+              <label
+                htmlFor="discount"
+                className={labelClass}
+              >
+                Discount (%)
+              </label>
+
+              <input
+                id="discount"
+                name="discount"
+                type="text"
+                inputMode="decimal"
+                value={form.discount}
+                onChange={handleDiscountChange}
+                placeholder="0"
+                className={inputClass}
+              />
+
+              <p className="mt-1 text-xs text-gray-dark">
+                Set discount percentage (0-100). The discounted price will be calculated automatically.
+              </p>
+
+              <FieldError message={errors.discount} />
+
+              {/* Preview discounted price */}
+              {form.price && form.discount && Number(form.discount) > 0 && (
+                <div className="mt-2 rounded-lg bg-gray-50 p-3 text-sm">
+                  <p className="text-gray-dark">
+                    Original Price: <span className="font-semibold text-black line-through">Rs. {Number(form.price).toFixed(2)}</span>
+                  </p>
+                  <p className="text-green-600">
+                    Discounted Price: <span className="font-bold">Rs. {(Number(form.price) * (1 - Number(form.discount) / 100)).toFixed(2)}</span>
+                  </p>
+                  <p className="text-xs text-gray-dark mt-1">
+                    You save: Rs. {(Number(form.price) * (Number(form.discount) / 100)).toFixed(2)} ({form.discount}% off)
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Colors */}

@@ -95,7 +95,7 @@ const TrustBadges = () => (
             <Truck size={32} className="text-brand-orange" />
           </div>
           <p className="font-bold text-gray-900 text-sm uppercase tracking-wider">
-            Free US Shipping RS 99+
+            FREE SHIPPING RS 99+
           </p>
         </div>
 

@@ -51,6 +51,7 @@ const TitanBundle = () => {
   // State Management
   const [bundleProduct, setBundleProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [bestsellerProducts, setBestsellerProducts] = useState([])
   const [selectedImage, setSelectedImage] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -63,27 +64,27 @@ const TitanBundle = () => {
         setLoading(true)
         setError(null)
 
-        // Fetch Bundles or Power Lanterns category
-        const response = await getProductsByCategory('Bundles', { 
+        // Fetch products from "Titan Bundle" category
+        const response = await getProductsByCategory('Titan Bundle', { 
           limit: 20 
         })
         
         const products = response.data || []
 
-        // Find Titan bundle product (look for "titan" in name)
-        const titanProduct = products.find(p => 
-          p.name.toLowerCase().includes('titan')
-        ) || products[0]
-
-        if (titanProduct) {
-          setBundleProduct(titanProduct)
-          setSelectedImage(titanProduct.images?.[0]?.url || '/images/products/0196-150_Max_QI_product_image.jpg')
+        if (products.length > 0) {
+          // Set the first product as the main bundle product
+          setBundleProduct(products[0])
+          setSelectedImage(products[0].images?.[0]?.url || '/images/products/0196-150_Max_QI_product_image.jpg')
           
-          // Set related bundles (exclude main product)
-          const related = products.filter(p => p._id !== titanProduct._id).slice(0, 4)
+          // Set related products (remaining products from this category)
+          const related = products.slice(1, 5)
           setRelatedProducts(related)
+          
+          // Filter bestsellers from this category
+          const bestsellers = products.filter(p => p.bestseller === true).slice(0, 4)
+          setBestsellerProducts(bestsellers)
         } else {
-          setError('No Titan products found in database')
+          setError('No Titan Bundle products found')
         }
       } catch (err) {
         console.error('Error fetching Titan bundle:', err)
@@ -432,18 +433,18 @@ const TitanBundle = () => {
       </section>
 
       {/* Bestselling Bundles Section */}
-      {relatedProducts.length > 0 && (
+      {bestsellerProducts.length > 0 && (
         <section className="w-full py-16 md:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Section Header */}
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 text-center mb-12">
-              Shop Bestselling Bundles
+              Shop Bestselling Titan Bundles
             </h2>
 
             {/* Bundle Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((product) => (
+              {bestsellerProducts.map((product) => (
                 <div 
                   key={product._id} 
                   onClick={() => handleProductClick(product)}

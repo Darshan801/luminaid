@@ -72,7 +72,7 @@ const ProductsPage = () => {
       const params = {
         page: pagination.page,
         limit: ITEMS_PER_PAGE,
-        status: 'active'
+        status: 'active,out-of-stock' // Show both active and out-of-stock products
       }
 
       // Add sorting

@@ -27,7 +27,8 @@ const PowerLanterns = () => {
       const params = {
         page: pagination.page,
         limit: ITEMS_PER_PAGE,
-        category: 'Power Lanterns',        status: 'active'
+        category: 'Power Lanterns',
+        status: 'active,out-of-stock' // Show both active and out-of-stock products
       }
 
       // Add sorting

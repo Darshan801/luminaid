@@ -59,11 +59,21 @@ const ProductCard = ({ product }) => {
                       product.images?.[0]?.url || 
                       '/images/placeholder-product.jpg';
 
-  // Check if product is on sale
-  const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
-  const discount = onSale 
-    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
-    : 0;
+  // Check if product has discount (must be a number and greater than 0)
+  const discountValue = Number(product.discount) || 0;
+  const hasDiscount = discountValue > 0;
+  const discountPercentage = hasDiscount ? discountValue : 0;
+  const originalPrice = product.price;
+  const discountedPrice = hasDiscount 
+    ? Math.round(originalPrice * (1 - discountPercentage / 100) * 100) / 100
+    : originalPrice;
+  
+  // Check if sold out
+  const isSoldOut = product.status === 'out-of-stock';
+  
+  // Check badges
+  const isBestseller = product.bestseller === true;
+  const isNew = product.newArrival === true;
 
   return (
     <div className="group relative h-full flex flex-col">
@@ -85,22 +95,17 @@ const ProductCard = ({ product }) => {
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-            {product.bestseller && (
+            {isBestseller && (
               <span className="badge-orange shadow-glow-sm">
                 Bestseller
               </span>
             )}
-            {product.featured && !product.bestseller && (
-              <span className="badge-red">
-                Featured
-              </span>
-            )}
-            {onSale && (
+            {hasDiscount && (
               <span className="badge bg-green-600 text-white shadow-sm">
-                Save {discount}%
+                Save {discountPercentage}%
               </span>
             )}
-            {(product.newArrival || product.tags?.includes('new')) && (
+            {isNew && (
               <span className="badge bg-blue-600 text-white shadow-sm">
                 New
               </span>
@@ -108,7 +113,7 @@ const ProductCard = ({ product }) => {
           </div>
 
           {/* Out of Stock Overlay */}
-          {product.status === 'out-of-stock' && (
+          {isSoldOut && (
             <div className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center">
               <span className="bg-white text-charcoal px-4 py-2 text-label-lg font-bold rounded-subtle shadow-md">
                 OUT OF STOCK
@@ -174,13 +179,19 @@ const ProductCard = ({ product }) => {
           </div>
 
           {/* Price - Fixed minimum height */}
-          <div className="flex items-center gap-2 flex-wrap mb-2 h-8">
-            <span className="text-title-sm md:text-title-md font-bold text-charcoal">
-              RS {product.price.toFixed(2)}
-            </span>
-            {onSale && (
-              <span className="text-body-sm text-muted-neutral line-through">
-                RS {product.compareAtPrice.toFixed(2)}
+          <div className="flex items-center gap-2 flex-wrap mb-2 min-h-8">
+            {hasDiscount ? (
+              <>
+                <span className="text-title-sm md:text-title-md font-bold text-charcoal">
+                  RS {discountedPrice.toFixed(2)}
+                </span>
+                <span className="text-body-sm text-muted-neutral line-through">
+                  RS {originalPrice.toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="text-title-sm md:text-title-md font-bold text-charcoal">
+                RS {originalPrice.toFixed(2)}
               </span>
             )}
           </div>

@@ -42,6 +42,12 @@ const productSchema = new mongoose.Schema(
       min: [0, 'Cost price cannot be negative'],
       default: 0
     },
+    discount: {
+      type: Number,
+      min: [0, 'Discount cannot be negative'],
+      max: [100, 'Discount cannot exceed 100%'],
+      default: 0
+    },
 
     // Inventory
     sku: {
@@ -70,7 +76,16 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Product category is required'],
-      enum: ['Power Lanterns', 'String Lights', 'Accessories', 'Bundles', 'Gifts', 'Donation'],
+      enum: [
+        'Power Lanterns', 
+        'String Lights', 
+        'Accessories', 
+        'Titan Bundle',
+        'String Lights Bundle',
+        'Backyard Bundle',
+        'Gifts', 
+        'Donation'
+      ],
       index: true
     },
     subCategory: {
@@ -176,11 +191,6 @@ const productSchema = new mongoose.Schema(
       default: 'active',
       index: true
     },
-    featured: {
-      type: Boolean,
-      default: false,
-      index: true
-    },
     bestseller: {
       type: Boolean,
       default: false,
@@ -191,16 +201,6 @@ const productSchema = new mongoose.Schema(
       default: false,
       index: true
     },
-
-    // Badges
-    badges: [{
-      text: String,
-      type: {
-        type: String,
-        enum: ['bestseller', 'new', 'sale', 'limited']
-      },
-      color: String
-    }],
 
     // SEO
     metaTitle: {
@@ -247,10 +247,28 @@ productSchema.index({ createdAt: -1 }); // Newest first
 
 // Virtual for discount percentage
 productSchema.virtual('discountPercentage').get(function() {
+  // Use the discount field if it's set
+  if (this.discount && this.discount > 0) {
+    return this.discount;
+  }
+  // Fallback to calculating from compareAtPrice
   if (this.compareAtPrice && this.compareAtPrice > this.price) {
     return Math.round(((this.compareAtPrice - this.price) / this.compareAtPrice) * 100);
   }
   return 0;
+});
+
+// Virtual for discounted price (calculated from discount percentage)
+productSchema.virtual('discountedPrice').get(function() {
+  if (this.discount && this.discount > 0) {
+    return Math.round(this.price * (1 - this.discount / 100) * 100) / 100;
+  }
+  return this.price;
+});
+
+// Virtual for original price (for display)
+productSchema.virtual('originalPrice').get(function() {
+  return this.price;
 });
 
 // Virtual for in stock status
