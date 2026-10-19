@@ -3,6 +3,7 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const cloudinary = require('../config/cloudinary');
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 /**
  * @desc    Validate cart before checkout
@@ -257,6 +258,16 @@ exports.createOrder = async (req, res) => {
       }
     }
 
+    // Clear the cart after order is created
+    if (cart) {
+      cart.items = [];
+      cart.subtotal = 0;
+      cart.discount = 0;
+      cart.discountCode = null;
+      cart.status = 'converted';
+      await cart.save();
+    }
+
     // Send order confirmation email (non-blocking)
     emailService.sendOrderConfirmation(order).catch(err =>
       logger.error('Failed to send order confirmation email:', err)
@@ -337,10 +348,14 @@ exports.uploadPaymentProof = async (req, res) => {
     order.paymentScreenshot = result.secure_url;
     await order.save();
 
-    // Mark cart as converted
+    // Ensure cart is cleared and marked as converted
     if (order.user) {
       const cart = await Cart.findOne({ user: order.user, status: 'active' });
       if (cart) {
+        cart.items = [];
+        cart.subtotal = 0;
+        cart.discount = 0;
+        cart.discountCode = null;
         cart.status = 'converted';
         await cart.save();
       }

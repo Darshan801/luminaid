@@ -71,7 +71,7 @@ const OrderPendingPage = () => {
           </div>
 
           {/* What Happens Next */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 p-5 rounded-r-soft">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 p-5 rounded-r-soft mb-4">
             <h3 className="text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
               <CheckCircle size={18} />
               What happens next?
@@ -82,6 +82,22 @@ const OrderPendingPage = () => {
               <li>You'll receive an email confirmation once verified</li>
               <li>Your order will then be processed and shipped</li>
             </ol>
+          </div>
+
+          {/* Email Notification Info */}
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-soft p-4">
+            <div className="flex gap-3">
+              <svg className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <div>
+                <h4 className="text-sm font-bold text-green-900 mb-1">Email Notifications Sent</h4>
+                <p className="text-sm text-green-800">
+                  We've sent order confirmation and payment pending emails to <strong>{order?.customerEmail}</strong>. 
+                  You'll receive updates at each stage of your order.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

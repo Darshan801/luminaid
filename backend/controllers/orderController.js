@@ -481,6 +481,14 @@ exports.updateOrderStatus = async (req, res) => {
     } else {
       order.status = status;
 
+      if (status === 'confirmed') {
+        // Send order confirmed email (non-blocking)
+        logger.info(`Attempting to send order confirmed email to: ${order.customerEmail}`);
+        emailService.sendPaymentVerifiedEmail(order).catch(err =>
+          logger.error('Failed to send order confirmed email:', err)
+        );
+      }
+
       if (status === 'shipped') {
         order.shippedAt = new Date();
         if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;

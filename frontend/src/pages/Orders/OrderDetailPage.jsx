@@ -457,6 +457,59 @@ const OrderDetailPage = () => {
                 Contact Support
               </Link>
             </div>
+
+            {/* Email Notifications Info */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-soft border border-green-200 shadow-soft p-6">
+              <h3 className="font-heading font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Email Updates
+              </h3>
+              <p className="text-sm text-gray-700 mb-3">
+                You'll receive email notifications at: <strong className="text-gray-900">{currentOrder.customerEmail}</strong>
+              </p>
+              <div className="space-y-2 text-xs text-gray-600">
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Order confirmation sent</span>
+                </div>
+                {currentOrder.paymentStatus === 'pending_verification' && (
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Payment pending notification sent</span>
+                  </div>
+                )}
+                {currentOrder.paymentStatus === 'verified' && (
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Payment verified notification sent</span>
+                  </div>
+                )}
+                {currentOrder.status === 'shipped' && (
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Shipping notification sent</span>
+                  </div>
+                )}
+                {currentOrder.status === 'delivered' && (
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Delivery confirmation sent</span>
+                  </div>
+                )}
+              </div>
+            </div>
             </div>
           </div>
         </div>

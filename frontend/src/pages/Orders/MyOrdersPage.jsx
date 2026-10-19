@@ -103,6 +103,21 @@ const MyOrdersPage = () => {
           <p className="text-gray-600">Track and manage all your orders</p>
         </div>
 
+        {/* Email Notifications Banner */}
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-soft p-4 mb-6 shadow-soft">
+          <div className="flex items-start gap-3">
+            <svg className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-green-900 mb-1">Email Notifications Active</h3>
+              <p className="text-sm text-green-800">
+                You'll receive email updates for all order status changes including payment verification, shipping updates, and delivery confirmations.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {orders.length === 0 ? (
           <div className="bg-white rounded-soft border border-gray-200 shadow-medium p-12 text-center">
             <div className="max-w-md mx-auto">

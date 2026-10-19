@@ -38,6 +38,9 @@ import Contact from '../pages/Support/Contact'
 import Login from '../pages/Auth/Login'
 import Register from '../pages/Auth/Register'
 import Profile from '../pages/Auth/Profile'
+import ForgotPassword from '../pages/Auth/ForgotPassword'
+import ResetPassword from '../pages/Auth/ResetPassword'
+import VerifyEmail from '../pages/Auth/VerifyEmail'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 // Checkout
@@ -69,6 +72,9 @@ const AppRoutes = () => {
                 {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:resettoken" element={<ResetPassword />} />
+                <Route path="/verify-email/:token" element={<VerifyEmail />} />
                 <Route 
                     path="/profile" 
                     element={

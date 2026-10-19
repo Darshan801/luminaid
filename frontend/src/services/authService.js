@@ -148,9 +148,9 @@ export const forgotPassword = async (email) => {
 /**
  * Reset password with token
  */
-export const resetPassword = async (token, password) => {
+export const resetPassword = async (resettoken, password) => {
   try {
-    const response = await put(`${AUTH_ENDPOINT}/resetpassword/${token}`, { password });
+    const response = await put(`${AUTH_ENDPOINT}/resetpassword/${resettoken}`, { password });
     
     // Store new token
     if (response.token) {

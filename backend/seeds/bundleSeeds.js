@@ -32,7 +32,7 @@ const bundleProducts = [
     stock: 50,
     lowStockThreshold: 10,
     trackInventory: true,
-    category: 'Bundles',
+    category: 'Titan Bundle',
     subCategory: 'Power Lanterns',
     tags: ['titan', 'bundle', 'solar', 'lantern', 'power', 'camping'],
     images: [
@@ -202,7 +202,7 @@ const bundleProducts = [
     stock: 40,
     lowStockThreshold: 8,
     trackInventory: true,
-    category: 'Bundles',
+    category: 'Backyard Bundle',
     subCategory: 'Outdoor Lighting',
     tags: ['backyard', 'bundle', 'string lights', 'lantern', 'outdoor', 'patio'],
     images: [

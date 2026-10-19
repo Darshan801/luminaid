@@ -7,13 +7,16 @@ const logger = require('../utils/logger');
 // Create reusable transporter
 let transporter = null;
 
-// Register Handlebars helper for current year
+// Configure Handlebars to allow prototype property access
 handlebars.registerHelper('currentYear', () => new Date().getFullYear());
 
-// Load shared template
+// Load shared template with runtime options
 const sharedTemplatePath = path.join(__dirname, '../templates/emails/_shared.html');
 const sharedTemplate = fs.readFileSync(sharedTemplatePath, 'utf-8');
-const compiledSharedTemplate = handlebars.compile(sharedTemplate);
+const compiledSharedTemplate = handlebars.compile(sharedTemplate, {
+  allowProtoPropertiesByDefault: true,
+  allowProtoMethodsByDefault: true
+});
 
 const createTransporter = () => {
   if (transporter) return transporter;
@@ -67,8 +70,14 @@ const loadTemplate = (templateName, data) => {
     }
 
     const contentSource = fs.readFileSync(contentPath, 'utf-8');
-    const contentTemplate = handlebars.compile(contentSource);
-    const emailBody = contentTemplate(data);
+    const contentTemplate = handlebars.compile(contentSource, {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true
+    });
+    const emailBody = contentTemplate(data, {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true
+    });
     
     // Wrap content in shared template
     return compiledSharedTemplate({
@@ -79,6 +88,9 @@ const loadTemplate = (templateName, data) => {
       frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
       supportEmail: process.env.SUPPORT_EMAIL || 'support@luminaid.com',
       currentYear: new Date().getFullYear()
+    }, {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true
     });
   } catch (error) {
     logger.error(`Error loading template ${templateName}:`, error);
@@ -123,14 +135,20 @@ const sendEmail = async ({ to, subject, template, data, attachments = [] }) => {
       attachments,
     };
 
+    // Log email details for debugging
+    logger.info(`Attempting to send email to ${to} with subject: ${subject}`);
+
     // Send email
     const info = await transporter.sendMail(mailOptions);
     
     logger.success(`Email sent to ${to}: ${subject} (${info.messageId})`);
+    logger.info(`Email response: ${JSON.stringify(info.response || 'No response')}`);
+    
     return { success: true, messageId: info.messageId };
     
   } catch (error) {
     logger.error(`Failed to send email to ${to}:`, error.message);
+    logger.error(`Error details:`, error);
     return { success: false, error: error.message };
   }
 };

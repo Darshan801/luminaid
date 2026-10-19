@@ -129,12 +129,14 @@ router.get('/config', (req, res) => {
     smtp_configured: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
     smtp_host: process.env.SMTP_HOST || 'Not set',
     smtp_port: process.env.SMTP_PORT || 'Not set',
-    smtp_user: process.env.SMTP_USER ? 'Set' : 'Not set',
-    smtp_pass: process.env.SMTP_PASS ? 'Set' : 'Not set',
+    smtp_user: process.env.SMTP_USER ? '✓ Set' : '✗ Not set',
+    smtp_pass: process.env.SMTP_PASS ? '✓ Set' : '✗ Not set',
     email_from: process.env.EMAIL_FROM || 'Not set',
     email_from_name: process.env.EMAIL_FROM_NAME || 'Not set',
     admin_email: process.env.ADMIN_EMAIL || 'Not set',
-    support_email: process.env.SUPPORT_EMAIL || 'Not set'
+    support_email: process.env.SUPPORT_EMAIL || 'Not set',
+    // Check if EMAIL_FROM matches SMTP_USER
+    emails_match: process.env.EMAIL_FROM === process.env.SMTP_USER
   };
 
   res.status(200).json({
@@ -142,6 +144,7 @@ router.get('/config', (req, res) => {
     message: 'Email configuration status',
     config,
     ready: config.smtp_configured,
+    warning: !config.emails_match ? 'EMAIL_FROM should match SMTP_USER for Gmail' : null,
     instructions: config.smtp_configured 
       ? 'Email service is configured! You can test it now.'
       : 'Please configure SMTP settings in .env file'

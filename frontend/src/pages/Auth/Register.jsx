@@ -80,8 +80,20 @@ const Register = () => {
       // Remove confirmPassword before sending to API
       const { confirmPassword, ...registerData } = formData;
       
-      await register(registerData);
-      navigate('/');
+      const result = await register(registerData);
+      
+      // Show success message about email verification
+      if (result && result.success) {
+        // Redirect to a success page or show message
+        navigate('/login', {
+          state: {
+            message: 'Account created successfully! Please check your email to verify your account before signing in.',
+          },
+        });
+      } else {
+        // If no email verification required, redirect to home
+        navigate('/');
+      }
     } catch (err) {
       setErrors({
         submit: err.message || 'Registration failed. Please try again.',
