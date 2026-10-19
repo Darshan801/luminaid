@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 /**
  * @desc    Get user's orders
@@ -170,6 +171,11 @@ exports.cancelOrder = async (req, res) => {
         await product.save();
       }
     }
+
+    // Send cancellation email (non-blocking)
+    emailService.sendOrderCancelledEmail(order, reason).catch(err =>
+      logger.error('Failed to send order cancelled email:', err)
+    );
 
     res.status(200).json({
       success: true,
@@ -348,6 +354,11 @@ exports.verifyPayment = async (req, res) => {
       // Note: Inventory already reserved when order was created
       // User stats will be updated by post-save hook
 
+      // Send payment verified email (non-blocking)
+      emailService.sendPaymentVerifiedEmail(order).catch(err =>
+        logger.error('Failed to send payment verified email:', err)
+      );
+
       res.status(200).json({
         success: true,
         message: 'Payment verified successfully',
@@ -372,6 +383,11 @@ exports.verifyPayment = async (req, res) => {
           await product.save();
         }
       }
+
+      // Send payment rejected email (non-blocking)
+      emailService.sendPaymentRejectedEmail(order, rejectionReason).catch(err =>
+        logger.error('Failed to send payment rejected email:', err)
+      );
 
       res.status(200).json({
         success: true,
@@ -457,6 +473,11 @@ exports.updateOrderStatus = async (req, res) => {
           await product.save();
         }
       }
+
+      // Send cancellation email (non-blocking)
+      emailService.sendOrderCancelledEmail(order, String(cancellationReason).trim()).catch(err =>
+        logger.error('Failed to send order cancelled email:', err)
+      );
     } else {
       order.status = status;
 
@@ -464,10 +485,20 @@ exports.updateOrderStatus = async (req, res) => {
         order.shippedAt = new Date();
         if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
         if (carrier !== undefined) order.carrier = carrier;
+
+        // Send shipped email (non-blocking)
+        emailService.sendOrderShippedEmail(order).catch(err =>
+          logger.error('Failed to send order shipped email:', err)
+        );
       }
 
       if (status === 'delivered') {
         order.deliveredAt = new Date();
+
+        // Send delivered email (non-blocking)
+        emailService.sendOrderDeliveredEmail(order).catch(err =>
+          logger.error('Failed to send order delivered email:', err)
+        );
       }
 
       await order.save();

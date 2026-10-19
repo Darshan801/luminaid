@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Cancelled</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; }
+    .header { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 40px 20px; text-align: center; }
+    .logo { font-size: 32px; font-weight: bold; color: #fff; }
+    .content { padding: 40px 30px; }
+    .greeting { font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 20px; }
+    .message { font-size: 15px; color: #4b5563; line-height: 1.8; margin-bottom: 20px; }
+    .info-box { background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    .reason-box { background: #f9fafb; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    .refund-box { background: #d1fae5; padding: 15px; border-radius: 6px; margin: 20px 0; }
+    .button { display: inline-block; padding: 14px 32px; background: #f59e0b; color: #fff !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 10px 5px; }
+    .footer { background: #f9fafb; padding: 30px; text-align: center; font-size: 13px; color: #6b7280; }
+    .footer a { color: #f59e0b; text-decoration: none; margin: 0 10px; }
+    .small-text { font-size: 12px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">☀️ LuminAID</div>
+    </div>
+    
+    <div class="content">
+      <div class="greeting">Hi {{customerName}},</div>
+      
+      <div class="info-box">
+        <strong>Order Cancelled</strong><br>
+        Order Number: {{orderNumber}}
+      </div>
+
+      <div class="message">
+        Your order has been cancelled as requested.
+      </div>
+
+      {{#if reason}}
+      <div class="reason-box">
+        <strong>Cancellation Reason:</strong><br>
+        {{reason}}
+      </div>
+      {{/if}}
+
+      <div class="refund-box">
+        <strong>💰 Refund Information</strong><br>
+        {{refundInfo}}<br>
+        <strong>Amount:</strong> ${{total}}
+      </div>
+
+      <div class="message">
+        We're sorry to see this order cancelled. If there's anything we can do to improve your experience 
+        or if you have any concerns, please don't hesitate to reach out.
+      </div>
+
+      <h3 style="color: #1f2937;">Need Help?</h3>
+      <ul style="color: #4b5563; line-height: 1.8;">
+        <li>Contact our support team for questions</li>
+        <li>Track your refund status</li>
+        <li>Browse our products for future orders</li>
+      </ul>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="{{shopUrl}}" class="button">Continue Shopping</a>
+        <a href="mailto:{{supportEmail}}" class="button" style="background: #6b7280;">Contact Support</a>
+      </div>
+
+      <div class="message small-text">
+        We hope to serve you again in the future. Thank you for considering LuminAID!
+      </div>
+    </div>
+
+    <div class="footer">
+      <div style="margin-bottom: 15px;">
+        <a href="{{shopUrl}}">Shop</a>
+        <a href="mailto:{{supportEmail}}">Support</a>
+      </div>
+      <p class="small-text" style="margin-top: 15px;">
+        © 2024 LuminAID. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Verification Required</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; }
+    .header { background: #1f2937; padding: 30px 20px; text-align: center; color: #fff; }
+    .content { padding: 30px; }
+    .alert { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    .info-box { background: #f9fafb; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #e5e7eb; }
+    .label { font-weight: 600; color: #374151; display: inline-block; width: 140px; }
+    .button { display: inline-block; padding: 12px 28px; background: #f59e0b; color: #fff !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 15px 0; }
+    .screenshot-link { background: #e0f2fe; padding: 15px; border-radius: 6px; margin: 15px 0; text-align: center; }
+    .footer { background: #f9fafb; padding: 20px; text-align: center; font-size: 13px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="margin: 0;">💳 Payment Verification Required</h2>
+      <p style="margin: 10px 0 0 0; opacity: 0.9;">New Payment Screenshot Uploaded</p>
+    </div>
+    
+    <div class="content">
+      <div class="alert">
+        <strong>⚠️ Action Required:</strong> A customer has uploaded payment proof and is waiting for verification.
+      </div>
+
+      <h3 style="color: #1f2937;">Order Information</h3>
+      <div class="info-box">
+        <div style="margin: 8px 0;">
+          <span class="label">Order Number:</span>
+          <strong style="color: #f59e0b; font-size: 16px;">{{orderNumber}}</strong>
+        </div>
+        <div style="margin: 8px 0;">
+          <span class="label">Customer Email:</span>
+          <a href="mailto:{{customerEmail}}" style="color: #f59e0b;">{{customerEmail}}</a>
+        </div>
+        <div style="margin: 8px 0;">
+          <span class="label">Order Total:</span>
+          <strong style="font-size: 18px; color: #10b981;">${{total}}</strong>
+        </div>
+        <div style="margin: 8px 0;">
+          <span class="label">Order Date:</span>
+          {{orderDate}}
+        </div>
+      </div>
+
+      <h3 style="color: #1f2937;">Payment Screenshot</h3>
+      <div class="screenshot-link">
+        <p style="margin: 0 0 10px 0; color: #0369a1; font-weight: 600;">Click to view payment proof:</p>
+        <a href="{{paymentScreenshot}}" style="color: #0284c7; word-break: break-all; font-size: 13px;">
+          {{paymentScreenshot}}
+        </a>
+      </div>
+
+      <div style="text-align: center; margin: 25px 0;">
+        <a href="{{verifyUrl}}" class="button">Review & Verify Payment →</a>
+      </div>
+
+      <div style="background: #fee2e2; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #ef4444;">
+        <strong>⏰ Time Sensitive:</strong> Please verify this payment within 24-48 hours to ensure customer satisfaction and timely order processing.
+      </div>
+
+      <h3 style="color: #1f2937;">Verification Steps</h3>
+      <ol style="color: #4b5563; line-height: 1.8;">
+        <li>Review the payment screenshot for authenticity</li>
+        <li>Verify the amount matches the order total</li>
+        <li>Check transaction date and reference number</li>
+        <li>Approve or reject the payment in the admin panel</li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      <p style="margin: 5px 0;">LuminAID Admin System</p>
+      <p style="margin: 5px 0; font-size: 11px; color: #9ca3af;">This is an automated notification. Please do not reply to this email.</p>
+    </div>
+  </div>
+</body>
+</html>

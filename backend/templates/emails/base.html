@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{subject}}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333333;
+      background-color: #f4f4f4;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 15px;
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 32px;
+      background-color: #f59e0b;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+      margin: 10px 0;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #d97706;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 30px 0;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 30px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .footer-links {
+      margin: 15px 0;
+    }
+    .footer-links a {
+      color: #f59e0b;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    .social-links {
+      margin: 20px 0;
+    }
+    .social-links a {
+      display: inline-block;
+      margin: 0 8px;
+      color: #6b7280;
+      text-decoration: none;
+    }
+    .small-text {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 15px;
+    }
+    @media only screen and (max-width: 600px) {
+      .content {
+        padding: 30px 20px;
+      }
+      .button {
+        display: block;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- Header -->
+    <div class="header">
+      <a href="{{shopUrl}}" class="logo">☀️ LuminAID</a>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      {{{body}}}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-links">
+        <a href="{{shopUrl}}">Shop</a>
+        <a href="{{aboutUrl}}">About</a>
+        <a href="{{supportUrl}}">Support</a>
+        <a href="{{contactUrl}}">Contact</a>
+      </div>
+      
+      <p class="small-text">
+        LuminAID - Bringing light to those who need it most<br>
+        © {{year}} LuminAID. All rights reserved.
+      </p>
+      
+      <p class="small-text">
+        You're receiving this email because you created an account or placed an order at LuminAID.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

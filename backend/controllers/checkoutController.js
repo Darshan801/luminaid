@@ -257,6 +257,11 @@ exports.createOrder = async (req, res) => {
       }
     }
 
+    // Send order confirmation email (non-blocking)
+    emailService.sendOrderConfirmation(order).catch(err =>
+      logger.error('Failed to send order confirmation email:', err)
+    );
+
     res.status(201).json({
       success: true,
       message: 'Order created. Please upload payment proof.',
@@ -340,6 +345,16 @@ exports.uploadPaymentProof = async (req, res) => {
         await cart.save();
       }
     }
+
+    // Send payment pending email to customer (non-blocking)
+    emailService.sendPaymentPendingEmail(order).catch(err =>
+      logger.error('Failed to send payment pending email:', err)
+    );
+
+    // Send admin notification email (non-blocking)
+    emailService.sendAdminPaymentNotification(order).catch(err =>
+      logger.error('Failed to send admin payment notification:', err)
+    );
 
     res.status(200).json({
       success: true,

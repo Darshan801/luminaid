@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Issue</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; }
+    .header { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 40px 20px; text-align: center; }
+    .logo { font-size: 32px; font-weight: bold; color: #fff; }
+    .content { padding: 40px 30px; }
+    .greeting { font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 20px; }
+    .message { font-size: 15px; color: #4b5563; line-height: 1.8; margin-bottom: 20px; }
+    .warning { background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    .info-box { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    .reason-box { background: #fff7ed; border: 1px solid #fb923c; padding: 15px; border-radius: 6px; margin: 20px 0; }
+    .button { display: inline-block; padding: 14px 32px; background: #f59e0b; color: #fff !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 20px 0; }
+    .footer { background: #f9fafb; padding: 30px; text-align: center; font-size: 13px; color: #6b7280; }
+    .footer a { color: #f59e0b; text-decoration: none; margin: 0 10px; }
+    .small-text { font-size: 12px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">☀️ LuminAID</div>
+    </div>
+    
+    <div class="content">
+      <div class="greeting">Hi {{customerName}},</div>
+      
+      <div class="warning">
+        <strong>⚠️ Payment Verification Issue</strong>
+      </div>
+
+      <div class="message">
+        We were unable to verify your payment for order <strong>{{orderNumber}}</strong>.
+      </div>
+
+      <div class="reason-box">
+        <strong>Reason:</strong><br>
+        {{reason}}
+      </div>
+
+      <div class="info-box">
+        <strong>Order Number:</strong> {{orderNumber}}<br>
+        <strong>Order Amount:</strong> ${{total}}<br>
+        <strong>Status:</strong> Payment Failed
+      </div>
+
+      <h3 style="color: #1f2937;">Next Steps</h3>
+      <div class="message">
+        Please contact our support team to resolve this issue. We're here to help and want to make sure you get your order!
+      </div>
+
+      <ul style="color: #4b5563; line-height: 1.8;">
+        <li>Email us at <a href="mailto:{{supportEmail}}" style="color: #f59e0b;">{{supportEmail}}</a></li>
+        <li>Include your order number: <strong>{{orderNumber}}</strong></li>
+        <li>We'll work with you to complete your payment</li>
+      </ul>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="mailto:{{supportEmail}}" class="button">Contact Support</a>
+      </div>
+
+      <div class="message small-text">
+        We apologize for the inconvenience and appreciate your understanding.
+      </div>
+    </div>
+
+    <div class="footer">
+      <div style="margin-bottom: 15px;">
+        <a href="{{shopUrl}}">Shop</a>
+        <a href="mailto:{{supportEmail}}">Support</a>
+      </div>
+      <p class="small-text" style="margin-top: 15px;">
+        © 2024 LuminAID. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

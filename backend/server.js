@@ -19,6 +19,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const supportRoutes = require('./routes/supportRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
+const emailTestRoutes = require('./routes/emailTestRoutes');
 
 const app = express();
 
@@ -139,6 +140,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/email-test', emailTestRoutes); // Email testing (remove in production)
 
 // 404 handler
 app.use((req, res) => {

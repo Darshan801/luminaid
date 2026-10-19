@@ -1,4 +1,5 @@
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 // @desc    Submit contact form
 // @route   POST /api/support/contact
@@ -39,14 +40,25 @@ exports.submitContactForm = async (req, res) => {
       message,
       orderNumber: orderNumber || null,
       submittedAt: new Date(),
-      status: 'pending'
+      status: 'pending',
+      ticketId: `TICKET-${Date.now()}`
     };
+
+    // Send confirmation email to customer (non-blocking)
+    emailService.sendSupportConfirmation(contactData).catch(err =>
+      logger.error('Failed to send support confirmation email:', err)
+    );
+
+    // Send notification to admin (non-blocking)
+    emailService.sendAdminSupportNotification(contactData).catch(err =>
+      logger.error('Failed to send admin support notification:', err)
+    );
 
     res.status(200).json({
       success: true,
       message: 'Thank you for contacting us! We will get back to you within 24-48 hours.',
       data: {
-        ticketId: `TICKET-${Date.now()}`,
+        ticketId: contactData.ticketId,
         email: email
       }
     });
@@ -90,6 +102,11 @@ exports.subscribeNewsletter = async (req, res) => {
     // etc.
 
     logger.info(`Newsletter subscription: ${email}`);
+
+    // Send newsletter confirmation email (non-blocking)
+    emailService.sendNewsletterConfirmation(email).catch(err =>
+      logger.error('Failed to send newsletter confirmation:', err)
+    );
 
     res.status(200).json({
       success: true,
