@@ -104,6 +104,8 @@ const userSchema = new mongoose.Schema(
     },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
+    emailVerificationCode: String, // 6-digit code
+    emailVerificationCodeExpires: Date,
 
     // Password Reset
     passwordResetToken: String,
@@ -235,6 +237,19 @@ userSchema.methods.createEmailVerificationToken = function() {
   this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
   
   return verificationToken;
+};
+
+// Method to generate 6-digit verification code
+userSchema.methods.createEmailVerificationCode = function() {
+  // Generate cryptographically secure 6-digit code
+  const crypto = require('crypto');
+  const randomNumber = crypto.randomInt(100000, 1000000);
+  const code = randomNumber.toString();
+  
+  this.emailVerificationCode = code;
+  this.emailVerificationCodeExpires = Date.now() + 2 * 60 * 1000; // 2 minutes
+  
+  return code;
 };
 
 // Method to add address

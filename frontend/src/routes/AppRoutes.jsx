@@ -41,6 +41,7 @@ import Profile from '../pages/Auth/Profile'
 import ForgotPassword from '../pages/Auth/ForgotPassword'
 import ResetPassword from '../pages/Auth/ResetPassword'
 import VerifyEmail from '../pages/Auth/VerifyEmail'
+import VerifyEmailCode from '../pages/Auth/VerifyEmailCode'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 // Checkout
@@ -72,6 +73,7 @@ const AppRoutes = () => {
                 {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/verify-email-code" element={<VerifyEmailCode />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password/:resettoken" element={<ResetPassword />} />
                 <Route path="/verify-email/:token" element={<VerifyEmail />} />

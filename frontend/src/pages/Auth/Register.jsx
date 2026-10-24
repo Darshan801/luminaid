@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/common/Button';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, loading } = useAuth();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -16,6 +14,7 @@ const Register = () => {
     newsletter: true,
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -77,27 +76,39 @@ const Register = () => {
     }
 
     try {
+      setErrors({});
+      setLoading(true);
+      
       // Remove confirmPassword before sending to API
       const { confirmPassword, ...registerData } = formData;
       
-      const result = await register(registerData);
-      
-      // Show success message about email verification
-      if (result && result.success) {
-        // Redirect to a success page or show message
-        navigate('/login', {
-          state: {
-            message: 'Account created successfully! Please check your email to verify your account before signing in.',
-          },
+      // Call register API
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registerData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Redirect to verification code page
+        navigate('/verify-email-code', {
+          state: { email: data.email },
         });
       } else {
-        // If no email verification required, redirect to home
-        navigate('/');
+        setErrors({
+          submit: data.message || 'Registration failed. Please try again.',
+        });
       }
     } catch (err) {
       setErrors({
         submit: err.message || 'Registration failed. Please try again.',
       });
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -4,6 +4,8 @@ const router = express.Router();
 // Import controllers
 const {
   register,
+  verifyRegistration,
+  resendVerificationCode,
   login,
   logout,
   getMe,
@@ -32,9 +34,19 @@ const {
  */
 
 // @route   POST /api/auth/register
-// @desc    Register a new user
+// @desc    Register a new user (Step 1: Send verification code)
 // @access  Public
 router.post('/register', registerValidation, register);
+
+// @route   POST /api/auth/verify-registration
+// @desc    Verify registration code (Step 2: Complete registration)
+// @access  Public
+router.post('/verify-registration', verifyRegistration);
+
+// @route   POST /api/auth/resend-verification
+// @desc    Resend verification code
+// @access  Public
+router.post('/resend-verification', resendVerificationCode);
 
 // @route   POST /api/auth/login
 // @desc    Login user

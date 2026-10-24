@@ -190,6 +190,22 @@ const emailService = {
     });
   },
 
+  // Send verification code (for registration)
+  sendVerificationCode: async (user, verificationCode) => {
+    return sendEmail({
+      to: user.email,
+      subject: 'Your LuminAID Verification Code',
+      template: 'verificationCode',
+      data: {
+        emailHeading: 'Email Verification',
+        emailMessage: 'Complete your registration with LuminAID.',
+        firstName: user.firstName,
+        verificationCode,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@luminaid.com',
+      },
+    });
+  },
+
   // Password reset
   sendPasswordResetEmail: async (user, resetToken) => {
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;

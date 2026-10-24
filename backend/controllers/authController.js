@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const PendingUser = require('../models/PendingUser');
 const emailService = require('../services/emailService');
 
 // Generate JWT Token
@@ -45,7 +47,7 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
 };
 
 /**
- * @desc    Register new user
+ * @desc    Register new user (Step 1: Send verification code)
  * @route   POST /api/auth/register
  * @access  Public
  */
@@ -63,7 +65,7 @@ exports.register = async (req, res, next) => {
 
     const { email, password, firstName, lastName, phone, newsletter } = req.body;
 
-    // Check if user already exists
+    // Check if user already exists (fully registered)
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
       return res.status(409).json({
@@ -72,42 +74,217 @@ exports.register = async (req, res, next) => {
       });
     }
 
-    // Create user
-    const user = await User.create({
-      email,
-      password,
+    // Generate cryptographically secure 6-digit verification code
+    const crypto = require('crypto');
+    const randomNumber = crypto.randomInt(100000, 1000000);
+    const verificationCode = randomNumber.toString();
+    const verificationCodeExpires = Date.now() + 2 * 60 * 1000; // 2 minutes
+
+    // Hash password before storing
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Delete any existing pending user with this email
+    await PendingUser.deleteOne({ email: email.toLowerCase() });
+
+    // Create pending user
+    const pendingUser = await PendingUser.create({
+      email: email.toLowerCase(),
+      password: hashedPassword,
       firstName,
       lastName,
       phone,
       preferences: {
         newsletter: newsletter !== undefined ? newsletter : true,
         emailMarketing: newsletter !== undefined ? newsletter : true
-      }
+      },
+      verificationCode,
+      verificationCodeExpires
     });
+
+    // Send verification code email
+    const emailResult = await emailService.sendVerificationCode(
+      { email, firstName, lastName },
+      verificationCode
+    );
+
+    if (!emailResult.success) {
+      // If email fails, still return success but log the error
+      console.error('Failed to send verification code email:', emailResult.error);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Verification code sent to your email',
+      email: email.toLowerCase()
+    });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Registration failed',
+      error: process.env.NODE_ENV !== 'production' ? error.message : undefined
+    });
+  }
+};
+
+/**
+ * @desc    Verify email code and complete registration (Step 2)
+ * @route   POST /api/auth/verify-registration
+ * @access  Public
+ */
+exports.verifyRegistration = async (req, res, next) => {
+  try {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and verification code are required'
+      });
+    }
+
+    // Find pending user
+    const pendingUser = await PendingUser.findOne({ 
+      email: email.toLowerCase() 
+    });
+
+    if (!pendingUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Registration not found or expired. Please register again.'
+      });
+    }
+
+    // Check if code has expired
+    if (Date.now() > pendingUser.verificationCodeExpires) {
+      await PendingUser.deleteOne({ _id: pendingUser._id });
+      return res.status(400).json({
+        success: false,
+        message: 'Verification code expired. Please register again.',
+        expired: true
+      });
+    }
+
+    // Check if code matches
+    if (pendingUser.verificationCode !== code) {
+      // Decrement attempts
+      pendingUser.attemptsLeft -= 1;
+
+      if (pendingUser.attemptsLeft <= 0) {
+        await PendingUser.deleteOne({ _id: pendingUser._id });
+        return res.status(400).json({
+          success: false,
+          message: 'Too many failed attempts. Please register again.',
+          attemptsExceeded: true
+        });
+      }
+
+      await pendingUser.save();
+
+      return res.status(400).json({
+        success: false,
+        message: `Invalid verification code. ${pendingUser.attemptsLeft} attempts remaining.`,
+        attemptsLeft: pendingUser.attemptsLeft
+      });
+    }
+
+    // Code is valid - create actual user
+    const user = await User.create({
+      email: pendingUser.email,
+      password: pendingUser.password, // Already hashed
+      firstName: pendingUser.firstName,
+      lastName: pendingUser.lastName,
+      phone: pendingUser.phone,
+      preferences: pendingUser.preferences,
+      isEmailVerified: true // Email is verified
+    });
+
+    // Delete pending user
+    await PendingUser.deleteOne({ _id: pendingUser._id });
 
     // Update login info
     await user.updateLoginInfo();
 
     // Send welcome email (non-blocking)
     emailService.sendWelcomeEmail(user).catch(err => 
-      logger.error('Failed to send welcome email:', err)
+      console.error('Failed to send welcome email:', err)
     );
 
-    // Generate and send email verification link
-    const verificationToken = user.createEmailVerificationToken();
-    await user.save({ validateBeforeSave: false });
-    
-    emailService.sendEmailVerification(user, verificationToken).catch(err => 
-      logger.error('Failed to send verification email:', err)
-    );
-
-    // Send token response
+    // Send token response (log user in)
     sendTokenResponse(user, 201, res, 'Registration successful');
   } catch (error) {
-    console.error('Register error:', error);
+    console.error('Verify registration error:', error);
     res.status(500).json({
       success: false,
-      message: 'Registration failed',
+      message: 'Verification failed',
+      error: process.env.NODE_ENV !== 'production' ? error.message : undefined
+    });
+  }
+};
+
+/**
+ * @desc    Resend verification code
+ * @route   POST /api/auth/resend-verification
+ * @access  Public
+ */
+exports.resendVerificationCode = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required'
+      });
+    }
+
+    // Find pending user
+    const pendingUser = await PendingUser.findOne({ 
+      email: email.toLowerCase() 
+    });
+
+    if (!pendingUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Registration not found. Please register again.'
+      });
+    }
+
+    // Generate new verification code
+    const crypto = require('crypto');
+    const randomNumber = crypto.randomInt(100000, 1000000);
+    const verificationCode = randomNumber.toString();
+    const verificationCodeExpires = Date.now() + 2 * 60 * 1000; // 2 minutes
+
+    pendingUser.verificationCode = verificationCode;
+    pendingUser.verificationCodeExpires = verificationCodeExpires;
+    pendingUser.attemptsLeft = 5; // Reset attempts
+    await pendingUser.save();
+
+    // Send verification code email
+    const emailResult = await emailService.sendVerificationCode(
+      { 
+        email: pendingUser.email, 
+        firstName: pendingUser.firstName, 
+        lastName: pendingUser.lastName 
+      },
+      verificationCode
+    );
+
+    if (!emailResult.success) {
+      console.error('Failed to resend verification code email:', emailResult.error);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'New verification code sent to your email'
+    });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to resend verification code',
       error: process.env.NODE_ENV !== 'production' ? error.message : undefined
     });
   }
