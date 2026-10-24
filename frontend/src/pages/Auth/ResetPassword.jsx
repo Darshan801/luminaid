@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const { token } = useParams();
+  const { resettoken } = useParams(); // Match the route parameter name
   const { resetPassword, loading } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ const ResetPassword = () => {
     }
 
     try {
-      await resetPassword(token, formData.password);
+      await resetPassword(resettoken, formData.password);
       
       // Redirect to login with success message
       navigate('/login', {
